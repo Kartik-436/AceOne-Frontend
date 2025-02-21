@@ -107,14 +107,14 @@ const BeforeSignedInNavBar = () => {
                                     handleDelayNavigation("register");
                                 }}
                                 id="NavBarButtons"
-                                className="md:px-9 px-4 py-1 md:text-md text-sm text-nowrap uppercase font-mono font-semibold text-black border-black rounded-full active:scale-90"
+                                className="md:px-9 px-4 py-1 md:text-base text-sm text-nowrap uppercase font-mono font-semibold text-black border-black rounded-full active:scale-90"
                             >
                                 Sign Up
                             </button>
                             <button
                                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                                 id="NavBarButtons"
-                                className="px-6 py-1 uppercase md:text-md text-sm font-mono font-semibold text-black border-black rounded-full active:scale-90"
+                                className="px-6 py-1 uppercase md:text-base text-sm font-mono font-semibold text-black border-black rounded-full active:scale-90"
                             >
                                 Menu
                             </button>
