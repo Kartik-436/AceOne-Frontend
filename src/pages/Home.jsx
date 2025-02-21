@@ -30,7 +30,6 @@ const Home = () => {
             touchMultiplier: 2,
         });
 
-        
         if (window.gsap) {
             window.gsap.ticker.add((time) => {
                 lenis.raf(time * 1000);

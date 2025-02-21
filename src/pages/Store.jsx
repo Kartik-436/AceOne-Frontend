@@ -41,22 +41,24 @@ const Store = (props) => {
         { id: 9, name: "Casual Dress", price: 999, category: "Female_Collection", imageUrl: "/api/placeholder/300/300" },
     ]);
 
+    const isMobile = window.innerWidth <= 768;
+
     // Initialize Lenis for smooth scrolling
     useEffect(() => {
         lenisRef.current = new Lenis({
-            duration: 2,
+            duration: isMobile ? 3 : 2,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
             direction: 'vertical',
             gestureDirection: 'vertical',
             smooth: true,
-            smoothTouch: false,
-            touchMultiplier: 1,
+            smoothTouch: true,
+            touchMultiplier: isMobile ? 0.5 : 1,
             // Track scroll for skew effect
             wrapper: window,
             content: document.documentElement,
-            lerp: 0.1,
-            wheelMultiplier: 1,
-            syncTouch: true,
+            lerp: isMobile ? 0.065 : 0.1,
+            wheelMultiplier: isMobile ? 0.8 : 1,
+            syncTouch: false,
         });
 
         // Configure Lenis to update our scroll tracking
@@ -129,6 +131,29 @@ const Store = (props) => {
             lenisRef.current.scrollTo(section);
         }
     };
+
+    const [dynamicStyle, setDynamicStyle] = useState({
+        skewX,
+        transformOrigin: "right top",
+    });
+
+    useEffect(() => {
+        const updateStyle = () => {
+            if (window.innerWidth < 768) {
+                setDynamicStyle({}); // Remove styles on small screens
+            } else {
+                setDynamicStyle({
+                    skewX,
+                    transformOrigin: "right top",
+                });
+            }
+        };
+
+        updateStyle(); // Run on mount
+        window.addEventListener("resize", updateStyle);
+
+        return () => window.removeEventListener("resize", updateStyle);
+    }, [skewX]);
 
     // Variants for staggered animation
     const containerVariants = {
@@ -277,10 +302,7 @@ const Store = (props) => {
                                                         scale: 1.05,
                                                         transition: { duration: 0.2 }
                                                     }}
-                                                    style={{
-                                                        skewX,
-                                                        transformOrigin: "right top",
-                                                    }}
+                                                    style={dynamicStyle}
                                                 >
                                                     <div className='relative'>
                                                         <img
