@@ -60,7 +60,7 @@ const Page5 = () => {
             {/* Background Image with Motion */}
             <motion.div
                 style={{ y, opacity }}
-                className="fixed top-0 left-0 w-full h-[125vh] z-[-3]"
+                className="fixed top-0 left-0 w-[100vw] md:w-full h-[110vh] z-[-3]"
             >
                 <img className="w-full h-full object-cover" src="ShoeBG-3.jpg" alt="Background" />
             </motion.div>
@@ -72,13 +72,13 @@ const Page5 = () => {
                     ref={Head}
                     animate={isHeadInView ? 'visible' : 'hidden'}
                     variants={fadeSideCome}
-                    className="h-[42vh] max-w-[40vw] flex flex-col items-start justify-between"
+                    className="md:h-[42vh] h-[27vh] max-w-[40vw] flex flex-col items-start justify-between"
                 >
-                    <h1 className="text-8xl text-black font-semibold font-[Roboto] text-wrap">
+                    <h1 className="md:text-8xl text-5xl text-black font-semibold font-[Roboto] text-wrap">
                         Commited to Sustainability
                     </h1>
                     <div className="flex flex-col items-start justify-center gap-1">
-                        <h1 className="text-2xl text-black font-light font-[Poppins]">Go To Shop</h1>
+                        <h1 className="text-2xl text-black md:font-light font-[Poppins]">Go To Shop</h1>
                         <button id="Shp-Now-Home-Start" className="px-4 py-1 rounded-full bg-[#ffbb00] uppercase font-mono text-black font-bold tracking-wide">
                             Shop Now
                         </button>
@@ -91,10 +91,10 @@ const Page5 = () => {
                         animate={isCardInView ? 'visible' : 'hidden'}
                         variants={fadeInCome}
                         ref={Card}
-                        className="w-[28vw] h-[36vh] bg-[#111111a9] rounded-md flex items-center justify-center"
+                        className="md:w-[28vw] w-[70vw] h-[50vh] md:h-[36vh] bg-[#111111a9] rounded-md flex items-center justify-center"
                     >
                         <motion.div
-                            className="w-[26vw] h-[32vh] bg-transparent rounded-md flex items-center justify-center relative"
+                            className="md:w-[26vw] w-[70vw] h-[50vh] md:h-[32vh] bg-transparent rounded-md flex items-center justify-center relative"
                         >
                             <motion.div
                                 className='w-full h-full p-3 flex flex-col items-start justify-between'

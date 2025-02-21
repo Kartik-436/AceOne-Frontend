@@ -66,10 +66,10 @@ const Footer = () => {
                         <StringAnimation />
                     </motion.div>
 
-                    <div className='w-full h-full flex flex-col items-end gap-10'>
+                    <div className='w-full h-full flex flex-col md:items-end gap-15 md:gap-10'>
                         <motion.div
                             ref={formRef}
-                            className='bg-[#efbe35] w-[57vw] h-[38vh] rounded-lg p-6 flex flex-col gap-[9vh]'
+                            className='bg-[#efbe35] md:w-[57vw] md:h-[38vh] rounded-lg p-6 flex flex-col gap-8 md:gap-[9vh]'
                             initial='hidden'
                             animate={isInView ? 'visible' : 'hidden'}
                             variants={{
@@ -94,10 +94,10 @@ const Footer = () => {
                                         <label className='uppercase font-medium text-sm font-[poppins]' htmlFor="Email">Email</label>
                                         <input type="text" name='email' className='font-[poppins] px-5 py-2 bg-transparent outline-none border-[1px] border-black rounded-lg' autoComplete='off' required />
                                     </motion.div>
-                                    <motion.div className='flex items-center justify-between'>
+                                    <motion.div className='flex md:flex-row flex-col items-center justify-between md:gap-0 gap-2.5'>
                                         <motion.div className='flex items-center gap-2'>
                                             <input type="checkbox" className='w-5 h-5 appearance-none border-[1px] border-black rounded-md cursor-pointer bg-transparent relative checked:bg-black' required />
-                                            <label className='uppercase font-light text-sm font-[poppins]' htmlFor="checkbox">Yes, subscribe me to your newsletter.</label>
+                                            <label className='uppercase font-light text-sm font-[poppins]' htmlFor="checkbox">subscribe to newsletter.</label>
                                         </motion.div>
                                         <motion.div>
                                             <button type='submit' id="Shp-Now-Home-Start" className="px-15 py-1 rounded-md bg-transparent uppercase font-mono text-black font-bold tracking-wide">
@@ -114,7 +114,7 @@ const Footer = () => {
                             initial='hidden'
                             animate={isSocialIconsInView ? 'visible' : 'hidden'}
                             variants={staggerContainer}
-                            className='h-full w-[57vw] flex items-start justify-center gap-4'
+                            className='h-full md:w-[57vw] flex md:flex-row flex-col items-start justify-center gap-12 md:gap-4'
                         >
                             <motion.div
                                 initial='hidden'
@@ -212,7 +212,7 @@ const Footer = () => {
                             }}
                             className='flex justify-center items-center w-full h-full px-5 py-2 text-white font-semibold uppercase'
                         >
-                            <h1 className='text-sm'>&copy; 2025 Kartik Garg. All rights reserved.</h1>
+                            <h1 className='text-sm text-nowrap'>&copy; 2025 Kartik Garg. All rights reserved.</h1>
                         </motion.div>
                     </div>
                 </div>
