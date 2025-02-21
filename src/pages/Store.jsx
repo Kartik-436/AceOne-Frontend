@@ -52,12 +52,12 @@ const Store = (props) => {
             gestureDirection: 'vertical',
             smooth: true,
             smoothTouch: true,
-            touchMultiplier: isMobile ? 0.5 : 1,
+            touchMultiplier: isMobile ? 0.3 : 1,
             // Track scroll for skew effect
             wrapper: window,
             content: document.documentElement,
-            lerp: isMobile ? 0.065 : 0.1,
-            wheelMultiplier: isMobile ? 0.8 : 1,
+            lerp: isMobile ? 0.05 : 0.1,
+            wheelMultiplier: isMobile ? 0.5 : 1,
             syncTouch: false,
         });
 
@@ -153,7 +153,7 @@ const Store = (props) => {
         window.addEventListener("resize", updateStyle);
 
         return () => window.removeEventListener("resize", updateStyle);
-    }, [skewX]);
+    }, []);
 
     // Variants for staggered animation
     const containerVariants = {
@@ -302,7 +302,7 @@ const Store = (props) => {
                                                         scale: 1.05,
                                                         transition: { duration: 0.2 }
                                                     }}
-                                                    style={dynamicStyle}
+                                                    style={isMobile ? "" : dynamicStyle}
                                                 >
                                                     <div className='relative'>
                                                         <img
