@@ -81,6 +81,6 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .AddToCartInStore:hover {
-    color: #fff;
-    border: 1.7px solid #fff;
+    color: #222;
+    border: 1.7px solid #1f1f1f;
 }
