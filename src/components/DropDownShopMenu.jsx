@@ -32,7 +32,7 @@ const StaggeredDropDown = () => {
                     animate={open ? "open" : "closed"}
                     variants={wrapperVariants}
                     style={{ originY: "top", translateX: "-50%" }}
-                    className="flex flex-col items-start justify-center gap-2 absolute top-[130%] left-[48%] w-fit"
+                    className="flex flex-col items-start justify-center gap-2 absolute md:top-[130%] md:left-[48%] top-[120%] left-[150%] w-fit"
                 >
                     <div className="flex items-center justify-center gap-4" onClick={() => { handleDelayNavigation("store") }}>
                         <motion.span
@@ -70,7 +70,7 @@ const Option = ({ text, setOpen }) => {
                     }
                 }
             >
-                <FlipLink size="text-[2.8vw]" color="text-[#f8ffe5]" font ="font-black">{text}</FlipLink>
+                <FlipLink size="text-3xl" color="text-[#f8ffe5]" font="font-black">{text}</FlipLink>
             </motion.div>
         </>
     );

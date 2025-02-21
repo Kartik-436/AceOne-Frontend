@@ -16,7 +16,7 @@ const BeforeSignedInNavBar = () => {
             <AnimatePresence>
                 {isMenuOpen && (
                     <motion.div
-                        className="w-1/2 h-screen bg-[#1b1c1e] z-[15] fixed right-0 top-0 origin-right"
+                        className="md:w-1/2 w-screen h-screen bg-[#1b1c1e] z-[15] fixed right-0 top-0 origin-right"
                         // initial={{ scaleX: 0, borderTopLeftRadius: 500, borderBottomLeftRadius: 500, x: 50 }}
                         // animate={{ scaleX: 1, borderTopLeftRadius: 0, borderBottomLeftRadius: 0, x: 0 }}
                         // exit={{ scaleX: 0, borderTopLeftRadius: 500, borderBottomLeftRadius: 500 }}
@@ -80,20 +80,20 @@ const BeforeSignedInNavBar = () => {
             <Transition animate={animate} />
 
             <div className="w-full h-[10.6vh] bg-[#fbffef] fixed top-0 left-0 z-[10]">
-                <div className="flex items-center justify-between w-full h-full px-10">
+                <div className="flex items-center justify-between w-full h-full px-4 md:px-10">
                     <div>
-                        <h1 onClick={() => { handleDelayNavigation("") }} className="text-3xl font-black font-[Marcellus] select-none cursor-pointer text-transparent bg-clip-text bg-gradient-to-r from-[#ffbb00] from-45% to-45% to-[#1f1f1f]">AceOne.</h1>
+                        <h1 onClick={() => { handleDelayNavigation("") }} className="text-2xl md:text-3xl font-black font-[Marcellus] select-none cursor-pointer text-transparent bg-clip-text bg-gradient-to-r from-[#ffbb00] from-45% to-45% to-[#1f1f1f]">AceOne.</h1>
                     </div>
 
-                    <div className="flex items-center gap-5 h-full">
+                    <div className="flex items-center gap-1 md:gap-5 h-full">
                         <input
-                            className="search-with-icon px-4 py-1 bg-[#fff] outline-none border-[1.6px] border-[#111] rounded-full"
+                            className="search-with-icon px-4 py-1 bg-[#fff] md:inline-block hidden outline-none border-[1.6px] border-[#111] rounded-full"
                             type="search"
                             name="search"
                             id="search-with-icon"
                             placeholder="Search Items"
                         />
-                        <div className="flex items-center gap-2 h-full">
+                        <div className="md:flex hidden items-center gap-2 h-full">
                             <span>
                                 <i className="ri-heart-line text-3xl text-black cursor-pointer"></i>
                             </span>
@@ -107,14 +107,14 @@ const BeforeSignedInNavBar = () => {
                                     handleDelayNavigation("register");
                                 }}
                                 id="NavBarButtons"
-                                className="px-9 py-1 uppercase font-mono font-semibold text-black border-black rounded-full active:scale-90"
+                                className="md:px-9 px-4 py-1 md:text-md text-sm text-nowrap uppercase font-mono font-semibold text-black border-black rounded-full active:scale-90"
                             >
                                 Sign Up
                             </button>
                             <button
                                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                                 id="NavBarButtons"
-                                className="px-6 py-1 uppercase font-mono font-semibold text-black border-black rounded-full active:scale-90"
+                                className="px-6 py-1 uppercase md:text-md text-sm font-mono font-semibold text-black border-black rounded-full active:scale-90"
                             >
                                 Menu
                             </button>
