@@ -74,11 +74,11 @@ const Page3 = () => {
                     variants={fadeSideCome}
                     className="h-[42vh] max-w-[32vw] flex flex-col items-start justify-between"
                 >
-                    <h1 className="text-8xl text-black font-semibold font-[Roboto] text-wrap">
+                    <h1 className="md:text-8xl text-5xl text-white md:text-black font-semibold font-[Roboto] md:text-wrap">
                         20% Off Kids Styles
                     </h1>
                     <div className="flex flex-col items-start justify-center gap-1">
-                        <h1 className="text-2xl text-black font-light font-[Poppins]">Limited Time Offer</h1>
+                        <h1 className="text-2xl text-nowrap text-white md:text-black font-light font-[Poppins]">Limited Time Offer</h1>
                         <button id="Shp-Now-Home-Start" className="px-4 py-1 rounded-full bg-[#ffbb00] uppercase font-mono text-black font-bold tracking-wide">
                             Shop Now
                         </button>
@@ -86,7 +86,7 @@ const Page3 = () => {
                 </motion.div>
 
                 <motion.div
-                    className="w-full flex items-center justify-end"
+                    className="w-full hidden md:flex items-center justify-end"
                 >
                     <motion.div
                         initial='hidden'

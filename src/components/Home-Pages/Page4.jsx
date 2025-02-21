@@ -38,10 +38,10 @@ const Page4 = () => {
                         }
                     }}
                 >
-                    <h1 className='text-3xl font-lighter uppercase font-[poppins] text-black'>Shop By Collection</h1>
+                    <h1 className='md:text-3xl text-2xl font-lighter uppercase font-[poppins] text-black'>Shop By Collection</h1>
                     <motion.button
                         id='Shp-Now-Home-Start'
-                        className='px-5 py-2 rounded-full bg-[#fff] uppercase font-mono text-black font-bold tracking-wide'
+                        className='md:px-5 md:py-2 px-3 py-1 rounded-full bg-[#fff] uppercase font-mono text-black font-bold tracking-wide'
                         whileHover={{ scale: 1.05, backgroundColor: "#f8f8f8" }}
                         whileTap={{ scale: 0.98 }}
                     >
@@ -49,25 +49,25 @@ const Page4 = () => {
                     </motion.button>
                 </motion.div>
 
-                <div className='flex items-center justify-center gap-4'>
+                <div className='flex md:flex-row flex-col items-center justify-center gap-4'>
                     {["Male Collection", "Female Collection", "Kids Collection"].map((title, index) => (
                         <motion.div
                             key={index}
-                            className='h-[75vh] w-[33vw] flex flex-col items-start gap-4 px-4 py-2 rounded-xl'
+                            className='h-[75vh] md:w-[33vw]  w-[80vw] flex flex-col items-start gap-4 px-4 py-2 rounded-xl'
                             initial='hidden'
                             animate={isInView ? 'visible' : 'hidden'}
                             variants={fadeInUp}
                             custom={index}
                         >
                             <motion.div
-                                className='h-[70vh] w-[28vw] rounded-xl bg-[#aeaeaeec] relative flex items-center justify-center'
+                                className='h-[70vh] md:w-[28vw] w-[80vw] rounded-xl bg-[#aeaeaeec] relative flex items-center justify-center'
                                 variants={fadeInUp}
                                 custom={index + 1}
                             >
                                 <div className='absolute bottom-4 left-4'>
                                     <motion.button
                                         id='Shp-Now-Home-Start'
-                                        className='px-7 py-1 bg-[#fff] text-black rounded-full uppercase font-mono font-medium text-lg'
+                                        className='md:px-7 md:py-1 px-5 bg-[#fff] text-black rounded-full uppercase font-mono font-medium text-lg'
                                         whileHover={{ scale: 1.05 }}
                                         initial='hidden'
                                         animate={isInView ? 'visible' : 'hidden'}

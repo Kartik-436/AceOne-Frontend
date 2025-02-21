@@ -57,25 +57,25 @@ const Page1 = () => {
     };
 
     return (
-        <div ref={targetRef} className='relative w-full overflow-hidden bg-transparent'>
+        <div ref={targetRef} className='relative w-screen md:w-full overflow-hidden bg-transparent'>
             {/* Background Image */}
             <motion.div
                 style={{ y, opacity }}
-                className='fixed top-0 left-0 w-full h-[125vh] z-[-1]'
+                className='fixed md:top-0 top-[-2%] left-[-25%] md:left-0 w-[180vw] md:w-full h-[125vh] z-[-1]'
             >
                 <img className='w-full h-full object-fill' src="ShoeBG-1.jpg" alt="Background" />
             </motion.div>
 
             {/* Content Section */}
-            <div ref={containerRef} className='relative z-[2] h-[125vh] w-full flex flex-col items-start justify-between pt-[22vh] px-8.5 pr-20 text-white'>
+            <div ref={containerRef} className='relative z-[2] h-screen md:h-[125vh] w-full flex flex-col items-start justify-between pt-[22vh] px-8.5 pr-20 text-white'>
                 <motion.div
                     initial='hidden'
                     ref={Head}
                     animate={isHeadInView ? 'visible' : 'hidden'}
                     variants={fadeSideCome}
-                    className='h-[32vh] flex flex-col items-start justify-between'
+                    className='md:h-[32vh] h-[26vh] flex flex-col items-start justify-between'
                 >
-                    <h1 className='text-8xl text-black font-semibold font-[Roboto]'>
+                    <h1 className='md:text-8xl text-5xl text-black font-semibold font-[Roboto]'>
                         Step-Up Your Stride
                     </h1>
                     <div className='flex flex-col items-start justify-center gap-1'>
@@ -90,7 +90,7 @@ const Page1 = () => {
                     initial='hidden'
                     animate={isInView ? 'visible' : 'hidden'}
                     variants={fadeInCome}
-                    className='w-full flex items-center justify-end'
+                    className='w-full md:flex items-center justify-end hidden'
                 >
                     <motion.div className='w-[32vw] h-[34vh] bg-[#ffffff4e] rounded-md flex items-center justify-between px-2.5'>
                         <motion.div

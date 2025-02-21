@@ -86,14 +86,14 @@ const Page2 = () => {
 
     const productCard = (tag, showStrike, index) => (
         <motion.div
-            className='h-[65vh] w-[24vw] flex flex-col items-start gap-4 px-4 py-2 rounded-xl'
+            className='md:h-[65vh] h-[70vh] w-[80vw] md:w-[24vw] flex flex-col items-center md:items-start gap-4 md:px-4 py-2 rounded-xl'
             variants={staggerChildren}
             custom={index}
             initial="hidden"
             animate={isInView ? "visible" : "hidden"}
         >
             <motion.div
-                className='h-[54vh] w-[20vw] rounded-xl bg-[#aeaeaeec] relative flex items-center justify-center overflow-hidden'
+                className='md:h-[54vh] h-[60vh] md:w-[20vw] w-[75vw] rounded-xl bg-[#aeaeaeec] relative flex items-center justify-center overflow-hidden'
                 variants={{
                     hidden: { opacity: 0, y: 50 },
                     visible: {
@@ -139,7 +139,7 @@ const Page2 = () => {
             >
                 <h1 className='text-black font-bold font-mono text-lg'>Name of Product</h1>
                 <div className='flex items-center gap-1.5'>
-                    <span className='text-black font-light font-mono text-sm'>$499</span>
+                    <span className='text-black font-light font-mono text-md'>$499</span>
                     {showStrike && <span className='text-black font-medium font-mono text-sm line-through'>$599</span>}
                 </div>
             </motion.div>
@@ -159,10 +159,10 @@ const Page2 = () => {
                         ease: [0.16, 1, 0.3, 1]
                     }}
                 >
-                    <h1 className='text-3xl font-lighter uppercase font-[poppins] text-black'>Best sellers</h1>
+                    <h1 className='md:text-3xl text-2xl font-lighter uppercase font-[poppins] text-black'>Best sellers</h1>
                     <motion.button
                         id='Shp-Now-Home-Start'
-                        className='px-5 py-2 rounded-full bg-[#fff] uppercase font-mono text-black font-bold tracking-wide'
+                        className='md:px-5 px-3 md:py-2 py-1 rounded-full bg-[#fff] uppercase font-mono text-black font-bold tracking-wide'
                         whileHover={{ scale: 1.05, backgroundColor: "#f8f8f8" }}
                         whileTap={{ scale: 0.98 }}
                     >
@@ -172,7 +172,7 @@ const Page2 = () => {
 
                 <motion.div
                     ref={productsRef}
-                    className='flex items-center justify-center gap-4'
+                    className='flex md:flex-row flex-col w-full items-center justify-center gap-4'
                     initial="hidden"
                     animate={isInView ? "visible" : "hidden"}
                     variants={{
