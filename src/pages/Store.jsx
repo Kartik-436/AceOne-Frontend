@@ -296,7 +296,7 @@ const Store = (props) => {
                                             {products.map(product => (
                                                 <motion.div
                                                     key={product.id}
-                                                    className='bg-[#1f1f1f] rounded-lg overflow-hidden shadow-lg'
+                                                    className='bg-[#1f1f1f] rounded-xl overflow-hidden shadow-xl'
                                                     variants={productCardVariants}
                                                     whileHover={{
                                                         scale: 1.05,
