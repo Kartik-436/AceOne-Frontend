@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React from 'react'
-import Page1 from './page1'
-import Page2 from './Page2'
+import Page1 from './Page1';
+import Page2 from './Page2';
 
 const HalfHome = () => {
     return (
