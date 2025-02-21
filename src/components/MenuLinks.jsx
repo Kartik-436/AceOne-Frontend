@@ -8,7 +8,7 @@ import Transition from "../Transition";
 const DURATION = 0.3;
 const STAGGER = 0.03;
 
-const FlipLink = ({ children, size, color }) => {
+const FlipLink = ({ children, size, color, font }) => {
     // const { animate, handleDelayNavigation } = useDelayedNavigation();
 
     return (
@@ -21,7 +21,7 @@ const FlipLink = ({ children, size, color }) => {
                     initial="initial"
                     whileHover="hovered"
                     // onClick={() => { handleDelayNavigation(href) }}
-                    className={`relative inline-block overflow-hidden whitespace-nowrap font-black uppercase ${color} select-none cursor-pointer ${size}`}
+                    className={`relative inline-block overflow-hidden whitespace-nowrap ${font} uppercase ${color} select-none cursor-pointer ${size}`}
                     style={{
                         lineHeight: 0.75,
                     }}

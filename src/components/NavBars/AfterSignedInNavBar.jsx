@@ -48,7 +48,7 @@ const AfterSignedInNavBar = () => {
                                 custom={0}
                                 onClick={() => { handleDelayNavigation("Home") }}
                             >
-                                <FlipLink size="text-7xl" color="text-[#fcf8db]">HOME</FlipLink>
+                                <FlipLink size="text-7xl" color="text-[#fcf8db]" font = "font-black">HOME</FlipLink>
                             </motion.div>
 
                             <motion.div
@@ -59,7 +59,7 @@ const AfterSignedInNavBar = () => {
                                 custom={1}
                                 onClick={() => { handleDelayNavigation("about") }}
                             >
-                                <FlipLink size="text-7xl" color="text-[#fcf8db]">ABOUT</FlipLink>
+                                <FlipLink size="text-7xl" color="text-[#fcf8db]" font = "font-black">ABOUT</FlipLink>
                             </motion.div>
 
                             <motion.div

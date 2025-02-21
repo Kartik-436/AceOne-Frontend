@@ -3,7 +3,7 @@ import React, { useRef } from 'react';
 import { delay, motion, useInView } from 'framer-motion';
 import useDelayedNavigation from '../../utils/useDelayedNavigation';
 import Transition from '../../Transition';
-import StringAnimation from '../StringAnimation';
+import StringAnimation from '../StringAnimations/StringAnimation';
 
 const Footer = () => {
     const { animate, handleDelayNavigation } = useDelayedNavigation();
