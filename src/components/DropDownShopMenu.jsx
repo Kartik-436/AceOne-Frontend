@@ -70,7 +70,7 @@ const Option = ({ text, setOpen }) => {
                     }
                 }
             >
-                <FlipLink size="text-3xl" color="text-[#f8ffe5]" font="font-black">{text}</FlipLink>
+                <FlipLink size="md:text-4xl text-3xl" color="text-[#f8ffe5]" font="font-black">{text}</FlipLink>
             </motion.div>
         </>
     );
