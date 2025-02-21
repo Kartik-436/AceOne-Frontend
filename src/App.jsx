@@ -10,6 +10,7 @@ import Profile from "./pages/Profile";
 import { AnimatePresence } from "motion/react";
 import Home from "./pages/Home";
 import Store from "./pages/Store";
+import About from "./pages/About";
 
 const PageTransition = ({ children }) => {
     const containerRef = useRef(null);
@@ -39,6 +40,7 @@ function AnimatedRoutes() {
             <Routes location={location} key={location.pathname}>
                 <Route path="/" element={<Navigate to="/Home" replace="true" />} />
                 <Route path="/Home" element={<Home />} />
+                <Route path="/About" element={<About />} />
                 <Route path="/register" element={<SignUp />} />
                 <Route path="/login" element={<LogIn />} />
                 <Route path="/ownerLogin" element={<OwnerLogin />} />

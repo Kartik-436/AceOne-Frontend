@@ -8,6 +8,7 @@ import axios from 'axios';
 import BarLoader from './../components/Loaders/CustomLoader1';
 import { motion } from 'framer-motion';
 import { AnimatePresence } from 'motion/react';
+import Footer from './../components/Footer/Footer';
 
 const Store = (props) => {
     const { animate, handleDelayNavigation } = useDelayedNavigation();
@@ -21,7 +22,7 @@ const Store = (props) => {
                     setisLoggedIn(true);
                 } else setisLoggedIn(false);
             })
-            .catch(() => setisLoggedIn(false)); // Make it Null in finalization
+            .catch(() => setisLoggedIn(false)); // Make it Null in final
     }, []);
 
     if (isLoggedIn === null) {
@@ -43,17 +44,19 @@ const Store = (props) => {
                         <Transition animate={animate} disableEntry={true} />
 
                         {isLoggedIn ? <AfterSignedInNavBar /> : <BeforeSignedInNavBar />}
-                        <div className='min-h-screen w-full relative text-white mt-[12vh] bg-[#fbffef]'>
-                            <div className=''> 
+                        <div className='min-h-screen w-full relative text-white mt-[10.6svh] bg-[#fbffef]'>
+                            <div className=''>
                                 <h1 className='text-black'>This is store Route</h1>
                             </div>
+                        </div>
+                        <div className='z-20'>
+                            <Footer />
                         </div>
                     </motion.div>
                 </AnimatePresence>
             </React.Fragment>
         )
     }
-
 }
 
 export default Store

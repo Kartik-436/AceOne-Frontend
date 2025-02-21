@@ -192,6 +192,29 @@ const Footer = () => {
                             </motion.div>
                         </motion.div>
                     </div>
+
+                    <div className='w-full h-22'>
+                        <motion.div
+                            initial='hidden'
+                            animate={isSocialIconsInView ? 'visible' : 'hidden'}
+                            variants={{
+                                hidden: { opacity: 0, x: 70 },
+                                visible: {
+                                    opacity: 1,
+                                    x: 0,
+                                    transition: {
+                                        duration: 0.6,
+                                        ease: "easeOut",
+                                        staggerChildren: 0.5,
+                                        delayChildren: 0.3
+                                    }
+                                }
+                            }}
+                            className='flex justify-center items-center w-full h-full px-5 py-2 text-white font-semibold uppercase'
+                        >
+                            <h1 className='text-sm'>&copy; 2025 Kartik Garg. All rights reserved.</h1>
+                        </motion.div>
+                    </div>
                 </div>
             </motion.div>
         </>
