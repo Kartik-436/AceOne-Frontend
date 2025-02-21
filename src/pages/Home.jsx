@@ -65,7 +65,7 @@ const Home = () => {
                     setisLoggedIn(true);
                 } else setisLoggedIn(false);
             })
-            .catch(() => setisLoggedIn(null));
+            .catch(() => setisLoggedIn(false)); // Make it Null in finalization
     }, []);
 
     if (isLoggedIn === null) {
