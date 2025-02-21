@@ -49,7 +49,7 @@ const Store = (props) => {
             direction: 'vertical',
             gestureDirection: 'vertical',
             smooth: true,
-            smoothTouch: true,
+            smoothTouch: false,
             touchMultiplier: 2,
             // Track scroll for skew effect
             wrapper: window,
