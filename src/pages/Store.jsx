@@ -169,9 +169,8 @@ const Store = (props) => {
 
                             {isLoggedIn ? <AfterSignedInNavBar /> : <BeforeSignedInNavBar />}
 
-
                             <div className='min-h-screen w-full text-white mt-[10.6svh] bg-[#fbffef] flex'>
-                                <div className='min-h-full w-[25vw] bg-[#f1f5e5] relative flex flex-col gap-10'>
+                                <div className='min-h-full w-[25vw] bg-[#f1f5e5] relative hidden md:flex flex-col gap-10'>
                                     <div className='pl-10 pt-7'>
                                         <h1 className='text-[1.83vw] font-light text-black font-[poppins]'>
                                             All Products <i className="ri-arrow-right-long-line"></i>
@@ -260,7 +259,7 @@ const Store = (props) => {
                                         {/* Product Grid - 3 items per row */}
                                         <motion.div
                                             ref={productContainerRef}
-                                            className='grid grid-cols-3 gap-8'
+                                            className='grid grid-cols-1 md:grid-cols-3 gap-8'
                                             variants={containerVariants}
                                             initial="hidden"
                                             animate="visible"
@@ -296,7 +295,7 @@ const Store = (props) => {
                                                         )}
                                                     </div>
 
-                                                    <div className='p-5 bg-[#fff] text-black'>
+                                                    <div className='md:p-5 p-3 bg-[#fff] text-black'>
                                                         <h3 className='text-xl font-semibold mb-2'>{product.name}</h3>
                                                         <div className='flex justify-between items-center'>
                                                             <div>
