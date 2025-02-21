@@ -1,0 +1,15 @@
+.email-with-icon {
+    background-image: url('User-Email.svg');  /* Change to your image path */
+    background-size: 20px;
+    background-repeat: no-repeat;
+    background-position: 20px center;
+    padding-left: 50px; /* Push text to the right */
+}
+
+.password-with-icon {
+    background-image: url('Lock-Pass.svg');  /* Change to your image path */
+    background-size: 20px;
+    background-repeat: no-repeat;
+    background-position: 20px center;
+    padding-left: 50px;
+}
