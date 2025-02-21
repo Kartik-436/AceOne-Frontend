@@ -49,9 +49,9 @@ const FormLogin = () => {
         <>
             <Transition animate={animate} />
 
-            <div className='h-screen z-50 w-screen overflow-hidden'>
+            <div className='h-screen z-50 w-screen overflow-hidden md:bg-transparent bg-[#59c0ec]'>
                 <div>
-                    <div className='w-screen h-screen overflow-hidden fixed flex items-center justify-between bg-[#fff] z-[-1] user-select-none'>
+                    <div className='w-screen h-screen overflow-hidden fixed hidden md:flex items-center justify-between bg-[#fff] z-[-1] user-select-none'>
                         <div className='max-w-1/2'></div>
                         <div className='relative w-1/2 h-full flex justify-end items-end'>
                             <img className='min-w-[47vw] z-0' src="LS-Right.svg" alt="" />
@@ -60,25 +60,25 @@ const FormLogin = () => {
                     </div>
                 </div>
 
-                <div className='w-1/2 flex items-center justify-center h-screen overflow-hidden'>
+                <div className='md:w-1/2 flex items-center justify-center h-screen overflow-hidden'>
                     {/* <Link to="/register"> */}
                     <button id='Signup-Instead-Login-Route'
-                        className='inline-block text-nowrap px-7 py-4 cursor-pointer text-white text-xl font-bold rounded-full min-w-[13vw] absolute right-10 top-10 font-[poppins]'
+                        className='inline-block text-nowrap md:px-7 md:py-4 cursor-pointer bg-[#1f1f1f] md:bg-transparent text-white text-xl font-bold rounded-full md:min-w-[13vw] absolute md:right-10 right-2 top-6 md:top-10 font-[poppins] py-3 px-5'
                         onClick={() => handleDelayNavigation("register")}
                     >
                         Signup Instead
                     </button>
                     {/* </Link> */}
 
-                    <div className='px-17 py-20 flex items-center justify-center bg-[#fff] rounded-4xl'>
-                        <div className='flex flex-col gap-18'>
+                    <div className='md:px-17 md:py-20 px-6 py-14 flex items-center justify-center bg-[#fff] rounded-4xl'>
+                        <div className='flex flex-col gap-8 md:gap-18'>
                             <div className='flex flex-col'>
-                                <h1 className='text-[4.7vw] uppercase font-[poppins] text-black font-bold text-center'>login</h1>
-                                <h5 className='text-[0.9vw] -mt-5 capitalize font-[poppins] text-black text-center'>login to start buying</h5>
+                                <h1 className='md:text-[4.7vw] text-4xl uppercase font-[poppins] text-black font-bold text-center'>login</h1>
+                                <h5 className='md:text-[0.9vw] text-sm md:-mt-3 capitalize font-[poppins] text-black text-center'>login to start buying</h5>
                             </div>
                             <div>
                                 <form onSubmit={handleSubmit} className='flex flex-col gap-7 items-center text-black'>
-                                    <div className='flex flex-col gap-5 items-center text-black'>
+                                    <div className='flex flex-col gap-3 md:gap-5 items-center text-black'>
                                         <input
                                             className='email-with-icon inline-block px-6 py-4 text-lg bg-[#F0EDFF] rounded-full font-semibold font-[nunito] outline-none min-w-[30vw]'
                                             type="email"
@@ -104,7 +104,7 @@ const FormLogin = () => {
                                         />
 
                                         {isTyping && (
-                                            <p id='PassWarn' className='text-red-500 text-sm -mt-3 text-wrap max-w-[40vw]'>
+                                            <p id='PassWarn' className='text-red-500 md:tracking-normal tracking-tighter text-xs md:text-sm md:-mt-3 text-wrap md:max-w-[40vw] max-w-[80%]'>
                                                 The password should contain at least 1 uppercase, 1 lowercase, 1 number, and 1 special character!
                                             </p>
                                         )}
