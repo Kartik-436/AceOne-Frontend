@@ -1,7 +1,4 @@
 /* eslint-disable no-unused-vars */
-// 1. Install packages
-// npm install locomotive-scroll @studio-freight/lenis
-
 import React, { useEffect, useRef, useState } from 'react';
 import Lenis from '@studio-freight/lenis';
 import useDelayedNavigation from '../utils/useDelayedNavigation';
@@ -10,9 +7,7 @@ import Transition from '../Transition';
 import AfterSignedInNavBar from './../components/NavBars/AfterSignedInNavBar';
 import axios from 'axios';
 import BarLoader from '../components/Loaders/CustomLoader1';
-import Page1 from '../components/Home-Pages/page1';
 import "../stylesheets/HomePage.css";
-import Page2 from '../components/Home-Pages/Page2';
 import Page3 from './../components/Home-Pages/Page3';
 import HalfHome from '../components/Home-Pages/HalfHome1';
 import HalfHome2 from '../components/Home-Pages/HalfHome2';
