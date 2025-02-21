@@ -62,6 +62,7 @@ const Footer = () => {
                                 }
                             }
                         }}
+                        className='md:block hidden'
                     >
                         <StringAnimation />
                     </motion.div>
