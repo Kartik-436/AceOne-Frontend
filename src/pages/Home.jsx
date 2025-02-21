@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+
 import React, { useEffect, useRef, useState } from 'react';
 import Lenis from '@studio-freight/lenis';
 import useDelayedNavigation from '../utils/useDelayedNavigation';
@@ -17,9 +18,8 @@ const Home = () => {
     const { animate, handleDelayNavigation } = useDelayedNavigation();
     const [isLoggedIn, setisLoggedIn] = useState(null);
 
-    // Smooth scroll implementation
     useEffect(() => {
-        // Initialize Lenis for smooth scrolling
+        
         const lenis = new Lenis({
             duration: 1.8,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -30,13 +30,13 @@ const Home = () => {
             touchMultiplier: 2,
         });
 
-        // Connect Lenis to GSAP's ticker for better integration with GSAP animations
+        
         if (window.gsap) {
             window.gsap.ticker.add((time) => {
                 lenis.raf(time * 1000);
             });
         } else {
-            // Fallback if GSAP is not available
+            
             function raf(time) {
                 lenis.raf(time);
                 requestAnimationFrame(raf);
@@ -44,9 +44,9 @@ const Home = () => {
             requestAnimationFrame(raf);
         }
 
-        // Optional: listen to scroll events to trigger animations
+        
         lenis.on('scroll', ({ scroll, limit, velocity, direction, progress }) => {
-            // You can trigger scroll-based animations here if needed
+            
         });
 
         return () => {
