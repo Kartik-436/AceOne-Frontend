@@ -11,6 +11,8 @@ import { AnimatePresence } from "motion/react";
 import Home from "./pages/Home";
 import Store from "./pages/Store";
 import About from "./pages/About";
+import Wishlist from "./pages/Wishlist";
+import Cart from "./pages/Cart";
 
 const PageTransition = ({ children }) => {
     const containerRef = useRef(null);
@@ -40,11 +42,17 @@ function AnimatedRoutes() {
             <Routes location={location} key={location.pathname}>
                 <Route path="/" element={<Navigate to="/Home" replace="true" />} />
                 <Route path="/Home" element={<Home />} />
+
                 <Route path="/About" element={<About />} />
+
                 <Route path="/register" element={<SignUp />} />
                 <Route path="/login" element={<LogIn />} />
                 <Route path="/ownerLogin" element={<OwnerLogin />} />
+
                 <Route path="/store" element={<Store />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/wishlist" element={<Wishlist />} />
+
                 <Route path="/userProfile" element={<Profile />} />
             </Routes>
         </AnimatePresence>

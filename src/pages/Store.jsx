@@ -97,16 +97,6 @@ const Store = (props) => {
         return () => { };
     }, []);
 
-    useEffect(() => {
-        axios.get('/api/user/profile', { withCredentials: true })
-            .then(response => {
-                const user = response.data;
-                if (response.success) {
-                    setisLoggedIn(true);
-                } else setisLoggedIn(false);
-            })
-            .catch(() => setisLoggedIn(false));
-    }, []);
 
     const [value, setValue] = useState(0);
     const rangeRef = useRef(null);
@@ -177,6 +167,18 @@ const Store = (props) => {
             }
         }
     };
+
+
+    useEffect(() => {
+        axios.get('/api/user/profile', { withCredentials: true })
+            .then(response => {
+                const user = response.data;
+                if (response.success) {
+                    setisLoggedIn(true);
+                } else setisLoggedIn(false);
+            })
+            .catch(() => setisLoggedIn(false));
+    }, []);
 
     if (isLoggedIn === null) {
         return (

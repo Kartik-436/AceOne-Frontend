@@ -32,3 +32,26 @@
     color: #ffbb00;
     border: 2px solid #fff;
 }
+
+/* .noScrollbar {
+    scrollbar-width: thin;
+} */
+
+.noScrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.noScrollbar::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background: transparent;
+}
+
+.noScrollbar::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #ffbb00;
+}
+
+.hideScrollBar::-webkit-scrollbar{
+    width: 0;
+    height: 0;
+}

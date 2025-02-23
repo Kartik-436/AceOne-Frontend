@@ -15,7 +15,7 @@ const Page5 = () => {
     const containerRef = useRef(null);
     const Head = useRef(null);
     const Card = useRef(null);
-    const isHeadInView = useInView(Head, { once: false, amount: 0.2 });
+    const isHeadInView = useInView(Head, { once: false, amount: 0.1 });
     const isInView = useInView(containerRef, { once: false, amount: 0.1 });
     const isCardInView = useInView(containerRef, { once: false, amount: 0.2 });
 
