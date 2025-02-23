@@ -66,7 +66,7 @@ const Cart = () => {
                             </div>
 
                             <div className='flex flex-col justify-start hideScrollBar max-h-[55vh] overflow-y-scroll'>
-                                {products.map(product => (
+                                {products.length === 0 ? <p className='text-xl font-black font-[nunito] text-black'>No items in Cart.</p> : products.map(product => (
                                     <div key={product.id} className='flex gap-15 h-[20vh] w-full px-3 py-5 border-b-[1px] border-black'>
                                         <div className='flex gap-4 h-full w-full'>
                                             <div className='border-[1px] border-black h-full w-full rounded-sm'>
@@ -115,7 +115,7 @@ const Cart = () => {
 
                             <div>
                                 <div className="flex items-center justify-between pr-4 mt-[-3.6vh]">
-                                    <span className="text-xl font-medium font-[poppins]">
+                                    <span className="text-xl text-[#1f1f1f] font-medium font-[poppins]">
                                         Subtotal
                                     </span>
                                     <span className="font-normal font-[poppins]">
@@ -135,7 +135,7 @@ const Cart = () => {
                                 </div>
 
                                 <div className="flex items-center justify-between pr-4 mt-[-4vh]">
-                                    <span className="text-2xl font-light uppercase font-[poppins]">
+                                    <span className="text-2xl font-light text-[#1f1f1f] uppercase font-[poppins]">
                                         Total
                                     </span>
                                     <span className="font-normal text-lg font-[poppins]">

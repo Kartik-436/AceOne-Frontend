@@ -15,9 +15,11 @@ import SmallStringAnimation from '../components/StringAnimations/SmallStringAnim
 import FlipLink from './../components/MenuLinks';
 import Lenis from '@studio-freight/lenis';
 import "../stylesheets/Store.css"
+import { useCart } from "./../utils/CartContext";
 
 const Store = (props) => {
     const { animate, handleDelayNavigation } = useDelayedNavigation();
+    const { isCartMenuOpen, setIsCartMenuOpen } = useCart();
     const [isLoggedIn, setisLoggedIn] = useState(null);
     const lenisRef = useRef(null);
     const productContainerRef = useRef(null);
@@ -295,7 +297,7 @@ const Store = (props) => {
                                                 perspective: "5000px",
                                             }}
                                         >
-                                            {products.map(product => (
+                                            {products.length === 0 ? <p className='text-xl font-black font-[nunito] text-black'>No items in Store.</p> : products.map(product => (
                                                 <motion.div
                                                     key={product.id}
                                                     className='bg-[#1f1f1f] rounded-xl overflow-hidden shadow-xl'
@@ -333,7 +335,9 @@ const Store = (props) => {
                                                                 )}
                                                                 <p className='text-xs mt-1 text-black opacity-80'>{product.category.replace('_', ' ')}</p>
                                                             </div>
-                                                            <button className='bg-[#1f1f1f] font-semibold text-white py-2 px-5 rounded-full text-sm AddToCartInStore'>
+                                                            <button
+                                                                onClick={() => { setIsCartMenuOpen(true) }}
+                                                                className='bg-[#1f1f1f] font-semibold text-white py-2 px-5 rounded-full text-sm AddToCartInStore'>
                                                                 Add to Cart
                                                             </button>
                                                         </div>

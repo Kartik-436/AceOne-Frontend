@@ -127,9 +127,11 @@ const Footer = () => {
                                     <h1>Contact</h1>
                                 </motion.div>
 
-                                <motion.div className='w-full px-6 py-1 bg-transparent text-white border-[1px] border-white rounded-lg'>
-                                    <h1>gargkartik503@gmail.com</h1>
-                                </motion.div>
+                                <a href="mailto:gargkartik503@gmail.com">
+                                    <motion.div className='w-full px-6 py-1 bg-transparent text-white border-[1px] border-white rounded-lg cursor-pointer'>
+                                        <h1>gargkartik503@gmail.com</h1>
+                                    </motion.div>
+                                </a>
 
                                 <motion.div className='w-full px-6 py-1 bg-transparent text-white border-[1px] border-white rounded-lg'>
                                     <h1>1234567890</h1>
@@ -170,23 +172,23 @@ const Footer = () => {
                                     <h1>Shop</h1>
                                 </motion.div>
 
-                                <motion.div className='w-full  px-6 py-1 bg-transparent text-white border-[1px] border-white rounded-lg '>
+                                <motion.div onClick={() => { handleDelayNavigation("store") }} className='w-full  px-6 py-1 bg-transparent text-white border-[1px] border-white rounded-lg cursor-pointer'>
                                     <h1>All Products</h1>
                                 </motion.div>
 
-                                <motion.div className='w-full  px-6 py-1 bg-transparent text-white border-[1px] border-white rounded-lg '>
+                                <motion.div onClick={() => { handleDelayNavigation("store") }} className='w-full  px-6 py-1 bg-transparent text-white border-[1px] border-white rounded-lg cursor-pointer'>
                                     <h1>BestSellers</h1>
                                 </motion.div>
 
-                                <motion.div className='w-full  px-6 py-1 bg-transparent text-white border-[1px] border-white rounded-lg '>
+                                <motion.div onClick={() => { handleDelayNavigation("store") }} className='w-full  px-6 py-1 bg-transparent text-white border-[1px] border-white rounded-lg cursor-pointer'>
                                     <h1>Male Collection</h1>
                                 </motion.div>
 
-                                <motion.div className='w-full  px-6 py-1 bg-transparent text-white border-[1px] border-white rounded-lg '>
+                                <motion.div onClick={() => { handleDelayNavigation("store") }} className='w-full  px-6 py-1 bg-transparent text-white border-[1px] border-white rounded-lg cursor-pointer'>
                                     <h1>Female Collection</h1>
                                 </motion.div>
 
-                                <motion.div className='w-full  px-6 py-1 bg-transparent text-white border-[1px] border-white rounded-lg '>
+                                <motion.div onClick={() => { handleDelayNavigation("store") }} className='w-full  px-6 py-1 bg-transparent text-white border-[1px] border-white rounded-lg cursor-pointer'>
                                     <h1>Kids Collection</h1>
                                 </motion.div>
 

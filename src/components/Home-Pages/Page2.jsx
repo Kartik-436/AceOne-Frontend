@@ -1,12 +1,15 @@
 /* eslint-disable no-unused-vars */
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform, stagger, useInView } from 'framer-motion';
+import Transition from '../../Transition';
+import useDelayedNavigation from '../../utils/useDelayedNavigation';
 
 const Page2 = () => {
     const containerRef = useRef(null);
     const headerRef = useRef(null);
     const productsRef = useRef(null);
     const isInView = useInView(containerRef, { once: false, amount: 0.2 });
+    const { animate, handleDelayNavigation } = useDelayedNavigation()
 
     // Slice animation variants
     const sliceVariants = {
@@ -147,50 +150,54 @@ const Page2 = () => {
     );
 
     return (
-        <div ref={containerRef} className='w-full min-h-screen bg-[#fbffef] rounded-t-xl'>
-            <div className='w-full py-[22vh] px-[2vw] flex flex-col justify-center gap-10'>
-                <motion.div
-                    ref={headerRef}
-                    className='flex items-center justify-between pr-8'
-                    initial={{ opacity: 0, x: -70 }}
-                    animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -70 }}
-                    transition={{
-                        duration: 1.1,
-                        ease: [0.16, 1, 0.3, 1]
-                    }}
-                >
-                    <h1 className='md:text-3xl text-2xl font-lighter uppercase font-[poppins] text-black'>Best sellers</h1>
-                    <motion.button
-                        id='Shp-Now-Home-Start'
-                        className='md:px-5 px-3 md:py-2 py-1 rounded-full bg-[#fff] uppercase font-mono text-black font-bold tracking-wide'
-                        whileHover={{ scale: 1.05, backgroundColor: "#f8f8f8" }}
-                        whileTap={{ scale: 0.98 }}
+        <React.Fragment>
+            <Transition animate={animate} />
+            <div ref={containerRef} className='w-full min-h-screen bg-[#fbffef] rounded-t-xl'>
+                <div className='w-full py-[22vh] px-[2vw] flex flex-col justify-center gap-10'>
+                    <motion.div
+                        ref={headerRef}
+                        className='flex items-center justify-between pr-8'
+                        initial={{ opacity: 0, x: -70 }}
+                        animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -70 }}
+                        transition={{
+                            duration: 1.1,
+                            ease: [0.16, 1, 0.3, 1]
+                        }}
                     >
-                        View All
-                    </motion.button>
-                </motion.div>
+                        <h1 className='md:text-3xl text-2xl font-lighter uppercase font-[poppins] text-black'>Best sellers</h1>
+                        <motion.button
+                            id='Shp-Now-Home-Start'
+                            className='md:px-5 px-3 md:py-2 py-1 rounded-full bg-[#fff] uppercase font-mono text-black font-bold tracking-wide'
+                            whileHover={{ scale: 1.05, backgroundColor: "#f8f8f8" }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={() => { handleDelayNavigation ("store") }}
+                        >
+                            View All
+                        </motion.button>
+                    </motion.div>
 
-                <motion.div
-                    ref={productsRef}
-                    className='flex md:flex-row flex-col w-full items-center justify-center gap-4'
-                    initial="hidden"
-                    animate={isInView ? "visible" : "hidden"}
-                    variants={{
-                        visible: {
-                            transition: {
-                                staggerChildren: 0.15,
-                                delayChildren: 0.2
+                    <motion.div
+                        ref={productsRef}
+                        className='flex md:flex-row flex-col w-full items-center justify-center gap-4'
+                        initial="hidden"
+                        animate={isInView ? "visible" : "hidden"}
+                        variants={{
+                            visible: {
+                                transition: {
+                                    staggerChildren: 0.15,
+                                    delayChildren: 0.2
+                                }
                             }
-                        }
-                    }}
-                >
-                    {productCard("BestSeller", false, 0)}
-                    {productCard("Sale", true, 1)}
-                    {productCard("BestSeller", false, 2)}
-                    {productCard("Sale", true, 3)}
-                </motion.div>
+                        }}
+                    >
+                        {productCard("BestSeller", false, 0)}
+                        {productCard("Sale", true, 1)}
+                        {productCard("BestSeller", false, 2)}
+                        {productCard("Sale", true, 3)}
+                    </motion.div>
+                </div>
             </div>
-        </div>
+        </React.Fragment>
     );
 };
 

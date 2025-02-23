@@ -7,11 +7,12 @@ import { AnimatePresence, delay, motion } from "framer-motion"; // Use framer-mo
 import FlipLink from "../MenuLinks";
 import StaggeredDropDown from './../DropDownShopMenu';
 import SmallStringAnimation from './../StringAnimations/SmallStringAnimation';
+import { useCart } from "../../utils/CartContext";
 
 const BeforeSignedInNavBar = () => {
     const { animate, handleDelayNavigation } = useDelayedNavigation();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [isCartMenuOpen, setIsCartMenuOpen] = useState(false);
+    const { isCartMenuOpen, setIsCartMenuOpen } = useCart();
 
     const [products, setProducts] = useState([
         { id: 1, name: "Classic T-Shirt", price: 499, category: "Male_Collection", imageUrl: "/api/placeholder/300/300", qty: 1 },
@@ -82,6 +83,18 @@ const BeforeSignedInNavBar = () => {
                                 animate="enter"
                                 exit="exit"
                                 initial="initial"
+                                custom={1}
+                                onClick={() => { handleDelayNavigation("cart") }}
+                                className="md:hidden inline-block"
+                            >
+                                <FlipLink size="text-7xl" color="text-[#fcf8db]" font="font-black">Cart</FlipLink>
+                            </motion.div>
+
+                            <motion.div
+                                variants={slide}
+                                animate="enter"
+                                exit="exit"
+                                initial="initial"
                                 custom={2}
                             >
                                 <StaggeredDropDown></StaggeredDropDown>
@@ -125,7 +138,7 @@ const BeforeSignedInNavBar = () => {
                             >
                                 <div>
                                     <span className="font-[poppins] font-semibold uppercase">My Cart</span>
-                                    <span className="font-[poppins] font-light uppercase">(1 item)</span>
+                                    <span className="font-[poppins] font-light uppercase">({products.length} {products.length > 1 ? "items" : "item" })</span>
                                 </div>
 
                                 <div className="w-full items-center justify-center flex">
@@ -140,7 +153,7 @@ const BeforeSignedInNavBar = () => {
                                     custom={1}
                                     className="max-h-[52vh] overflow-y-scroll flex flex-col gap-10 justify-start noScrollbar"
                                 >
-                                    {products.map(product => (
+                                    {products.length === 0 ? <p className='text-xl font-semibold font-[nunito] text-black'>No items in Cart.</p> : products.map(product => (
                                         <div key={product.id} className="border-b-[1px] border-[#1f1f1f60] py-4">
                                             <div className="flex gap-2 w-full h-full">
                                                 <div className="w-[30%] h-[75%] border-[1px] border-black rounded-md">

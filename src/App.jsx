@@ -13,6 +13,7 @@ import Store from "./pages/Store";
 import About from "./pages/About";
 import Wishlist from "./pages/Wishlist";
 import Cart from "./pages/Cart";
+import { CartProvider } from "./utils/CartContext";
 
 const PageTransition = ({ children }) => {
     const containerRef = useRef(null);
@@ -61,7 +62,9 @@ function AnimatedRoutes() {
 
 const App = () => {
     return (
-        <AnimatedRoutes />
+        <CartProvider>
+            <AnimatedRoutes />
+        </CartProvider>
     );
 };
 
