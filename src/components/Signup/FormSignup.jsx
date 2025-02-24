@@ -1,48 +1,34 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import for navigation
-import "../../stylesheets/Signup.css";
-import { Link } from 'react-router-dom';
-import Transition from '../../Transition';
-import { motion } from 'motion/react'
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { signupSchema } from "../../utils/Validation";
 import useDelayedNavigation from './../../utils/useDelayedNavigation';
+import { useAuth } from "../../utils/AuthContext";
+import Transition from '../../Transition';
+import { registerUser } from './../../utils/AuthService';
+import "../../stylesheets/Signup.css"
 
 const FormSignup = () => {
     const [isTyping, setIsTyping] = useState(false);
-    const [formData, setFormData] = useState({ email: "", password: "", fullName: "", contact: Number, dateOfBirth: Date });
     const [error, setError] = useState("");
-    const navigate = useNavigate(); // Initialize useNavigate
-
     const { animate, handleDelayNavigation } = useDelayedNavigation();
+    const { LoginUser } = useAuth();
 
-    const handleInputChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
+    const { register, handleSubmit, formState: { errors } } = useForm({
+        resolver: yupResolver(signupSchema),
+    });
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const onSubmit = async (data) => {
         setError("");
 
-        try {
-            const response = await fetch("http://localhost:3000/user/register", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData),
-            });
+        const result = await registerUser(data);
 
-            if (!response.ok) {
-                throw new Error("Failed to register. Please check your details.");
-            }
-
-            const data = await response.json();
-
-            if (data.success) {
-                navigate("/Home")
-            } else {
-                setError(data.message || "Invalid credentials!");
-            }
-        } catch (err) {
-            setError(err.message || "Something went wrong. Please try again.");
+        if (result.success) {
+            LoginUser(result.user);
+            handleDelayNavigation("Home");
+        } else {
+            setError(result.message);
         }
     };
 
@@ -61,7 +47,8 @@ const FormSignup = () => {
 
                 <div className='w-screen flex items-center justify-center h-screen overflow-hidden'>
                     {/* <Link to="/login"> */}
-                    <button id='Login-Instead-SignUp-Route'
+                    <button
+                        id='Login-Instead-SignUp-Route'
                         className='inline-block text-nowrap md:px-7 md:py-4 cursor-pointer bg-[#1f1f1f] md:bg-transparent text-white text-xl font-bold rounded-full md:min-w-[13vw] absolute md:right-10 right-2 top-6 md:top-10 font-[poppins] py-3 px-5'
                         onClick={() => handleDelayNavigation("login")}
                     >
@@ -75,29 +62,29 @@ const FormSignup = () => {
                                 <h5 className='md:text-[0.9vw] text-sm md:-mt-3 capitalize font-[poppins] text-black text-center'>Register to start buying</h5>
                             </div>
                             <div>
-                                <form onSubmit={handleSubmit} className='flex flex-col gap-7 items-center text-black'>
-                                    <div className='flex flex-col gap-2 md:gap-5 items-center text-black'>
+                                <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-3 items-center text-black'>
+                                    <div className='flex flex-col gap-2 md:gap-3 items-center text-black'>
                                         <input
                                             className='fullName-with-icon inline-block px-6 py-4 text-lg bg-[#F0EDFF] rounded-full font-semibold font-[nunito] outline-none min-w-[30vw]'
                                             type="text"
                                             placeholder='Full Name'
                                             name='fullName'
-                                            value={formData.fullName}
-                                            onChange={handleInputChange}
+                                            {...register("fullName")}
                                             required
                                             autoComplete="off"
                                         />
+                                        <p className='text-red-500 tracking-tighter md:tracking-normal text-xs md:text-sm md:-mt-3 text-wrap md:max-w-[40vw]'>{errors.fullName?.message}</p>
 
                                         <input
                                             className='email-with-icon inline-block px-6 py-4 text-lg bg-[#F0EDFF] rounded-full font-semibold font-[nunito] outline-none min-w-[30vw]'
                                             type="email"
                                             placeholder='Email'
                                             name='email'
-                                            value={formData.email}
-                                            onChange={handleInputChange}
+                                            {...register("email")}
                                             required
                                             autoComplete="off"
                                         />
+                                        <p className='text-red-500 tracking-tighter md:tracking-normal text-xs md:text-sm md:-mt-3 text-wrap md:max-w-[40vw]'>{errors.email?.message}</p>
 
                                         <input
                                             id='InputLoginPassword'
@@ -105,13 +92,12 @@ const FormSignup = () => {
                                             type="password"
                                             placeholder='Password'
                                             name='password'
-                                            value={formData.password}
-                                            onChange={handleInputChange}
+                                            {...register("password")}
                                             onFocus={() => setIsTyping(true)}
                                             onBlur={(e) => !e.target.value && setIsTyping(false)}
                                             required
                                         />
-
+                                        <p className='text-red-500 tracking-tighter md:tracking-normal text-xs md:text-sm md:-mt-3 text-wrap md:max-w-[40vw]'>{errors.password?.message}</p>
                                         {isTyping && (
                                             <p id='PassWarn' className='text-red-500 tracking-tighter md:tracking-normal text-xs md:text-sm md:-mt-3 text-wrap md:max-w-[40vw]'>
                                                 The password should contain at least 1 uppercase, 1 lowercase, 1 number, and 1 special character!
@@ -125,24 +111,24 @@ const FormSignup = () => {
                                             name='contact'
                                             pattern='[0-9]{10}'
                                             maxLength={10}
-                                            value={formData.contact}
-                                            onChange={handleInputChange}
+                                            {...register("contact")}
                                             required
                                             autoComplete="off"
                                         />
+                                        <p className='text-red-500 tracking-tighter md:tracking-normal text-xs md:text-sm md:-mt-3 text-wrap md:max-w-[40vw]'>{errors.contact?.message}</p>
 
                                         <input
                                             className='dateOfBirth-with-icon inline-block px-6 py-4 text-lg bg-[#F0EDFF] rounded-full font-semibold font-[nunito] outline-none md:min-w-[30vw] w-full'
                                             type='date'
                                             placeholder='Date Of Birth'
                                             name='dateOfBirth'
-                                            value={formData.dateOfBirth}
-                                            onChange={handleInputChange}
+                                            {...register("dateOfBirth")}
                                             required
                                             autoComplete="off"
                                         />
+                                        <p className='text-red-500 tracking-tighter md:tracking-normal text-xs md:text-sm md:-mt-3 text-wrap md:max-w-[40vw]'>{errors.dateOfBirth?.message}</p>
 
-                                        {error && <p className="text-red-500 text-sm">{error}</p>}
+                                        {error && <p className='text-red-500 tracking-tighter md:tracking-normal text-xs md:text-sm md:-mt-3 text-wrap md:max-w-[40vw]'>{error}</p>}
                                     </div>
                                     <div className='flex items-center justify-center'>
                                         <input

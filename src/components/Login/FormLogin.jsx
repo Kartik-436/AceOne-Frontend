@@ -1,47 +1,34 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import for redirection
-import "../../stylesheets/Login.css";
-import Transition from '../../Transition';
-import { motion } from 'motion/react';
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { loginSchema } from "../../utils/Validation";
 import useDelayedNavigation from './../../utils/useDelayedNavigation';
+import { useAuth } from "../../utils/AuthContext";
+import Transition from '../../Transition';
+import { loginUser } from './../../utils/AuthService';
+import "../../stylesheets/Login.css"
 
 const FormLogin = () => {
     const [isTyping, setIsTyping] = useState(false);
-    const [formData, setFormData] = useState({ email: "", password: "" });
     const [error, setError] = useState("");
-    const navigate = useNavigate();
-
     const { animate, handleDelayNavigation } = useDelayedNavigation();
+    const { LoginUser } = useAuth();
 
-    const handleInputChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
+    const { register, handleSubmit, formState: { errors } } = useForm({
+        resolver: yupResolver(loginSchema),
+    });
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const onSubmit = async (data) => {
         setError("");
 
-        try {
-            const response = await fetch("http://localhost:3000/user/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData),
-            });
+        const result = await loginUser(data);
 
-            if (!response.ok) {
-                throw new Error("Failed to login. Please check your credentials.");
-            }
-
-            const data = await response.json();
-
-            if (data.success) {
-                navigate("/Home");
-            } else {
-                setError(data.message || "Invalid credentials!");
-            }
-        } catch (err) {
-            setError(err.message || "Something went wrong. Please try again.");
+        if (result.success) {
+            LoginUser(result.user);
+            handleDelayNavigation("Home");
+        } else {
+            setError(result.message);
         }
     };
 
@@ -77,18 +64,20 @@ const FormLogin = () => {
                                 <h5 className='md:text-[0.9vw] text-sm md:-mt-3 capitalize font-[poppins] text-black text-center'>login to start buying</h5>
                             </div>
                             <div>
-                                <form onSubmit={handleSubmit} className='flex flex-col gap-7 items-center text-black'>
+                                <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-7 items-center text-black'>
                                     <div className='flex flex-col gap-3 md:gap-5 items-center text-black'>
                                         <input
                                             className='email-with-icon inline-block px-6 py-4 text-lg bg-[#F0EDFF] rounded-full font-semibold font-[nunito] outline-none min-w-[30vw]'
                                             type="email"
                                             placeholder='Email'
                                             name='email'
-                                            value={formData.email}
-                                            onChange={handleInputChange}
+                                            {...register("email")}
                                             required
                                             autoComplete="off"
                                         />
+                                        <p id='PassWarn' className='text-red-500 md:tracking-normal tracking-tighter text-xs md:text-sm md:-mt-3 text-wrap md:max-w-[40vw] max-w-[80%]'>
+                                            {errors.email?.message}
+                                        </p>
 
                                         <input
                                             id='InputLoginPassword'
@@ -96,12 +85,14 @@ const FormLogin = () => {
                                             type="password"
                                             placeholder='Password'
                                             name='password'
-                                            value={formData.password}
-                                            onChange={handleInputChange}
+                                            {...register("password")}
                                             onFocus={() => setIsTyping(true)}
                                             onBlur={(e) => setIsTyping(false)}
                                             required
                                         />
+                                        <p id='PassWarn' className='text-red-500 md:tracking-normal tracking-tighter text-xs md:text-sm md:-mt-3 text-wrap md:max-w-[40vw] max-w-[80%]'>
+                                            {errors.password?.message}
+                                        </p>
 
                                         {isTyping && (
                                             <p id='PassWarn' className='text-red-500 md:tracking-normal tracking-tighter text-xs md:text-sm md:-mt-3 text-wrap md:max-w-[40vw] max-w-[80%]'>

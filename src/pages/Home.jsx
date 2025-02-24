@@ -13,13 +13,13 @@ import Page3 from './../components/Home-Pages/Page3';
 import HalfHome from '../components/Home-Pages/HalfHome1';
 import HalfHome2 from '../components/Home-Pages/HalfHome2';
 import Footer from './../components/Footer/Footer';
+import useAuthStatus from '../utils/IsLoggedInChecker';
 
 const Home = () => {
     const { animate, handleDelayNavigation } = useDelayedNavigation();
-    const [isLoggedIn, setisLoggedIn] = useState(null);
 
     useEffect(() => {
-        
+
         const lenis = new Lenis({
             duration: 1.8,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -35,7 +35,7 @@ const Home = () => {
                 lenis.raf(time * 1000);
             });
         } else {
-            
+
             function raf(time) {
                 lenis.raf(time);
                 requestAnimationFrame(raf);
@@ -43,9 +43,9 @@ const Home = () => {
             requestAnimationFrame(raf);
         }
 
-        
+
         lenis.on('scroll', ({ scroll, limit, velocity, direction, progress }) => {
-            
+
         });
 
         return () => {
@@ -56,18 +56,9 @@ const Home = () => {
         };
     }, []);
 
-    useEffect(() => {
-        axios.get('/api/user/profile', { withCredentials: true })
-            .then(response => {
-                const user = response.data;
-                if (response.success) {
-                    setisLoggedIn(true);
-                } else setisLoggedIn(false);
-            })
-            .catch(() => setisLoggedIn(false)); // Make it Null in finalization
-    }, []);
+    const { isLoggedIn, loading } = useAuthStatus();
 
-    if (isLoggedIn === null) {
+    if (loading) {
         return (
             <div className='h-screen w-screen bg-[#fbffef] flex items-center justify-center'>
                 <BarLoader />

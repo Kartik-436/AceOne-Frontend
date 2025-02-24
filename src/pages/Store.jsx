@@ -16,11 +16,13 @@ import FlipLink from './../components/MenuLinks';
 import Lenis from '@studio-freight/lenis';
 import "../stylesheets/Store.css"
 import { useCart } from "./../utils/CartContext";
+import useAuthStatus from '../utils/IsLoggedInChecker';
+import { getAllProducts, getDiscountedProducts } from '../utils/ProductService';
+import { addToCart } from '../utils/CartService';
 
 const Store = (props) => {
     const { animate, handleDelayNavigation } = useDelayedNavigation();
     const { isCartMenuOpen, setIsCartMenuOpen } = useCart();
-    const [isLoggedIn, setisLoggedIn] = useState(null);
     const lenisRef = useRef(null);
     const productContainerRef = useRef(null);
 
@@ -30,18 +32,69 @@ const Store = (props) => {
     const scrollDirection = useRef(0); // 1 for down, -1 for up
     const skewX = useSpring(0, { stiffness: 500, damping: 90 });
 
-    // Sample product data
-    const [products, setProducts] = useState([
-        { id: 1, name: "Classic T-Shirt", price: 499, category: "Male_Collection", imageUrl: "/api/placeholder/300/300" },
-        { id: 2, name: "Summer Dress", price: 899, category: "Female_Collection", imageUrl: "/api/placeholder/300/300" },
-        { id: 3, name: "Kids Hoodie", price: 599, category: "Kids_Collection", imageUrl: "/api/placeholder/300/300" },
-        { id: 4, name: "Denim Jeans", price: 1299, category: "Male_Collection", imageUrl: "/api/placeholder/300/300" },
-        { id: 5, name: "Floral Blouse", price: 799, category: "Female_Collection", imageUrl: "/api/placeholder/300/300" },
-        { id: 6, name: "Sport Shoes", price: 1599, category: "Male_Collection", imageUrl: "/api/placeholder/300/300" },
-        { id: 7, name: "Winter Jacket", price: 1899, discount: true, discountPrice: 1499, category: "Male_Collection", imageUrl: "/api/placeholder/300/300" },
-        { id: 8, name: "Summer Shorts", price: 499, discount: true, discountPrice: 399, category: "Kids_Collection", imageUrl: "/api/placeholder/300/300" },
-        { id: 9, name: "Casual Dress", price: 999, category: "Female_Collection", imageUrl: "/api/placeholder/300/300" },
-    ]);
+    const [selectedCategory, setSelectedCategory] = useState("All_Products");
+    const [priceRange, setPriceRange] = useState([200, 2000]);
+    const [products, setProducts] = useState([]);
+    const [storeloading, setStoreLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    // Function to fetch products based on selected filters
+    const fetchProducts = async () => {
+        setStoreLoading(true);
+
+        const filters = {
+            minPrice: priceRange[0],
+            maxPrice: priceRange[1]
+        };
+
+        let response;
+        if (selectedCategory === "All_Products") {
+            response = await getAllProducts(filters);
+        } else if (selectedCategory === "Discounted") {
+            response = await getDiscountedProducts();
+            console.log(response)
+        } else {
+            response = await getAllProducts({ category: selectedCategory, ...filters });
+        }
+
+        if (response.success) {
+            setProducts(response.products);
+        } else {
+            console.error(response.message);
+        }
+        setStoreLoading(false);
+    };
+
+    // Fetch products when category or price changes
+    useEffect(() => {
+        fetchProducts();
+    }, [selectedCategory, priceRange]);
+
+    // Handle Category Change
+    const handleCategoryChange = (category) => {
+        setSelectedCategory(category);
+    };
+
+    // Handle Price Change
+    const handlePriceChange = (e) => {
+        const newValue = Number(e.target.value);
+        setPriceRange([priceRange[0], newValue]);
+    };
+
+    const handleAddToCart = async (productId) => {
+        setIsCartMenuOpen(false); // Close cart menu before request
+        setStoreLoading(true); // Show loading indicator
+
+        const response = await addToCart(productId, 1);
+
+        if (response.success) {
+            window.location.reload();
+        } else {
+            setError(response.message);
+        }
+
+        setStoreLoading(false);
+    };
 
     const isMobile = window.innerWidth <= 768;
 
@@ -54,12 +107,12 @@ const Store = (props) => {
             gestureDirection: 'vertical',
             smooth: true,
             smoothTouch: true,
-            touchMultiplier: isMobile ? 0.3 : 1,
+            touchMultiplier: isMobile ? 0.3 : 1.5,
             // Track scroll for skew effect
             wrapper: window,
             content: document.documentElement,
-            lerp: isMobile ? 0.05 : 0.1,
-            wheelMultiplier: isMobile ? 0.5 : 1,
+            lerp: isMobile ? 0.05 : 0.15,
+            wheelMultiplier: isMobile ? 0.5 : 1.2,
             syncTouch: false,
         });
 
@@ -170,19 +223,9 @@ const Store = (props) => {
         }
     };
 
+    const { isLoggedIn, loading } = useAuthStatus();
 
-    useEffect(() => {
-        axios.get('/api/user/profile', { withCredentials: true })
-            .then(response => {
-                const user = response.data;
-                if (response.success) {
-                    setisLoggedIn(true);
-                } else setisLoggedIn(false);
-            })
-            .catch(() => setisLoggedIn(false));
-    }, []);
-
-    if (isLoggedIn === null) {
+    if (loading) {
         return (
             <div className='h-screen w-screen bg-[#fbffef] flex items-center justify-center'>
                 <BarLoader />
@@ -199,7 +242,7 @@ const Store = (props) => {
                             {isLoggedIn ? <AfterSignedInNavBar /> : <BeforeSignedInNavBar />}
 
                             <div className='min-h-screen w-full text-white mt-[10.6svh] bg-[#fbffef] flex'>
-                                <div className='min-h-full w-[25vw] bg-[#f1f5e5] relative hidden md:flex flex-col gap-10'>
+                                <div className='min-h-full w-[25vw] bg-[#fbffef] relative hidden md:flex flex-col gap-10'>
                                     <div className='pl-10 pt-7'>
                                         <h1 className='text-[1.83vw] font-light text-black font-[poppins]'>
                                             All Products <i className="ri-arrow-right-long-line"></i>
@@ -214,25 +257,17 @@ const Store = (props) => {
                                                 <SmallStringAnimation />
                                             </div>
                                             <div className='w-full pl-5 flex flex-col items-start gap-2'>
-                                                <div>
-                                                    <FlipLink size="text-[1.2vw]" color="text-[#111]" font="font-light font-mono">All_Products</FlipLink>
-                                                </div>
-
-                                                <div>
-                                                    <FlipLink size="text-[1.2vw]" color="text-[#111]" font="font-light font-mono">Discounted</FlipLink>
-                                                </div>
-
-                                                <div>
-                                                    <FlipLink size="text-[1.2vw]" color="text-[#111]" font="font-light font-mono">Male_Collection</FlipLink>
-                                                </div>
-
-                                                <div>
-                                                    <FlipLink size="text-[1.2vw]" color="text-[#111]" font="font-light font-mono">Female_Collection</FlipLink>
-                                                </div>
-
-                                                <div>
-                                                    <FlipLink size="text-[1.2vw]" color="text-[#111]" font="font-light font-mono">Kids_Collection</FlipLink>
-                                                </div>
+                                                {["All_Products", "Discounted", "Men", "Women", "Kids"].map((category) => (
+                                                    <div key={category} onClick={() => handleCategoryChange(category)}>
+                                                        <FlipLink
+                                                            size="text-[1.2vw]"
+                                                            color={selectedCategory === category ? "text-[#ffbb00]" : "text-[#111]"}
+                                                            font="font-light font-mono"
+                                                        >
+                                                            {category}
+                                                        </FlipLink>
+                                                    </div>
+                                                ))}
                                             </div>
                                         </div>
 
@@ -254,17 +289,16 @@ const Store = (props) => {
                                                             ref={rangeRef}
                                                             className="w-full appearance-none h-2 bg-gray-300 rounded-lg outline-none transition-all"
                                                             type="range"
-                                                            min="0"
-                                                            max="100"
-                                                            value={value}
-                                                            onChange={(e) => setValue(e.target.value)}
+                                                            min="200"
+                                                            max="2000"
+                                                            value={priceRange[1]}
+                                                            onChange={handlePriceChange}
                                                             name="range"
                                                             id="PriceRange"
-                                                            data-lenis-prevent
                                                         />
-                                                        <div className='flex w-full items-center justify-between'>
-                                                            <h1 className='text-[1.1vw] font-light text-black font-mono'>200</h1>
-                                                            <h1 className='text-[1.1vw] font-light text-black font-mono'>2000</h1>
+                                                        <div className="flex w-full items-center justify-between">
+                                                            <h1 className="text-[1.1vw] font-light text-black font-mono">{priceRange[0]}</h1>
+                                                            <h1 className="text-[1.1vw] font-light text-black font-mono">{priceRange[1]}</h1>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -280,9 +314,11 @@ const Store = (props) => {
                                 <div className='min-h-full w-full bg-[#fbffef] text-black p-8'>
                                     {/* Product Grid Section */}
                                     <div className='w-full'>
-                                        <div className='mb-8'>
-                                            <h2 className='text-3xl font-light text-black font-[poppins]'>Featured Products</h2>
-                                            <div className='w-24 h-0.5 bg-black mt-2'></div>
+                                        <div>
+                                            <div className='mb-8'>
+                                                <h2 className='text-3xl font-light text-black font-[poppins]'>Featured Products</h2>
+                                                <div className='w-24 h-0.5 bg-black mt-2'></div>
+                                            </div>
                                         </div>
 
                                         {/* Product Grid - 3 items per row */}
@@ -299,8 +335,9 @@ const Store = (props) => {
                                         >
                                             {products.length === 0 ? <p className='text-xl font-black font-[nunito] text-black'>No items in Store.</p> : products.map(product => (
                                                 <motion.div
-                                                    key={product.id}
-                                                    className='bg-[#1f1f1f] rounded-xl overflow-hidden shadow-xl'
+                                                    key={product._id}
+                                                    data-key={product._id}
+                                                    className='bg-[#1f1f1f] rounded-xl overflow-hidden shadow-xl flex flex-col justify-between'
                                                     variants={productCardVariants}
                                                     whileHover={{
                                                         scale: 1.05,
@@ -310,9 +347,9 @@ const Store = (props) => {
                                                 >
                                                     <div className='relative'>
                                                         <img
-                                                            src={product.imageUrl}
+                                                            src={product.image}
                                                             alt={product.name}
-                                                            className='w-full h-64 object-cover'
+                                                            className='w-full h-64 object-cover text-white'
                                                         />
                                                         {product.discount && (
                                                             <div className='absolute top-2 right-2 bg-[#ffbb00] text-white px-2 py-0.5 rounded-full font-medium font-[poppins] uppercase text-sm'>
@@ -327,16 +364,18 @@ const Store = (props) => {
                                                             <div>
                                                                 {product.discount ? (
                                                                     <div className='flex items-center gap-2'>
-                                                                        <span className='text-lg font-bold'>₹{product.discountPrice}</span>
+                                                                        <span className='text-lg font-bold'>₹{Math.round(product.discountPrice)}</span>
                                                                         <span className='text-sm line-through opacity-70'>₹{product.price}</span>
                                                                     </div>
                                                                 ) : (
                                                                     <span className='text-lg font-bold'>₹{product.price}</span>
                                                                 )}
-                                                                <p className='text-xs mt-1 text-black opacity-80'>{product.category.replace('_', ' ')}</p>
+                                                                <p className='text-xs mt-1 text-black opacity-80'>{product.category}</p>
                                                             </div>
                                                             <button
-                                                                onClick={() => { setIsCartMenuOpen(true) }}
+                                                                onClick={() => {
+                                                                    handleAddToCart(product._id);
+                                                                }}
                                                                 className='bg-[#1f1f1f] font-semibold text-white py-2 px-5 rounded-full text-sm AddToCartInStore'>
                                                                 Add to Cart
                                                             </button>

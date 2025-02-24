@@ -14,6 +14,8 @@ import About from "./pages/About";
 import Wishlist from "./pages/Wishlist";
 import Cart from "./pages/Cart";
 import { CartProvider } from "./utils/CartContext";
+import { AuthProvider } from "./utils/AuthContext";
+import OwnerProfile from "./pages/OwnerProfile";
 
 const PageTransition = ({ children }) => {
     const containerRef = useRef(null);
@@ -49,6 +51,7 @@ function AnimatedRoutes() {
                 <Route path="/register" element={<SignUp />} />
                 <Route path="/login" element={<LogIn />} />
                 <Route path="/ownerLogin" element={<OwnerLogin />} />
+                <Route path="/ownerProfile" element={<OwnerProfile />} />
 
                 <Route path="/store" element={<Store />} />
                 <Route path="/cart" element={<Cart />} />
@@ -62,9 +65,11 @@ function AnimatedRoutes() {
 
 const App = () => {
     return (
-        <CartProvider>
-            <AnimatedRoutes />
-        </CartProvider>
+        <AuthProvider>
+            <CartProvider>
+                <AnimatedRoutes />
+            </CartProvider>
+        </AuthProvider>
     );
 };
 
