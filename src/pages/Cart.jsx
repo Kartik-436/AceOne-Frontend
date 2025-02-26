@@ -99,34 +99,34 @@ const Cart = () => {
     } else {
         return (
             <React.Fragment>
-                <AnimatePresence mode='wait'>
+                <AnimatePresence mode='sync'>
                     <Transition animate={animate} />
                     {isLoggedIn ? <AfterSignedInNavBar /> : <BeforeSignedInNavBar />}
 
-                    <div className='flex flex-col md:flex-row items-start justify-center w-full min-h-screen px-[20vw] pt-[25vh] py-[20vh] gap-10 bg-[#fbffef]'>
-                        <div className='w-[65%] h-full flex flex-col'>
-                            <div>
-                                <div className='w-full flex items-center justify-between'>
-                                    <div className='text-xl font-[poppins] scale-y-110 text-black mb-5 font-light'>My Cart</div>
-                                    <div onClick={refreshCart} className='cursor-pointer'><i className="ri-restart-line text-2xl font-[poppins] scale-y-110 text-black mb-5 font-light cursor-pointer"></i></div>
+                    <div className='flex flex-col md:flex-row items-start justify-center w-full px-5 md:px-[20vw] md:pt-[25vh] py-[10vh] pt-[15vh] md:py-[20vh] gap-16 md:gap-10 bg-[#fbffef]'>
+                        <div className='md:w-[65%] w-full h-full flex gap-2 flex-col'>
+                            <div className='flex flex-col items-center justify-center'>
+                                <div className='w-full h-full flex items-center justify-between mb-5'>
+                                    <div className='text-xl font-[poppins] scale-y-110 text-black font-light'>My Cart</div>
+                                    <div onClick={refreshCart} className='cursor-pointer'><i className="ri-restart-line text-2xl font-[poppins] scale-y-110 text-black font-light cursor-pointer"></i></div>
                                 </div>
-                                <hr className='w-full h-2' />
+                                <hr className='w-full h-[1px]' />
                             </div>
 
-                            <div className='flex flex-col justify-start hideScrollBar max-h-[55vh] overflow-y-scroll'>
+                            <div className='flex flex-col md:justify-start md:gap-0 gap-5 hideScrollBar max-h-[55vh] overflow-y-scroll'>
                                 {loadingCart &&
                                     <div className='h-full w-full flex items-center justify-center'>
                                         <BarLoader />
                                     </div>
                                 }
                                 {products.length === 0 ? <p className='text-xl font-black font-[nunito] text-black'>No items in Cart.</p> : products.map(product => (
-                                    <div key={product.productId._id} data-key={product.productId._id} className='flex gap-15 h-[20vh] w-full px-3 py-5 border-b-[1px] border-black'>
-                                        <div className='flex gap-4 h-full w-full'>
+                                    <div key={product.productId._id} data-key={product.productId._id} className='flex gap-3 md:gap-15 h-[20vh] w-full px-3 py-5 border-b-[1px] border-black'>
+                                        <div className='flex gap-2 md:gap-4 h-full w-full'>
                                             <div className='border-[1px] border-black h-full w-full rounded-sm'>
-                                                <img src={product.productId.imageUrl} className='h-full w-full object-cover' alt="ProductPic" />
+                                                <img src={product.productId.image !== "" ? product.productId.image : null} className='h-full w-full object-cover' alt={product.productId.name} />
                                             </div>
-                                            <div className='flex flex-col gap-2'>
-                                                <h1 className='text-xl font-[poppins] font-normal max-w-[10vw] text-wrap'>{product.productId.name}</h1>
+                                            <div className='flex flex-col justify-between gap-2'>
+                                                <h1 className='text-xl font-[poppins] font-normal md:max-w-[10vw] text-wrap'>{product.productId.name}</h1>
                                                 {product.productId.discount ? (
                                                     <div className="flex gap-1.5 items-center">
                                                         <span className="text-black font-normal text-sm font-[poppins]">₹{Math.round(product.productId.discountPrice)}</span>
@@ -138,8 +138,8 @@ const Cart = () => {
                                             </div>
                                         </div>
 
-                                        <div className='flex justify-around w-full'>
-                                            <div className="flex items-center border-[1px] border-black rounded-md gap-3 px-2 py-0.5 h-[4vh]">
+                                        <div className='flex md:flex-row flex-col justify-around w-fit md:w-full'>
+                                            <div className="flex items-center border-[1px] border-black rounded-md gap-1 md:gap-3 px-2 py-0.5 h-[4vh]">
 
                                                 <button
                                                     disabled={product.quantity <= 1}
@@ -172,16 +172,17 @@ const Cart = () => {
                             </div>
                         </div>
 
-                        <div className='w-[35%] flex flex-col gap-5'>
+                        <div className='md:w-[35%] w-full flex flex-col gap-5'>
                             <div>
                                 <div className='text-xl font-[poppins] scale-y-110 text-black mb-[2vh] font-light'>Order Summary</div>
-                                <div className='mt-[-6vh]'>
+                                <div className='mt-[-6vh] md:block hidden'>
                                     <SmallStringAnimation />
                                 </div>
+                                <hr className='w-full h-[1px] bg-black md:hidden' />
                             </div>
 
                             <div>
-                                <div className="flex items-center justify-between pr-4 mt-[-3.6vh]">
+                                <div className="flex items-center justify-between pr-4 md:mt-[-3.6vh]">
                                     <span className="text-xl text-[#1f1f1f] font-medium font-[poppins]">
                                         Subtotal
                                     </span>
@@ -196,12 +197,13 @@ const Cart = () => {
                                             Estimate Delivery
                                         </span>
                                     </div>
-                                    <div>
+                                    <div className='md:block hidden'>
                                         <SmallStringAnimation />
                                     </div>
+                                    <hr className='w-full h-[1px] bg-black md:hidden' />
                                 </div>
 
-                                <div className="flex items-center justify-between pr-4 mt-[-4vh]">
+                                <div className="flex items-center mt-5 justify-between pr-4 md:mt-[-4vh]">
                                     <span className="text-2xl font-light text-[#1f1f1f] uppercase font-[poppins]">
                                         Total
                                     </span>

@@ -34,7 +34,6 @@ export const AuthProvider = ({ children }) => {
     };
 
     const logout = async () => {
-        await axios.post("/api/logout", {}, { withCredentials: true });
         setUser(null);
         setOwner(null);
         localStorage.removeItem("user");

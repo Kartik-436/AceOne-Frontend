@@ -93,7 +93,7 @@ const Page4 = () => {
                                             {title}
                                         </motion.button>
                                     </div>
-                                    <img src="" alt="" />
+                                    <img src={null} alt="collections" />
                                 </motion.div>
                             </motion.div>
                         ))}

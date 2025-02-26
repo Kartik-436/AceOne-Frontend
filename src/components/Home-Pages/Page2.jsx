@@ -123,7 +123,7 @@ const Page2 = () => {
                 >
                     {tag}
                 </motion.div>
-                <img src="" alt="" />
+                <img src={null} alt="bestsellers" />
             </motion.div>
 
             <motion.div
@@ -170,7 +170,7 @@ const Page2 = () => {
                             className='md:px-5 px-3 md:py-2 py-1 rounded-full bg-[#fff] uppercase font-mono text-black font-bold tracking-wide'
                             whileHover={{ scale: 1.05, backgroundColor: "#f8f8f8" }}
                             whileTap={{ scale: 0.98 }}
-                            onClick={() => { handleDelayNavigation ("store") }}
+                            onClick={() => { handleDelayNavigation("store") }}
                         >
                             View All
                         </motion.button>

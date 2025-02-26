@@ -333,7 +333,12 @@ const Store = (props) => {
                                                 perspective: "5000px",
                                             }}
                                         >
-                                            {products.length === 0 ? <p className='text-xl font-black font-[nunito] text-black'>No items in Store.</p> : products.map(product => (
+                                            {storeloading &&
+                                                <div className='w-full h-full flex items-center justify-center'>
+                                                    <BarLoader />
+                                                </div>
+                                            }
+                                            {!storeloading && products.length === 0 ? <p className='text-xl font-black font-[nunito] text-black'>No items in Store.</p> : products.map(product => (
                                                 <motion.div
                                                     key={product._id}
                                                     data-key={product._id}
@@ -347,7 +352,7 @@ const Store = (props) => {
                                                 >
                                                     <div className='relative'>
                                                         <img
-                                                            src={product.image}
+                                                            src={product.image !== "" ? product.image : null}
                                                             alt={product.name}
                                                             className='w-full h-64 object-cover text-white'
                                                         />
@@ -372,13 +377,18 @@ const Store = (props) => {
                                                                 )}
                                                                 <p className='text-xs mt-1 text-black opacity-80'>{product.category}</p>
                                                             </div>
-                                                            <button
-                                                                onClick={() => {
-                                                                    handleAddToCart(product._id);
-                                                                }}
-                                                                className='bg-[#1f1f1f] font-semibold text-white py-2 px-5 rounded-full text-sm AddToCartInStore'>
-                                                                Add to Cart
-                                                            </button>
+                                                            <div className='flex items-center justify-center gap-2'>
+                                                                <button
+                                                                    onClick={() => {
+                                                                        handleAddToCart(product._id);
+                                                                    }}
+                                                                    className='bg-[#1f1f1f] font-semibold text-white py-2 px-5 rounded-full text-sm AddToCartInStore'>
+                                                                    Add to Cart
+                                                                </button>
+                                                                <span>
+                                                                    <i className="ri-heart-line text-3xl text-black cursor-pointer"></i>
+                                                                </span>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </motion.div>

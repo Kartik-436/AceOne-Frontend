@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Transition from "../../Transition";
 import useDelayedNavigation from "../../utils/useDelayedNavigation";
 import "../../stylesheets/NavBars.css";
@@ -8,26 +8,80 @@ import FlipLink from "../MenuLinks";
 import StaggeredDropDown from './../DropDownShopMenu';
 import SmallStringAnimation from './../StringAnimations/SmallStringAnimation';
 import { useCart } from "../../utils/CartContext";
+import { getUserCart, removeFromCart, updateCartQuantity } from "../../utils/CartService";
+import BarLoader from "../Loaders/CustomLoader1";
 
-const AfterSignedInNavBar = () => {
+const BeforeSignedInNavBar = () => {
     const { animate, handleDelayNavigation } = useDelayedNavigation();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { isCartMenuOpen, setIsCartMenuOpen } = useCart();
 
-    const [products, setProducts] = useState([
-        { id: 1, name: "Classic T-Shirt", price: 499, category: "Male_Collection", imageUrl: "/api/placeholder/300/300", qty: 1 },
-        { id: 2, name: "Summer Dress", price: 899, category: "Female_Collection", imageUrl: "/api/placeholder/300/300", qty: 4 },
-        { id: 3, name: "Kids Hoodie", price: 599, category: "Kids_Collection", imageUrl: "/api/placeholder/300/300", qty: 1 },
-        { id: 4, name: "Denim Jeans", price: 1299, category: "Male_Collection", imageUrl: "/api/placeholder/300/300", qty: 1 },
-        { id: 5, name: "Floral Blouse", price: 799, category: "Female_Collection", imageUrl: "/api/placeholder/300/300", qty: 2 },
-        { id: 6, name: "Sport Shoes", price: 1599, category: "Male_Collection", imageUrl: "/api/placeholder/300/300", qty: 1 },
-        { id: 7, name: "Winter Jacket", price: 1899, discount: true, discountPrice: 1499, category: "Male_Collection", imageUrl: "/api/placeholder/300/300", qty: 5 },
-        { id: 8, name: "Summer Shorts", price: 499, discount: true, discountPrice: 399, category: "Kids_Collection", imageUrl: "/api/placeholder/300/300", qty: 1 },
-        { id: 9, name: "Casual Dress", price: 999, category: "Female_Collection", imageUrl: "/api/placeholder/300/300", qty: 3 },
-    ]);
+    const [products, setProducts] = useState([]);
+    const [loadingCart, setLoadingCart] = useState(true);
+
+    const increaseQuantity = async (productId) => {
+        try {
+            const response = await updateCartQuantity(productId, 1);
+            if (response.success) {
+                await refreshCart(); // Fetch updated cart from backend
+            } else {
+                console.error(response.message);
+            }
+        } catch (error) {
+            console.error("Error increasing quantity:", error);
+        }
+    };
+
+    const decreaseQuantity = async (productId) => {
+        try {
+            const response = await updateCartQuantity(productId, -1);
+            if (response.success) {
+                await refreshCart(); // Fetch updated cart from backend
+            } else {
+                console.error(response.message);
+            }
+        } catch (error) {
+            console.error("Error decreasing quantity:", error);
+        }
+    };
+
+    const removeProduct = async (productId) => {
+        try {
+            const response = await removeFromCart(productId);
+            if (response.success) {
+                setProducts(prevProducts =>
+                    prevProducts.filter(product => product.productId !== productId)
+                );
+                await refreshCart(); // Ensure latest cart is fetched
+            } else {
+                console.error(response.message);
+            }
+        } catch (error) {
+            console.error("Error removing product:", error);
+        }
+    };
+
+    // Fetch latest cart data
+    const refreshCart = async () => {
+        try {
+            const response = await getUserCart();
+            if (response.success) {
+                setProducts(response.cart);
+            } else {
+                console.error("Failed to refresh cart:", response.message);
+            }
+        } catch (error) {
+            console.error("Error refreshing cart:", error);
+        }
+        setLoadingCart(false);
+    };
+
+    useEffect(() => {
+        refreshCart();
+    }, []); // Fetch cart on mount
 
     const subtotal = products.reduce((acc, product) => {
-        const totalPrice = (product.discount ? product.discountPrice : product.price) * product.qty;
+        const totalPrice = (product.productId.discount ? product.productId.discountPrice : product.productId.price) * product.quantity;
         return acc + totalPrice;
     }, 0);
 
@@ -84,10 +138,10 @@ const AfterSignedInNavBar = () => {
                                 exit="exit"
                                 initial="initial"
                                 custom={1}
-                                onClick={() => { handleDelayNavigation("cart") }}
+                                onClick={() => { handleDelayNavigation("userprofile") }}
                                 className="md:hidden inline-block"
                             >
-                                <FlipLink size="text-7xl" color="text-[#fcf8db]" font="font-black">Cart</FlipLink>
+                                <FlipLink size="text-7xl" color="text-[#fcf8db]" font="font-black">Profile</FlipLink>
                             </motion.div>
 
                             <motion.div
@@ -126,7 +180,7 @@ const AfterSignedInNavBar = () => {
                             <i className="ri-close-large-line text-black text-2xl font-bold hover:text-red-500 transition-all duration-250 ease-in-out"></i>
                         </motion.button>
                         <div
-                            className="w-full h-full flex flex-col items-center justify-between gap-1.5"
+                            className="w-full h-full flex flex-col px-7 md:px-0 md:items-center justify-between gap-1.5"
                         >
                             <motion.div
                                 variants={slide}
@@ -136,12 +190,12 @@ const AfterSignedInNavBar = () => {
                                 custom={0}
                                 className="flex flex-col gap-3"
                             >
-                                <div>
+                                <div className="md:mb-0 mb-1">
                                     <span className="font-[poppins] font-semibold uppercase">My Cart</span>
                                     <span className="font-[poppins] font-light uppercase">({products.length} {products.length > 1 ? "items" : "item"})</span>
                                 </div>
 
-                                <div className="w-full items-center justify-center flex">
+                                <div className="w-full items-center justify-center hidden md:flex">
                                     <SmallStringAnimation />
                                 </div>
 
@@ -151,36 +205,53 @@ const AfterSignedInNavBar = () => {
                                     exit="exit"
                                     initial="initial"
                                     custom={1}
-                                    className="max-h-[52vh] overflow-y-scroll flex flex-col gap-10 justify-start noScrollbar"
+                                    className="md:max-h-[52vh] max-h-[60vh] overflow-y-scroll flex flex-col gap-10 justify-start md:noScrollbar hideScrollBar"
                                 >
+                                    {loadingCart &&
+                                        <div className='h-full w-full flex items-center justify-center'>
+                                            <BarLoader />
+                                        </div>
+                                    }
                                     {products.length === 0 ? <p className='text-xl font-semibold font-[nunito] text-black'>No items in Cart.</p> : products.map(product => (
-                                        <div key={product.id} className="border-b-[1px] border-[#1f1f1f60] py-4">
+                                        <div key={product.productId._id} data-key={product.productId._id} className="border-b-[1px] border-[#1f1f1f60] py-4">
                                             <div className="flex gap-2 w-full h-full">
                                                 <div className="w-[30%] h-[75%] border-[1px] border-black rounded-md">
-                                                    <img src={product.imageUrl} alt="shoepic" />
+                                                    <img src={product.productId.imageUrl} alt="shoepic" />
                                                 </div>
 
                                                 <div className="flex flex-col w-full h-full gap-1">
                                                     <div className="flex items-start justify-between w-full pr-3">
-                                                        <span className="font-[poppins] font-semibold uppercase text-sm">{product.name}</span>
-                                                        <i className="ri-delete-bin-6-line text-lg cursor-pointer scale-y-125"></i>
+                                                        <span className="font-[poppins] font-semibold uppercase text-sm">{product.productId.name}</span>
+                                                        <span className="cursor-pointer" onClick={() => removeProduct(product.productId._id)}><i className="ri-delete-bin-6-line text-lg cursor-pointer scale-y-125"></i></span>
                                                     </div>
 
-                                                    {product.discount ? (
+                                                    {product.productId.discount ? (
                                                         <div className="flex gap-1.5 items-center">
-                                                            <span className="text-black font-light font-mono">₹{product.discountPrice}</span>
-                                                            <span className="text-black font-light font-mono line-through text-sm">₹{product.price}</span>
+                                                            <span className="text-black font-light font-mono">₹{Math.round(product.productId.discountPrice)}</span>
+                                                            <span className="text-black font-light font-mono line-through text-sm">₹{product.productId.price}</span>
                                                         </div>
                                                     ) : (
-                                                        <span className='text-black font-light font-mono'>₹{product.price}</span>
+                                                        <span className='text-black font-light font-mono'>₹{product.productId.price}</span>
                                                     )}
                                                     <div className="flex items-start justify-between w-full pr-8">
                                                         <div className="flex items-center border-[1px] border-black rounded-md gap-3 px-2 py-0.5">
-                                                            <span><i className="ri-subtract-line"></i></span>
-                                                            <span>{product.qty}</span>
-                                                            <span><i className="ri-add-line"></i></span>
+                                                            <button
+                                                                disabled={product.quantity <= 1}
+                                                                className={`cursor-pointer ${product.quantity <= 1 ? "opacity-50 cursor-not-allowed" : ""}`}
+                                                                onClick={() => decreaseQuantity(product.productId._id)}
+                                                            >
+                                                                <i className="ri-subtract-line"></i>
+                                                            </button>
+                                                            <span>{product.quantity}</span>
+                                                            <button
+                                                                disabled={product.productId.stock <= product.quantity}
+                                                                className={`cursor-pointer ${product.productId.stock <= product.quantity ? "opacity-50 cursor-not-allowed" : ""}`}
+                                                                onClick={() => increaseQuantity(product.productId._id)}
+                                                            >
+                                                                <i className="ri-add-line"></i>
+                                                            </button>
                                                         </div>
-                                                        <span className="text-black font-light font-mono">₹{product.price * product.qty}</span>
+                                                        <span className="text-black font-light font-mono">₹{(product.productId.discount ? Math.round(product.productId.discountPrice) : product.productId.price) * product.quantity}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -199,13 +270,13 @@ const AfterSignedInNavBar = () => {
                                 className="flex flex-col gap-5"
                             >
                                 <div className="flex flex-col gap-2">
-                                    <div className="w-full flex items-center justify-center"><SmallStringAnimation /></div>
+                                    <div className="w-full md:flex hidden items-center justify-center"><SmallStringAnimation /></div>
                                     <div className="flex items-center justify-between pr-4 mt-[-6vh]">
                                         <span className="text-lg">
                                             Subtotal
                                         </span>
                                         <span>
-                                            ₹{subtotal}
+                                            ₹{Math.round(subtotal)}
                                         </span>
                                     </div>
                                     <div className="text-sm">Taxes and shipping are calculated at checkout.</div>
@@ -217,7 +288,7 @@ const AfterSignedInNavBar = () => {
                                             handleDelayNavigation("cart");
                                         }}
                                         id="NavBarButtons"
-                                        className="px-30 py-2 uppercase md:text-base text-lg font-mono font-semibold text-black border-black rounded-full active:scale-90"
+                                        className="px-30 py-2 uppercase md:text-base text-lg font-mono font-semibold text-black border-black rounded-full active:scale-90 text-nowrap"
                                     >
                                         View Cart
                                     </button>
@@ -245,7 +316,7 @@ const AfterSignedInNavBar = () => {
                             id="search-with-icon"
                             placeholder="Search Items"
                         />
-                        <div className="md:flex hidden items-center gap-2 h-full">
+                        <div className="flex items-center gap-2 h-full">
                             <span>
                                 <i className="ri-heart-line text-3xl text-black cursor-pointer"></i>
                             </span>
@@ -259,7 +330,7 @@ const AfterSignedInNavBar = () => {
                         <div className="flex items-center gap-2 h-full">
                             <button onClick={() => { handleDelayNavigation("userprofile") }}
                                 id='NavBarButtons'
-                                className='px-9 py-1 uppercase font-mono font-semibold text-black border-[1px] border-black rounded-full active:scale-90'>
+                                className='px-9 py-1 md:inline-block hidden uppercase font-mono font-semibold text-black border-[1px] border-black rounded-full active:scale-90'>
                                 Profile
                             </button>
                             <button
@@ -277,7 +348,7 @@ const AfterSignedInNavBar = () => {
     );
 };
 
-export default AfterSignedInNavBar;
+export default BeforeSignedInNavBar;
 
 const menuSlide = {
     initial: {

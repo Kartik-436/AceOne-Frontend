@@ -70,7 +70,7 @@ const Home = () => {
                 <Transition animate={animate} />
                 {isLoggedIn ? <AfterSignedInNavBar /> : <BeforeSignedInNavBar />}
                 {/* Add a wrapper div with a data-scroll-container attribute */}
-                <div data-scroll-container>
+                <div data-scroll-container className='relative'>
                     <HalfHome />
                     <div className='z-[10]'>
                         <Page3 />
