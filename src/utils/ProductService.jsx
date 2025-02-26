@@ -31,7 +31,7 @@ export const getProductById = async (productId) => {
 
 export const getBestSellingProducts = async () => {
     try {
-        const response = await axios.get("/api/product/best-selling");
+        const response = await axios.get("/api/product/bestSelling");
 
         if (response.data.success) {
             return { success: true, products: response.data.data };

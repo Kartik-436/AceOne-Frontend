@@ -1,14 +1,15 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import React from 'react'
 import Page1 from './Page1';
 import Page2 from './Page2';
 
-const HalfHome = () => {
+const HalfHome = ({ bestSelling, Discounted }) => {
     return (
         <div>
-            <Page1 />
+            <Page1 Discounted={Discounted} />
             <div className='z-[10] mt-[18.6vh] rounded-t-xl'>
-                <Page2 />
+                <Page2 bestSelling={bestSelling} Discounted={Discounted} />
             </div>
         </div>
     )

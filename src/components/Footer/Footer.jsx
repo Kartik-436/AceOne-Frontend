@@ -176,19 +176,19 @@ const Footer = () => {
                                     <h1>All Products</h1>
                                 </motion.div>
 
-                                <motion.div onClick={() => { handleDelayNavigation("store") }} className='w-full  px-6 py-1 bg-transparent text-white border-[1px] border-white rounded-lg cursor-pointer'>
-                                    <h1>BestSellers</h1>
+                                <motion.div onClick={() => { handleDelayNavigation("store?category=Discounted") }} className='w-full  px-6 py-1 bg-transparent text-white border-[1px] border-white rounded-lg cursor-pointer'>
+                                    <h1>Discounted</h1>
                                 </motion.div>
 
-                                <motion.div onClick={() => { handleDelayNavigation("store") }} className='w-full  px-6 py-1 bg-transparent text-white border-[1px] border-white rounded-lg cursor-pointer'>
+                                <motion.div onClick={() => { handleDelayNavigation("store?category=Men") }} className='w-full  px-6 py-1 bg-transparent text-white border-[1px] border-white rounded-lg cursor-pointer'>
                                     <h1>Male Collection</h1>
                                 </motion.div>
 
-                                <motion.div onClick={() => { handleDelayNavigation("store") }} className='w-full  px-6 py-1 bg-transparent text-white border-[1px] border-white rounded-lg cursor-pointer'>
+                                <motion.div onClick={() => { handleDelayNavigation("store?category=Women") }} className='w-full  px-6 py-1 bg-transparent text-white border-[1px] border-white rounded-lg cursor-pointer'>
                                     <h1>Female Collection</h1>
                                 </motion.div>
 
-                                <motion.div onClick={() => { handleDelayNavigation("store") }} className='w-full  px-6 py-1 bg-transparent text-white border-[1px] border-white rounded-lg cursor-pointer'>
+                                <motion.div onClick={() => { handleDelayNavigation("store?category=Kids") }} className='w-full  px-6 py-1 bg-transparent text-white border-[1px] border-white rounded-lg cursor-pointer'>
                                     <h1>Kids Collection</h1>
                                 </motion.div>
 

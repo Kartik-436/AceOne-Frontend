@@ -19,6 +19,7 @@ import { useCart } from "./../utils/CartContext";
 import useAuthStatus from '../utils/IsLoggedInChecker';
 import { getAllProducts, getDiscountedProducts } from '../utils/ProductService';
 import { addToCart } from '../utils/CartService';
+import { useSearchParams } from 'react-router-dom';
 
 const Store = (props) => {
     const { animate, handleDelayNavigation } = useDelayedNavigation();
@@ -26,17 +27,31 @@ const Store = (props) => {
     const lenisRef = useRef(null);
     const productContainerRef = useRef(null);
 
+    const [searchParams, setSearchParams] = useSearchParams();
+    const category = searchParams.get("category");
+
     // Motion values for scroll tracking
     const scrollY = useMotionValue(0);
     const lastScrollY = useRef(0);
     const scrollDirection = useRef(0); // 1 for down, -1 for up
     const skewX = useSpring(0, { stiffness: 500, damping: 90 });
 
-    const [selectedCategory, setSelectedCategory] = useState("All_Products");
+    const [selectedCategory, setSelectedCategory] = useState(category || "All_Products");
     const [priceRange, setPriceRange] = useState([200, 2000]);
     const [products, setProducts] = useState([]);
     const [storeloading, setStoreLoading] = useState(false);
     const [error, setError] = useState(null);
+
+    const handleCategoryChange = (category) => {
+        setSelectedCategory(category);
+        setSearchParams({ category }); // Updates URL
+    };
+
+    useEffect(() => {
+        if (category) {
+            setSelectedCategory(category);
+        }
+    }, [category]); // Update category state when query param changes
 
     // Function to fetch products based on selected filters
     const fetchProducts = async () => {
@@ -52,7 +67,6 @@ const Store = (props) => {
             response = await getAllProducts(filters);
         } else if (selectedCategory === "Discounted") {
             response = await getDiscountedProducts();
-            console.log(response)
         } else {
             response = await getAllProducts({ category: selectedCategory, ...filters });
         }
@@ -65,15 +79,11 @@ const Store = (props) => {
         setStoreLoading(false);
     };
 
+
     // Fetch products when category or price changes
     useEffect(() => {
         fetchProducts();
     }, [selectedCategory, priceRange]);
-
-    // Handle Category Change
-    const handleCategoryChange = (category) => {
-        setSelectedCategory(category);
-    };
 
     // Handle Price Change
     const handlePriceChange = (e) => {
@@ -352,7 +362,7 @@ const Store = (props) => {
                                                 >
                                                     <div className='relative'>
                                                         <img
-                                                            src={product.image !== "" ? product.image : null}
+                                                            src={product.image !== "" ? product.image : "placeholder.jpg"}
                                                             alt={product.name}
                                                             className='w-full h-64 object-cover text-white'
                                                         />
@@ -385,8 +395,8 @@ const Store = (props) => {
                                                                     className='bg-[#1f1f1f] font-semibold text-white py-2 px-5 rounded-full text-sm AddToCartInStore'>
                                                                     Add to Cart
                                                                 </button>
-                                                                <span>
-                                                                    <i className="ri-heart-line text-3xl text-black cursor-pointer"></i>
+                                                                <span id="Shp-Now-Home-Start" className='bg-white rounded-full px-2 py-1 border-[1px] border-black text-black'>
+                                                                    <i className="ri-heart-line text-2xl cursor-pointer"></i>
                                                                 </span>
                                                             </div>
                                                         </div>
@@ -409,4 +419,4 @@ const Store = (props) => {
     }
 }
 
-export default Store
+export default Store;

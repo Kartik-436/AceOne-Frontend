@@ -16,6 +16,7 @@ import Cart from "./pages/Cart";
 import { CartProvider } from "./utils/CartContext";
 import { AuthProvider } from "./utils/AuthContext";
 import OwnerProfile from "./pages/OwnerProfile";
+import { ToastContainer } from "react-toastify";
 
 const PageTransition = ({ children }) => {
     const containerRef = useRef(null);
@@ -67,6 +68,7 @@ const App = () => {
     return (
         <AuthProvider>
             <CartProvider>
+                <ToastContainer position="top-right" autoClose={3000} />
                 <AnimatedRoutes />
             </CartProvider>
         </AuthProvider>

@@ -14,12 +14,65 @@ import HalfHome from '../components/Home-Pages/HalfHome1';
 import HalfHome2 from '../components/Home-Pages/HalfHome2';
 import Footer from './../components/Footer/Footer';
 import useAuthStatus from '../utils/IsLoggedInChecker';
+import { getAllProducts, getBestSellingProducts, getDiscountedProducts } from './../utils/ProductService';
 
 const Home = () => {
     const { animate, handleDelayNavigation } = useDelayedNavigation();
+    const { isLoggedIn, loading: authLoading } = useAuthStatus();
 
+    // Product states
+    const [productData, setProductData] = useState({
+        bestSelling: [],
+        discounted: [],
+        kidsProducts: [],
+        mensProducts: [],
+        womensProducts: []
+    });
+    const [productsLoading, setProductsLoading] = useState(true);
+    const [productsError, setProductsError] = useState(null);
+
+    // Fetch all product data
     useEffect(() => {
+        const fetchAllProductData = async () => {
+            try {
+                setProductsLoading(true);
 
+                // Fetch in parallel for better performance
+                const [
+                    bestSellingResult,
+                    discountedResult,
+                    kidsResult,
+                    mensResult,
+                    womensResult
+                ] = await Promise.all([
+                    getBestSellingProducts(),
+                    getDiscountedProducts(),
+                    getAllProducts({ category: 'Kids' }),
+                    getAllProducts({ category: 'Men' }),
+                    getAllProducts({ category: 'Women' })
+                ]);
+
+                // Update state with fetched data
+                setProductData({
+                    bestSelling: bestSellingResult.success ? bestSellingResult.products : [],
+                    discounted: discountedResult.success ? discountedResult.products : [],
+                    kidsProducts: kidsResult.success ? kidsResult.products : [],
+                    mensProducts: mensResult.success ? mensResult.products : [],
+                    womensProducts: womensResult.success ? womensResult.products : []
+                });
+            } catch (err) {
+                console.error("Error fetching products:", err);
+                setProductsError("Failed to load product data");
+            } finally {
+                setProductsLoading(false);
+            }
+        };
+
+        fetchAllProductData();
+    }, []);
+
+    // Setup smooth scrolling with Lenis
+    useEffect(() => {
         const lenis = new Lenis({
             duration: 1.8,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -35,7 +88,6 @@ const Home = () => {
                 lenis.raf(time * 1000);
             });
         } else {
-
             function raf(time) {
                 lenis.raf(time);
                 requestAnimationFrame(raf);
@@ -43,9 +95,8 @@ const Home = () => {
             requestAnimationFrame(raf);
         }
 
-
         lenis.on('scroll', ({ scroll, limit, velocity, direction, progress }) => {
-
+            // Scroll event handling
         });
 
         return () => {
@@ -56,12 +107,26 @@ const Home = () => {
         };
     }, []);
 
-    const { isLoggedIn, loading } = useAuthStatus();
-
-    if (loading) {
+    // Show loading state if either auth or products are loading
+    if (authLoading || productsLoading) {
         return (
             <div className='h-screen w-screen bg-[#fbffef] flex items-center justify-center'>
                 <BarLoader />
+            </div>
+        );
+    }
+
+    // Show error message if product fetching failed
+    if (productsError) {
+        return (
+            <div className='h-screen w-screen bg-[#fbffef] flex items-center justify-center flex-col gap-4'>
+                <p className="text-red-500">{productsError}</p>
+                <button
+                    className="px-4 py-2 bg-blue-500 text-white rounded"
+                    onClick={() => window.location.reload()}
+                >
+                    Retry
+                </button>
             </div>
         );
     } else {
@@ -71,11 +136,11 @@ const Home = () => {
                 {isLoggedIn ? <AfterSignedInNavBar /> : <BeforeSignedInNavBar />}
                 {/* Add a wrapper div with a data-scroll-container attribute */}
                 <div data-scroll-container className='relative'>
-                    <HalfHome />
+                    <HalfHome bestSelling={productData.bestSelling} Discounted={productData.discounted} />
                     <div className='z-[10]'>
-                        <Page3 />
+                        <Page3 Kids={productData.kidsProducts} />
                     </div>
-                    <HalfHome2 />
+                    <HalfHome2 Kids={productData.kidsProducts} Men={productData.mensProducts} Women={productData.womensProducts} />
                     <Footer />
                 </div>
             </React.Fragment>

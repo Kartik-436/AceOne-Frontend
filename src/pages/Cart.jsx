@@ -123,7 +123,7 @@ const Cart = () => {
                                     <div key={product.productId._id} data-key={product.productId._id} className='flex gap-3 md:gap-15 h-[20vh] w-full px-3 py-5 border-b-[1px] border-black'>
                                         <div className='flex gap-2 md:gap-4 h-full w-full'>
                                             <div className='border-[1px] border-black h-full w-full rounded-sm'>
-                                                <img src={product.productId.image !== "" ? product.productId.image : null} className='h-full w-full object-cover' alt={product.productId.name} />
+                                                <img src={product.productId.image !== "" ? product.productId.image : "placeholder.jpg"} className='h-full w-full object-cover' alt={product.productId.name} />
                                             </div>
                                             <div className='flex flex-col justify-between gap-2'>
                                                 <h1 className='text-xl font-[poppins] font-normal md:max-w-[10vw] text-wrap'>{product.productId.name}</h1>

@@ -1,10 +1,11 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import React, { useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
+import React, { useEffect, useRef, useState } from 'react';
+import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import useDelayedNavigation from '../../utils/useDelayedNavigation';
 import Transition from './../../Transition';
 
-const Page4 = () => {
+const Page4 = ({ Kids, Men, Women }) => {
     const containerRef = useRef(null);
     const isInView = useInView(containerRef, { once: false, amount: 0.2 });
     const { animate, handleDelayNavigation } = useDelayedNavigation();
@@ -21,6 +22,36 @@ const Page4 = () => {
             }
         })
     };
+
+    const collections = [
+        { title: "Male Collection", src: "https://static.wixstatic.com/media/c837a6_7407d6560448416a996712cac8ce5c9c~mv2.jpg/v1/fill/w_601,h_650,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/c837a6_7407d6560448416a996712cac8ce5c9c~mv2.jpg", href: "store?category=Men" },
+        { title: "Female Collection", src: "https://static.wixstatic.com/media/c837a6_a5a5863d6d7341958148ce678ac1a49a~mv2.jpg/v1/fill/w_604,h_650,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/c837a6_a5a5863d6d7341958148ce678ac1a49a~mv2.jpg", href: "store?category=Women" },
+        { title: "Kids Collection", src: "https://static.wixstatic.com/media/c837a6_d70089b44d104fc59d5366f6ff53851b~mv2.jpg/v1/fill/w_604,h_650,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/c837a6_d70089b44d104fc59d5366f6ff53851b~mv2.jpg", href: "store?category=Kids" }
+    ];
+
+    const imgContainerRef = useRef(null);
+    const [offset, setOffset] = useState(["start end", "center 55%"]);
+
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth < 768) {
+                setOffset(["-180% end", "-80% end"]);
+            } else {
+                setOffset(["start end", "center center"]);
+            }
+        };
+
+        handleResize(); // Call on mount
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    const { scrollYProgress } = useScroll({
+        target: imgContainerRef,
+        offset: offset
+    });
+
+    const scale = useTransform(scrollYProgress, [0, 1], [3, 1]);
 
     return (
         <React.Fragment>
@@ -56,7 +87,7 @@ const Page4 = () => {
                     </motion.div>
 
                     <div className='flex md:flex-row flex-col items-center justify-center gap-4'>
-                        {["Male Collection", "Female Collection", "Kids Collection"].map((title, index) => (
+                        {collections.map((collection, index) => (
                             <motion.div
                                 key={index}
                                 className='h-[75vh] md:w-[33vw]  w-[80vw] flex flex-col items-start gap-4 px-4 py-2 rounded-xl'
@@ -66,7 +97,8 @@ const Page4 = () => {
                                 custom={index}
                             >
                                 <motion.div
-                                    className='h-[70vh] md:w-[28vw] w-[80vw] rounded-xl bg-[#aeaeaeec] relative flex items-center justify-center'
+                                    ref={imgContainerRef}
+                                    className='h-[70vh] md:w-[28vw] w-[80vw] rounded-xl bg-[#aeaeaeec] relative flex items-center justify-center overflow-hidden'
                                     variants={fadeInUp}
                                     custom={index + 1}
                                 >
@@ -75,7 +107,7 @@ const Page4 = () => {
                                             id='Shp-Now-Home-Start'
                                             className='md:px-7 md:py-1 px-5 bg-[#fff] text-black rounded-full uppercase font-mono font-medium text-lg'
                                             whileHover={{ scale: 1.05 }}
-                                            onClick={() => { handleDelayNavigation("store") }}
+                                            onClick={() => { handleDelayNavigation(collection.href) }}
                                             initial='hidden'
                                             animate={isInView ? 'visible' : 'hidden'}
                                             variants={{
@@ -90,10 +122,10 @@ const Page4 = () => {
                                                 }
                                             }}
                                         >
-                                            {title}
+                                            {collection.title}
                                         </motion.button>
                                     </div>
-                                    <img src={null} alt="collections" />
+                                    <motion.img style={{ scale }} src={collection.src} alt={collection.title} />
                                 </motion.div>
                             </motion.div>
                         ))}

@@ -1,14 +1,30 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import { useCart } from '../../utils/CartContext';
 import useDelayedNavigation from '../../utils/useDelayedNavigation';
 import Transition from './../../Transition';
+import { addToCart } from '../../utils/CartService';
 
-const Page3 = () => {
+const Page3 = ({ Kids }) => {
     const targetRef = useRef(null);
     const { isCartMenuOpen, setIsCartMenuOpen } = useCart();
     const { animate, handleDelayNavigation } = useDelayedNavigation();
+    const [error, setError] = useState(null);
+
+    const handleAddToCart = async (productId) => {
+        setIsCartMenuOpen(false);
+
+        const response = await addToCart(productId, 1);
+
+        if (response.success) {
+            window.location.reload();
+        } else {
+            setError(response.message);
+        }
+    };
+
 
     const { scrollYProgress } = useScroll({
         target: targetRef,
@@ -99,49 +115,50 @@ const Page3 = () => {
                     <motion.div
                         className="w-full hidden md:flex items-center justify-end"
                     >
-                        <motion.div
-                            initial='hidden'
-                            animate={isCardInView ? 'visible' : 'hidden'}
-                            variants={fadeInCome}
-                            ref={Card}
-                            className="w-[32vw] h-[34vh] bg-[#ffffff4e] rounded-md flex items-center justify-between px-2.5"
-                        >
+                        <motion.div key={Kids[0]._id} className='w-[32vw] h-[34vh] bg-[#ffffff4e] rounded-md flex items-center justify-between px-2.5'>
                             <motion.div
                                 initial='hidden'
-                                animate={isCardInView ? 'visible' : 'hidden'}
+                                animate={isInView ? 'visible' : 'hidden'}
                                 variants={fadeInCome}
-                                className="w-[20vw] h-[31vh] bg-[#f5f4f4e1] rounded-md flex items-center justify-center relative"
+                                className='w-[20vw] h-[31vh] bg-[#f5f4f4e1] rounded-md flex items-center justify-center relative'
                             >
                                 <motion.div
                                     initial='hidden'
-                                    animate={isCardInView ? 'visible' : 'hidden'}
+                                    animate={isInView ? 'visible' : 'hidden'}
                                     variants={fadeSideCome}
-                                    className="absolute top-2 left-3 px-3 py-0.5 bg-[#ffbb00] text-white rounded-md uppercase font-mono font-medium text-xs"
-                                >
-                                    Sale
-                                </motion.div>
-                                <img className="w-full h-full object-cover rounded-md" src="https://static.wixstatic.com/media/c837a6_f4b16c06d8b5449c954a72eb34be2b4b~mv2.jpg" alt="Product" />
+                                    className='absolute top-2 left-3 px-3 py-0.5 bg-[#ffbb00] text-white rounded-md uppercase font-mono font-medium text-xs'>Sale</motion.div>
+
+                                <img className='w-full h-full object-cover rounded-md text-black' src={Kids[0].image || "placeholder.jpg"} alt="Kids Image" />
                             </motion.div>
                             <motion.div
                                 initial='hidden'
-                                animate={isCardInView ? 'visible' : 'hidden'}
+                                animate={isInView ? 'visible' : 'hidden'}
                                 variants={fadeSideGo}
                                 className="flex flex-col items-start justify-between h-full py-6 px-3"
                             >
                                 <div className="flex flex-col items-start justify-center gap-1.5">
-                                    <h1 className="text-black font-bold font-mono text-xl">Name of Product</h1>
+                                    <div>
+                                        <h1 className="text-black font-bold font-mono text-xl">{Kids[0].name}</h1>
+                                        <h1 className="text-black font-light font-mono -mt-1">{Kids[0].category}</h1>
+                                    </div>
                                     <div className="flex items-center gap-1.5">
-                                        <span className="text-black font-light font-mono">$499</span>
-                                        <span className="text-black font-light font-mono line-through">$599</span>
+                                        <span className="text-black font-light font-mono">₹{Math.round(Kids[0].discountPrice)}</span>
+                                        <span className="text-black font-light font-mono line-through">₹{Kids[0].price}</span>
                                     </div>
                                 </div>
-                                <button
-                                    onClick={() => { setIsCartMenuOpen(true) }}
-                                    id="Shp-Now-Home-Start"
-                                    className="px-4 py-1.5 text-sm rounded-full bg-[#fff] uppercase font-mono text-black font-bold tracking-wide mb-4">
-                                    Add to Cart
-                                </button>
+                                <div className='flex items-center justify-center gap-2'>
+                                    <button
+                                        onClick={() => handleAddToCart(Kids[0]._id)}
+                                        id="Shp-Now-Home-Start"
+                                        className="px-4 py-1.5 text-sm rounded-full bg-[#fff] uppercase font-mono text-black font-bold tracking-wide text-nowrap">
+                                        Add to Cart
+                                    </button>
+                                    <span id="Shp-Now-Home-Start" className='bg-white rounded-full px-2 py-1 border-[1px] border-black text-black'>
+                                        <i className="ri-heart-line text-2xl cursor-pointer"></i>
+                                    </span>
+                                </div>
                             </motion.div>
+
                         </motion.div>
                     </motion.div>
                 </div>
