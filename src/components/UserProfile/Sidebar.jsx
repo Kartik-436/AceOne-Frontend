@@ -1,10 +1,11 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 // components/Sidebar.jsx
-import React from 'react';
-import { User, Package, Heart, ShoppingCart, Key, LogOut, Home } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { User, Package, Heart, ShoppingCart, Key, LogOut, Home, RefreshCcw } from 'lucide-react';
+import { getUserDetails } from '../../utils/UserService';
 
-const Sidebar = ({ activeComponent, setActiveComponent, userData, onLogout }) => {
+const Sidebar = ({ activeComponent, setActiveComponent, onLogout }) => {
     // Navigation items
     const navItems = [
         { id: 'profile', label: 'My Profile', icon: <User size={20} /> },
@@ -14,20 +15,49 @@ const Sidebar = ({ activeComponent, setActiveComponent, userData, onLogout }) =>
         { id: 'Home', label: 'Go To Home', icon: <Home size={20} /> },
         { id: 'password', label: 'Reset Password', icon: <Key size={20} /> },
     ];
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    const refreshUser = async () => {
+        try {
+            const response = await getUserDetails();
+            console.log(response);
+            if (response.success) {
+                setUser(response.user);
+            } else {
+                console.error("Failed to refresh User:", response.message);
+            }
+        } catch (error) {
+            console.error("Error refreshing User:", error);
+        }
+        setLoading(false);
+    };
+
+    useEffect(() => {
+        refreshUser();
+    }, []);
 
     return (
-        <div className="bg-white h-full rounded-lg shadow-md p-6">
+        <div className="bg-white h-full rounded-lg shadow-md p-6 relative">
+
+            <div
+                onClick={async () => { await refreshUser() }}
+                className='absolute top-3 right-5 cursor-pointer'
+            >
+                <RefreshCcw size={24} />
+            </div>
+
             {/* User profile summary */}
             <div className="flex flex-col items-center mb-8">
                 <div className="w-24 h-24 rounded-full overflow-hidden mb-4 border-2 border-[#1f1f1f]">
                     <img
-                        src={userData.picture || "PFplaceholder.jpg"}
+                        src={user?.picture || "PFplaceholder.jpg"}
                         alt="Profile"
                         className="w-full h-full object-cover"
                     />
                 </div>
-                <h3 className="font-bold text-lg">{userData.fullName}</h3>
-                <p className="text-gray-600 text-sm">{userData.email}</p>
+                <h3 className="font-bold text-lg">{user?.fullName}</h3>
+                <p className="text-gray-600 text-sm">{user?.email}</p>
             </div>
 
             {/* Navigation */}

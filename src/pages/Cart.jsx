@@ -11,6 +11,9 @@ import Transition from '../Transition';
 import useDelayedNavigation from '../utils/useDelayedNavigation';
 import useAuthStatus from '../utils/IsLoggedInChecker';
 import { getUserCart, removeFromCart, updateCartQuantity } from '../utils/CartService';
+import { addToWishlist } from '../utils/UserService';
+import { toast } from 'react-toastify';
+import { Heart, ShoppingBasket } from 'lucide-react';
 
 const Cart = () => {
     const [user, setuser] = useState(null);
@@ -53,7 +56,7 @@ const Cart = () => {
                 setProducts(prevProducts =>
                     prevProducts.filter(product => product.productId !== productId)
                 );
-                await refreshCart(); // Ensure latest cart is fetched
+                await refreshCart();
             } else {
                 console.error(response.message);
             }
@@ -62,7 +65,19 @@ const Cart = () => {
         }
     };
 
-    // Fetch latest cart data
+    const moveToWishlist = async (Pid) => {
+        try {
+            const response = await addToWishlist(Pid);
+
+            if (response.success) {
+                await removeProduct(Pid);
+                toast.success("Added item to your wishlist !");
+            }
+        } catch (error) {
+            console.error("Error moving to wishlist:", error);
+        }
+    }
+
     const refreshCart = async () => {
         try {
             const response = await getUserCart();
@@ -79,7 +94,7 @@ const Cart = () => {
 
     useEffect(() => {
         refreshCart();
-    }, []); // Fetch cart on mount
+    }, []);
 
     const subtotal = products.reduce((acc, product) => {
         const totalPrice = (product.productId.discount ? product.productId.discountPrice : product.productId.price) * product.quantity;
@@ -119,10 +134,36 @@ const Cart = () => {
                                         <BarLoader />
                                     </div>
                                 }
-                                {products.length === 0 ? <p className='text-xl font-black font-[nunito] text-black'>No items in Cart.</p> : products.map(product => (
-                                    <div key={product.productId._id} data-key={product.productId._id} className='flex gap-3 md:gap-15 h-[20vh] w-full px-3 py-5 border-b-[1px] border-black'>
+                                {products.length === 0 ? (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 100 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.2, delayChildren: 0.5, type: "spring", stiffness: 200 }}
+                                        className="flex flex-col items-center justify-center h-96 rounded-3xl p-8"
+                                    >
+                                        <motion.div
+                                            initial={{ scale: 0 }}
+                                            animate={{ scale: 1 }}
+                                            transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
+                                            className="w-24 h-24 bg-[#ffbb00]/10 rounded-full flex items-center justify-center mb-6"
+                                        >
+                                            <ShoppingBasket size={48} className="text-[#ffbb00]" />
+                                        </motion.div>
+                                        <h2 className="text-2xl font-bold text-[#1f1f1f] mb-2">Your Cart is Empty</h2>
+                                        <p className="text-[#1f1f1f]/70 text-center max-w-md mb-6">
+                                            Items you love can be Added to Cart. Start exploring and add some favorites!
+                                        </p>
+                                        <button
+                                            onClick={() => handleDelayNavigation("store")}
+                                            className="bg-[#1f1f1f] text-white px-6 py-3 rounded-full font-medium hover:bg-[#1f1f1f]/90 transition-all cursor-pointer AddToCartInStore"
+                                        >
+                                            Discover Products
+                                        </button>
+                                    </motion.div>
+                                ) : products.map(product => (
+                                    <div key={product.productId._id} data-key={product.productId._id} className='flex justify-between md:gap-15 h-[20vh] w-full px-2 py-5 border-b-[1px] border-black'>
                                         <div className='flex gap-2 md:gap-4 h-full w-full'>
-                                            <div className='border-[1px] border-black h-full w-full rounded-sm'>
+                                            <div className='border-[1px] border-black h-full min-w-[50%] rounded-sm'>
                                                 <img src={product.productId.image !== "" ? product.productId.image : "placeholder.jpg"} className='h-full w-full object-cover' alt={product.productId.name} />
                                             </div>
                                             <div className='flex flex-col justify-between gap-2'>
@@ -138,33 +179,52 @@ const Cart = () => {
                                             </div>
                                         </div>
 
-                                        <div className='flex md:flex-row flex-col justify-around w-fit md:w-full'>
-                                            <div className="flex items-center border-[1px] border-black rounded-md gap-1 md:gap-3 px-2 py-0.5 h-[4vh]">
+                                        <div className='flex flex-col items-center md:justify-between '>
+                                            <div className='flex md:flex-row flex-col justify-around w-fit md:w-full h-full'>
+                                                <div className="flex items-center border-[1px] border-black rounded-md gap-1 md:gap-3 px-2 py-0.5 h-[4vh]">
 
-                                                <button
-                                                    disabled={product.quantity <= 1}
-                                                    className={`cursor-pointer ${product.quantity <= 1 ? "opacity-50 cursor-not-allowed" : ""}`}
-                                                    onClick={() => decreaseQuantity(product.productId._id)}
-                                                >
-                                                    <i className="ri-subtract-line"></i>
-                                                </button>
-                                                <span>{product.quantity}</span>
-                                                <button
-                                                    disabled={product.productId.stock <= product.quantity}
-                                                    className={`cursor-pointer ${product.productId.stock <= product.quantity ? "opacity-50 cursor-not-allowed" : ""}`}
-                                                    onClick={() => increaseQuantity(product.productId._id)}
-                                                >
-                                                    <i className="ri-add-line"></i>
-                                                </button>
+                                                    <button
+                                                        disabled={product.quantity <= 1}
+                                                        className={`cursor-pointer ${product.quantity <= 1 ? "opacity-50 cursor-not-allowed" : ""}`}
+                                                        onClick={() => decreaseQuantity(product.productId._id)}
+                                                    >
+                                                        <i className="ri-subtract-line"></i>
+                                                    </button>
+                                                    <span>{product.quantity}</span>
+                                                    <button
+                                                        disabled={product.productId.stock <= product.quantity}
+                                                        className={`cursor-pointer ${product.productId.stock <= product.quantity ? "opacity-50 cursor-not-allowed" : ""}`}
+                                                        onClick={() => increaseQuantity(product.productId._id)}
+                                                    >
+                                                        <i className="ri-add-line"></i>
+                                                    </button>
 
+                                                </div>
+
+                                                <div>
+                                                    <span className="text-black font-medium font-[poppins]">₹{(product.productId.discount ? Math.round(product.productId.discountPrice) : product.productId.price) * product.quantity}</span>
+                                                </div>
+
+                                                <div onClick={() => removeProduct(product.productId._id)}>
+                                                    <i className="ri-delete-bin-6-line text-[#252525d2] text-lg cursor-pointer scale-y-125"></i>
+                                                </div>
                                             </div>
 
                                             <div>
-                                                <span className="text-black font-medium font-[poppins]">₹{(product.productId.discount ? Math.round(product.productId.discountPrice) : product.productId.price) * product.quantity}</span>
-                                            </div>
-
-                                            <div onClick={() => removeProduct(product.productId._id)}>
-                                                <i className="ri-delete-bin-6-line text-[#252525d2] text-lg cursor-pointer scale-y-125"></i>
+                                                <button
+                                                    onClick={() => {
+                                                        if (isLoggedIn) {
+                                                            moveToWishlist(product.productId._id);
+                                                        } else {
+                                                            toast.error("Please Login to add item to your wishlist !")
+                                                            handleDelayNavigation("login");
+                                                        }
+                                                    }}
+                                                    id="NavBarButtons"
+                                                    className="md:px-7 md:py-1.5 text-nowrap py-1 px-2 uppercase md:text-base text-sm font-mono font-semibold text-black border-black rounded-full active:scale-90 mt-4 bg-transparent md:block hidden"
+                                                >
+                                                    Move to Wishlist
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -216,11 +276,13 @@ const Cart = () => {
                                     <button
                                         onClick={() => {
                                             if (isLoggedIn && user.address) {
-                                                handleDelayNavigation("checkout");
-                                            } else if (!isLoggedIn) {
-                                                handleDelayNavigation("register");
+                                                toast.error("Cannot Place an Order Right Now !");
+                                            } else if (!isLoggedIn && user.address) {
+                                                toast.error("Please Login to Place any order !")
+                                                handleDelayNavigation("login");
                                             } else {
-                                                handleDelayNavigation("profile");
+                                                toast.error("Please Add your Address to place any order !")
+                                                handleDelayNavigation("userprofile");
                                             }
                                         }}
                                         id="NavBarButtons"

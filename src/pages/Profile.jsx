@@ -95,13 +95,13 @@ const Profile = () => {
     const renderContent = () => {
         switch (activeComponent) {
             case 'profile':
-                return <ProfileInfo userData={userData} />;
+                return <ProfileInfo />;
             case 'orders':
                 return <Orders />;
             case 'password':
                 return <PasswordReset />;
             default:
-                return <ProfileInfo userData={userData} />;
+                return <ProfileInfo />;
         }
     };
 
@@ -136,7 +136,6 @@ const Profile = () => {
                                 <Sidebar
                                     activeComponent={activeComponent}
                                     setActiveComponent={setActiveComponent}
-                                    userData={userData}
                                     onLogout={() => setLogoutModalOpen(true)}
                                 />
                             </div>

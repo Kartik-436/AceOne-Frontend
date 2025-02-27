@@ -6,6 +6,10 @@ import { useCart } from '../../utils/CartContext';
 import useDelayedNavigation from '../../utils/useDelayedNavigation';
 import Transition from './../../Transition';
 import { addToCart } from '../../utils/CartService';
+import { toast } from 'react-toastify';
+import useAuthStatus from '../../utils/IsLoggedInChecker';
+import { Heart } from 'lucide-react';
+import { addToWishlist } from '../../utils/UserService';
 
 const Page1 = ({ Discounted }) => {
     const targetRef = useRef(null);
@@ -24,6 +28,28 @@ const Page1 = ({ Discounted }) => {
             setError(response.message);
         }
     };
+
+    const addToWl = async (Pid) => {
+        try {
+            const response = await addToWishlist(Pid);
+            if (response.success) {
+                toast.success("Item Added to your Wishlist !", {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                })
+            } else {
+                toast.error(response.message)
+            }
+        } catch (error) {
+            console.error("adding to wishlist error : ", error.message)
+        }
+    }
 
     const { scrollYProgress } = useScroll({
         target: targetRef,
@@ -76,6 +102,8 @@ const Page1 = ({ Discounted }) => {
             }
         })
     };
+
+    const { isLoggedIn, loading } = useAuthStatus();
 
     return (
         <React.Fragment>
@@ -156,8 +184,28 @@ const Page1 = ({ Discounted }) => {
                                         className="px-4 py-1.5 text-sm rounded-full bg-[#fff] uppercase font-mono text-black font-bold tracking-wide text-nowrap">
                                         Add to Cart
                                     </button>
-                                    <span id="Shp-Now-Home-Start" className='bg-white rounded-full px-2 py-1 border-[1px] border-black text-black'>
-                                        <i className="ri-heart-line text-2xl cursor-pointer"></i>
+                                    <span
+                                        onClick={async () => {
+                                            if (isLoggedIn) {
+                                                await addToWl(Discounted[0]._id)
+                                            } else {
+                                                handleDelayNavigation("login")
+                                                toast.error("Login to add items to your Wishlist !", {
+                                                    position: "top-right",
+                                                    autoClose: 3000,
+                                                    hideProgressBar: false,
+                                                    closeOnClick: true,
+                                                    pauseOnHover: true,
+                                                    draggable: true,
+                                                    progress: undefined,
+                                                    theme: "dark",
+                                                })
+                                            }
+                                        }}
+                                        id="Shp-Now-Home-Start"
+                                        className='bg-white rounded-full px-2 py-2 border-[1px] border-black text-black'
+                                    >
+                                        <Heart size={25} />
                                     </span>
                                 </div>
                             </motion.div>

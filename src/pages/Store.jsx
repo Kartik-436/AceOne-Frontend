@@ -20,6 +20,10 @@ import useAuthStatus from '../utils/IsLoggedInChecker';
 import { getAllProducts, getDiscountedProducts } from '../utils/ProductService';
 import { addToCart } from '../utils/CartService';
 import { useSearchParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { StoreIcon } from 'lucide-react';
+import { addToWishlist } from './../utils/UserService';
+import { Heart } from 'lucide-react';
 
 const Store = (props) => {
     const { animate, handleDelayNavigation } = useDelayedNavigation();
@@ -99,12 +103,55 @@ const Store = (props) => {
 
         if (response.success) {
             window.location.reload();
+            toast.success("Item Added to your Cart !", {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            })
+            setIsCartMenuOpen(true)
         } else {
             setError(response.message);
+            toast.error("Error adding item to your Cart !", {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            })
         }
 
         setStoreLoading(false);
     };
+
+    const addToWl = async (Pid) => {
+        try {
+            const response = await addToWishlist(Pid);
+            if (response.success) {
+                toast.success("Item Added to your Wishlist !", {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                })
+            } else {
+                toast.error(response.message)
+            }
+        } catch (error) {
+            console.error("adding to wishlist error : ", error.message)
+        }
+    }
 
     const isMobile = window.innerWidth <= 768;
 
@@ -348,7 +395,27 @@ const Store = (props) => {
                                                     <BarLoader />
                                                 </div>
                                             }
-                                            {!storeloading && products.length === 0 ? <p className='text-xl font-black font-[nunito] text-black'>No items in Store.</p> : products.map(product => (
+                                            {!storeloading && products.length === 0 ? (
+                                                <motion.div
+                                                    initial={{ opacity: 0, y: 100 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    transition={{ delay: 0.2, delayChildren: 0.5, type: "spring", stiffness: 200 }}
+                                                    className="flex flex-col items-center justify-center h-96 rounded-3xl p-8 col-span-3"
+                                                >
+                                                    <motion.div
+                                                        initial={{ scale: 0 }}
+                                                        animate={{ scale: 1 }}
+                                                        transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
+                                                        className="w-24 h-24 bg-[#ffbb00]/10 rounded-full flex items-center justify-center mb-6"
+                                                    >
+                                                        <StoreIcon size={48} className="text-[#ffbb00]" />
+                                                    </motion.div>
+                                                    <h2 className="text-2xl font-bold text-[#1f1f1f] mb-2">Store is Empty.</h2>
+                                                    <p className="text-[#1f1f1f]/70 text-center max-w-md mb-6">
+                                                        There might be an issue in fetching store items...
+                                                    </p>
+                                                </motion.div>
+                                            ) : products.map(product => (
                                                 <motion.div
                                                     key={product._id}
                                                     data-key={product._id}
@@ -395,8 +462,28 @@ const Store = (props) => {
                                                                     className='bg-[#1f1f1f] font-semibold text-white py-2 px-5 rounded-full text-sm AddToCartInStore'>
                                                                     Add to Cart
                                                                 </button>
-                                                                <span id="Shp-Now-Home-Start" className='bg-white rounded-full px-2 py-1 border-[1px] border-black text-black'>
-                                                                    <i className="ri-heart-line text-2xl cursor-pointer"></i>
+                                                                <span
+                                                                    onClick={async () => {
+                                                                        if (isLoggedIn) {
+                                                                            await addToWl(product._id)
+                                                                        } else {
+                                                                            handleDelayNavigation("login")
+                                                                            toast.error("Login to add items to your Wishlist !", {
+                                                                                position: "top-right",
+                                                                                autoClose: 3000,
+                                                                                hideProgressBar: false,
+                                                                                closeOnClick: true,
+                                                                                pauseOnHover: true,
+                                                                                draggable: true,
+                                                                                progress: undefined,
+                                                                                theme: "dark",
+                                                                            })
+                                                                        }
+                                                                    }}
+                                                                    id="Shp-Now-Home-Start"
+                                                                    className='bg-white rounded-full px-2 py-2 border-[1px] border-black text-black'
+                                                                >
+                                                                    <Heart size={25} />
                                                                 </span>
                                                             </div>
                                                         </div>

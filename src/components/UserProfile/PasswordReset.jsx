@@ -2,6 +2,9 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, Check } from 'lucide-react';
 import { resetPassword } from '../../utils/UserService';
+import Transition from '../../Transition';
+import useDelayedNavigation from '../../utils/useDelayedNavigation';
+import { motion } from 'framer-motion';
 
 const PasswordReset = () => {
     const [currentPassword, setCurrentPassword] = useState('');
@@ -83,113 +86,128 @@ const PasswordReset = () => {
         "w-full bg-green-500",
     ];
 
+    const { animate, handleDelayNavigation } = useDelayedNavigation();
+
     return (
-        <div>
-            <h2 className="text-2xl font-bold mb-6">Reset Password</h2>
+        <>
+            <Transition />
+            <div>
+                <h2 className="text-2xl font-bold mb-6">Reset Password</h2>
 
-            {success ? (
-                <div className="bg-green-100 border border-green-200 text-green-800 rounded-lg p-4 flex items-center">
-                    <Check size={20} className="mr-2" />
-                    <span>Your password has been updated successfully!</span>
-                </div>
-            ) : (
-                <form onSubmit={handleSubmit} className="max-w-md">
-                    <div className="space-y-6">
-                        {/* Current Password */}
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Current Password</label>
-                            <div className="relative">
-                                <input
-                                    type={showCurrent ? "text" : "password"}
-                                    value={currentPassword}
-                                    onChange={(e) => setCurrentPassword(e.target.value)}
-                                    className={`w-full p-3 border ${errors.currentPassword ? 'border-red-300' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-[#ffbb00] focus:outline-none pr-10`}
-                                />
-                                <button
-                                    type="button"
-                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
-                                    onClick={() => setShowCurrent(!showCurrent)}
-                                >
-                                    {showCurrent ? <EyeOff size={20} /> : <Eye size={20} />}
-                                </button>
-                            </div>
-                            {errors.currentPassword && (
-                                <p className="text-red-500 text-sm mt-1">{errors.currentPassword}</p>
-                            )}
-                        </div>
-
-                        {/* New Password */}
-                        <div>
-                            <label className="block text-sm font-medium mb-1">New Password</label>
-                            <div className="relative">
-                                <input
-                                    type={showNew ? "text" : "password"}
-                                    value={newPassword}
-                                    onChange={(e) => setNewPassword(e.target.value)}
-                                    className={`w-full p-3 border ${errors.newPassword ? 'border-red-300' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-[#ffbb00] focus:outline-none pr-10`}
-                                />
-                                <button
-                                    type="button"
-                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
-                                    onClick={() => setShowNew(!showNew)}
-                                >
-                                    {showNew ? <EyeOff size={20} /> : <Eye size={20} />}
-                                </button>
-                            </div>
-                            {errors.newPassword && (
-                                <p className="text-red-500 text-sm mt-1">{errors.newPassword}</p>
-                            )}
-
-                            {/* Password strength indicator */}
-                            {newPassword && (
-                                <div className="mt-2">
-                                    <div className="h-2 mt-2 w-full bg-gray-200 rounded-md overflow-hidden">
-                                        <div className={`h-full transition-all duration-300 ${strengthClasses[strength]}`}></div>
-                                    </div>
-                                    <p className="text-sm font-semibold mt-2">
-                                        {["Very Weak", "Weak", "Fair", "Strong", "Very Strong"][strength]}
-                                    </p>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Confirm Password */}
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Confirm New Password</label>
-                            <div className="relative">
-                                <input
-                                    type={showConfirm ? "text" : "password"}
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                    className={`w-full p-3 border ${errors.confirmPassword ? 'border-red-300' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-[#ffbb00] focus:outline-none pr-10`}
-                                />
-                                <button
-                                    type="button"
-                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
-                                    onClick={() => setShowConfirm(!showConfirm)}
-                                >
-                                    {showConfirm ? <EyeOff size={20} /> : <Eye size={20} />}
-                                </button>
-                            </div>
-                            {errors.confirmPassword && (
-                                <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
-                            )}
-                        </div>
-
-                        {apiError && <p className="text-red-500 text-sm">{apiError}</p>}
-
-                        <button
-                            type="submit"
-                            id='Shp-Now-Home-Start'
-                            className="w-full py-3 bg-[#ffbb00] text-[#1f1f1f] rounded-lg transition-colors font-medium mt-4"
-                            disabled={loading}
+                {success ? (
+                    <motion.div
+                        initial={{ opacity: 0, x: -100 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.3, delayChildren: 0.5, type: "spring", stiffness: 200 }}
+                        className="bg-green-100 border border-green-200 text-green-800 rounded-lg p-4 flex items-center"
+                    >
+                        <Check size={20} className="mr-2" />
+                        <span>Your password has been updated successfully!</span>
+                    </motion.div>
+                ) : (
+                    <form onSubmit={handleSubmit} className="max-w-md">
+                        <motion.div
+                            initial={{ opacity: 0, x: 100 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.35, delayChildren: 0.5, type: "spring", stiffness: 200 }}
+                            className="space-y-6"
                         >
-                            {loading ? "Updating..." : "Update Password"}
-                        </button>
-                    </div>
-                </form>
-            )}
-        </div>
+                            {/* Current Password */}
+                            <div>
+                                <label className="block text-sm font-medium mb-1">Current Password</label>
+                                <div className="relative">
+                                    <input
+                                        type={showCurrent ? "text" : "password"}
+                                        value={currentPassword}
+                                        onChange={(e) => setCurrentPassword(e.target.value)}
+                                        className={`w-full p-3 border ${errors.currentPassword ? 'border-red-300' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-[#ffbb00] focus:outline-none pr-10`}
+                                    />
+                                    <button
+                                        type="button"
+                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                                        onClick={() => setShowCurrent(!showCurrent)}
+                                    >
+                                        {showCurrent ? <EyeOff size={20} /> : <Eye size={20} />}
+                                    </button>
+                                </div>
+                                {errors.currentPassword && (
+                                    <p className="text-red-500 text-sm mt-1">{errors.currentPassword}</p>
+                                )}
+                            </div>
+
+                            {/* New Password */}
+                            <div>
+                                <label className="block text-sm font-medium mb-1">New Password</label>
+                                <div className="relative">
+                                    <input
+                                        type={showNew ? "text" : "password"}
+                                        value={newPassword}
+                                        onChange={(e) => setNewPassword(e.target.value)}
+                                        className={`w-full p-3 border ${errors.newPassword ? 'border-red-300' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-[#ffbb00] focus:outline-none pr-10`}
+                                    />
+                                    <button
+                                        type="button"
+                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                                        onClick={() => setShowNew(!showNew)}
+                                    >
+                                        {showNew ? <EyeOff size={20} /> : <Eye size={20} />}
+                                    </button>
+                                </div>
+                                {errors.newPassword && (
+                                    <p className="text-red-500 text-sm mt-1">{errors.newPassword}</p>
+                                )}
+
+                                {/* Password strength indicator */}
+                                {newPassword && (
+                                    <div className="mt-2">
+                                        <div className="h-2 mt-2 w-full bg-gray-200 rounded-md overflow-hidden">
+                                            <div className={`h-full transition-all duration-300 ${strengthClasses[strength]}`}></div>
+                                        </div>
+                                        <p className="text-sm font-semibold mt-2">
+                                            {["Very Weak", "Weak", "Fair", "Strong", "Very Strong"][strength]}
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Confirm Password */}
+                            <div>
+                                <label className="block text-sm font-medium mb-1">Confirm New Password</label>
+                                <div className="relative">
+                                    <input
+                                        type={showConfirm ? "text" : "password"}
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                        className={`w-full p-3 border ${errors.confirmPassword ? 'border-red-300' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-[#ffbb00] focus:outline-none pr-10`}
+                                    />
+                                    <button
+                                        type="button"
+                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                                        onClick={() => setShowConfirm(!showConfirm)}
+                                    >
+                                        {showConfirm ? <EyeOff size={20} /> : <Eye size={20} />}
+                                    </button>
+                                </div>
+                                {errors.confirmPassword && (
+                                    <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
+                                )}
+                            </div>
+
+                            {apiError && <p className="text-red-500 text-sm">{apiError}</p>}
+
+                            <button
+                                type="submit"
+                                id='Shp-Now-Home-Start'
+                                className="w-full py-3 bg-[#ffbb00] text-[#1f1f1f] rounded-lg transition-colors font-medium mt-4"
+                                disabled={loading}
+                            >
+                                {loading ? "Updating..." : "Update Password"}
+                            </button>
+                        </motion.div>
+                    </form>
+                )}
+            </div>
+        </>
     );
 };
 

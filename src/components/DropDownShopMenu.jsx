@@ -36,21 +36,28 @@ const StaggeredDropDown = () => {
                 >
                     <div className="flex items-center justify-center gap-4" onClick={() => { handleDelayNavigation("store") }}>
                         <motion.span
-                            // variants={itemVariants}
                             className="w-4 h-4 rounded-full bg-white"></motion.span>
                         <Option setOpen={setOpen} text="All_Products" />
                     </div>
-                    <div className="flex items-center justify-center gap-4" onClick={() => { handleDelayNavigation("store") }}>
+                    <div className="flex items-center justify-center gap-4" onClick={() => { handleDelayNavigation("store?category=Discounted") }}>
                         <motion.span
-                            // variants={itemVariants}
-                            className="w-4 h-4 rounded-full bg-white"></motion.span>
-                        <Option setOpen={setOpen} text="BestSellers" />
-                    </div>
-                    <div className="flex items-center justify-center gap-4" onClick={() => { handleDelayNavigation("store") }}>
-                        <motion.span
-                            // variants={itemVariants}
                             className="w-4 h-4 rounded-full bg-white"></motion.span>
                         <Option setOpen={setOpen} text="Discounted" />
+                    </div>
+                    <div className="flex items-center justify-center gap-4" onClick={() => { handleDelayNavigation("store?category=Kids") }}>
+                        <motion.span
+                            className="w-4 h-4 rounded-full bg-white"></motion.span>
+                        <Option setOpen={setOpen} text="Kids" />
+                    </div>
+                    <div className="flex items-center justify-center gap-4" onClick={() => { handleDelayNavigation("store?category=Men") }}>
+                        <motion.span
+                            className="w-4 h-4 rounded-full bg-white"></motion.span>
+                        <Option setOpen={setOpen} text="Mens" />
+                    </div>
+                    <div className="flex items-center justify-center gap-4" onClick={() => { handleDelayNavigation("store?category=Women") }}>
+                        <motion.span
+                            className="w-4 h-4 rounded-full bg-white"></motion.span>
+                        <Option setOpen={setOpen} text="Womens" />
                     </div>
                 </motion.div>
             </motion.div>

@@ -78,11 +78,11 @@ export const getWishlist = async () => {
     }
 };
 
-export const addToWishlist = async (productId) => {
+export const addToWishlist = async (productID) => {
     try {
         const response = await axios.post(
             `/api/user/wishlist/add`,
-            { productId },
+            { productID },
             { withCredentials: true }
         );
         return response.data.success
@@ -100,18 +100,15 @@ export const addToWishlist = async (productId) => {
     }
 };
 
-export const removeFromWishlist = async (productId) => {
+export const removeFromWishlist = async (productID) => {
     try {
-        const response = await axios.delete(`/api/user/wishlist/remove`, {
-            data: { productId },
-            withCredentials: true,
-        });
+        const response = await axios.post(`/api/user/wishlist/remove`, { productID }, { withCredentials: true });
+
         return response.data.success
             ? { success: true, message: "Product removed from wishlist." }
             : {
                 success: false,
-                message:
-                    response.data.message || "Failed to remove product from wishlist.",
+                message: response.data.message || "Failed to remove product from wishlist.",
             };
     } catch (err) {
         return {
@@ -121,13 +118,14 @@ export const removeFromWishlist = async (productId) => {
     }
 };
 
+
 export const updateUserProfile = async (profileData) => {
     try {
         const response = await axios.put(`/api/user/profile`, profileData, {
             withCredentials: true,
         });
         return response.data.success
-            ? { success: true, message: "Profile updated successfully." }
+            ? { success: true, message: "Profile updated successfully.", updatedUser: response.data.data }
             : {
                 success: false,
                 message: response.data.message || "Failed to update profile.",
@@ -135,7 +133,7 @@ export const updateUserProfile = async (profileData) => {
     } catch (err) {
         return {
             success: false,
-            message: err.response?.data?.message || "Something went wrong.",
+            message: console.error("Axios Error:", err.response?.data || err.message),
         };
     }
 };

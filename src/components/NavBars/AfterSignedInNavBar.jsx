@@ -10,8 +10,11 @@ import SmallStringAnimation from './../StringAnimations/SmallStringAnimation';
 import { useCart } from "../../utils/CartContext";
 import { getUserCart, removeFromCart, updateCartQuantity } from "../../utils/CartService";
 import BarLoader from "../Loaders/CustomLoader1";
+import { toast } from "react-toastify";
+import { Heart, ShoppingBasket } from 'lucide-react';
+import SearchProducts from "../Search";
 
-const BeforeSignedInNavBar = () => {
+const AfterSignedInNavBar = () => {
     const { animate, handleDelayNavigation } = useDelayedNavigation();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { isCartMenuOpen, setIsCartMenuOpen } = useCart();
@@ -190,7 +193,7 @@ const BeforeSignedInNavBar = () => {
                                 custom={0}
                                 className="flex flex-col gap-3"
                             >
-                                <div className="md:mb-0 mb-1">
+                                <div className="md:mb-0 mb-1 text-center">
                                     <span className="font-[poppins] font-semibold uppercase">My Cart</span>
                                     <span className="font-[poppins] font-light uppercase">({products.length} {products.length > 1 ? "items" : "item"})</span>
                                 </div>
@@ -212,7 +215,36 @@ const BeforeSignedInNavBar = () => {
                                             <BarLoader />
                                         </div>
                                     }
-                                    {products.length === 0 ? <p className='text-xl font-semibold font-[nunito] text-black'>No items in Cart.</p> : products.map(product => (
+                                    {products.length === 0 ? (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 100 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ delay: 0.2, delayChildren: 0.5, type: "spring", stiffness: 200 }}
+                                            className="flex flex-col items-center justify-center h-96 rounded-3xl p-8"
+                                        >
+                                            <motion.div
+                                                initial={{ scale: 0 }}
+                                                animate={{ scale: 1 }}
+                                                transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
+                                                className="w-24 h-24 bg-[#ffbb00]/10 rounded-full flex items-center justify-center mb-6"
+                                            >
+                                                <ShoppingBasket size={48} className="text-[#ffbb00]" />
+                                            </motion.div>
+                                            <h2 className="text-2xl font-bold text-[#1f1f1f] mb-2">Your Cart is Empty</h2>
+                                            <p className="text-[#1f1f1f]/70 text-center max-w-md mb-6">
+                                                Items you love can be Added to Cart. Start exploring and add some favorites!
+                                            </p>
+                                            <button
+                                                onClick={() => {
+                                                    handleDelayNavigation("store");
+                                                    setIsCartMenuOpen(false)
+                                                }}
+                                                className="bg-[#1f1f1f] text-white px-6 py-3 rounded-full font-medium hover:bg-[#1f1f1f]/90 transition-all cursor-pointer AddToCartInStore"
+                                            >
+                                                Discover Products
+                                            </button>
+                                        </motion.div>
+                                    ) : products.map(product => (
                                         <div key={product.productId._id} data-key={product.productId._id} className="border-b-[1px] border-[#1f1f1f60] py-4">
                                             <div className="flex gap-2 w-full h-full">
                                                 <div className="w-[30%] h-[75%] border-[1px] border-black rounded-md">
@@ -286,6 +318,7 @@ const BeforeSignedInNavBar = () => {
                                     <button
                                         onClick={() => {
                                             handleDelayNavigation("cart");
+                                            setIsCartMenuOpen(false);
                                         }}
                                         id="NavBarButtons"
                                         className="px-30 py-2 uppercase md:text-base text-lg font-mono font-semibold text-black border-black rounded-full active:scale-90 text-nowrap"
@@ -309,16 +342,15 @@ const BeforeSignedInNavBar = () => {
                     </div>
 
                     <div className="flex items-center gap-1 md:gap-5 h-full">
-                        <input
-                            className="search-with-icon px-4 py-1 bg-[#fff] md:inline-block hidden outline-none border-[1.6px] border-[#111] rounded-full"
-                            type="search"
-                            name="search"
-                            id="search-with-icon"
-                            placeholder="Search Items"
-                        />
+                        <SearchProducts />
                         <div className="flex items-center gap-2 h-full">
-                            <span>
-                                <i className="ri-heart-line text-3xl text-black cursor-pointer"></i>
+                            <span
+                                className="relative cursor-pointer active:scale-90 flex items-center justify-center"
+                                onClick={() => {
+                                    handleDelayNavigation("Wishlist")
+                                }}
+                            >
+                                <Heart size={34} stroke="#1f1f1f" />
                             </span>
                             <span className="relative cursor-pointer active:scale-90" onClick={() => setIsCartMenuOpen(true)}>
                                 <p className="w-3.5 h-5 bg-white rounded-full flex items-center justify-center font-bold absolute right-2 bottom-5">
@@ -348,7 +380,7 @@ const BeforeSignedInNavBar = () => {
     );
 };
 
-export default BeforeSignedInNavBar;
+export default AfterSignedInNavBar;
 
 const menuSlide = {
     initial: {

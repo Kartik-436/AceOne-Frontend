@@ -1,30 +1,45 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 // components/ProfileInfo.jsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Camera } from 'lucide-react';
 import { motion } from 'motion/react';
-import { updateProfilePicture, updateUserProfile } from '../../utils/UserService';
+import { getUserDetails, updateProfilePicture, updateUserProfile } from '../../utils/UserService';
 import { toast } from "react-toastify";
+import BarLoader from '../Loaders/CustomLoader1';
+import useDelayedNavigation from '../../utils/useDelayedNavigation';
+import Transition from '../../Transition';
 
-const ProfileInfo = ({ userData }) => {
+const ProfileInfo = () => {
     const [isEditing, setIsEditing] = useState(false);
-    const [user, setUser] = useState(userData);
+    const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(false);
+
+    const refreshUser = async () => {
+        try {
+            const response = await getUserDetails();
+            console.log(response);
+            if (response.success) {
+                setUser(response.user);
+            } else {
+                console.error("Failed to refresh User:", response.message);
+            }
+        } catch (error) {
+            console.error("Error refreshing User:", error);
+        }
+        setLoading(false);
+    };
+
+    useEffect(() => {
+        refreshUser();
+    }, []);
 
     const handleSave = async (updatedData) => {
         setLoading(true);
 
-        // Ensure dateOfBirth is in the correct format
-        const formattedData = {
-            ...updatedData,
-            dateOfBirth: updatedData.dateOfBirth ? new Date(updatedData.dateOfBirth).toISOString() : null
-        };
-
-        const result = await updateUserProfile(formattedData);
+        const result = await updateUserProfile(updatedData);
 
         if (result.success) {
-            setUser(formattedData); // Update local state with new data
             toast.success(result.message, {
                 position: "top-right",
                 autoClose: 3000,
@@ -34,10 +49,11 @@ const ProfileInfo = ({ userData }) => {
                 draggable: true,
                 progress: undefined,
                 theme: "dark",
-            }); // Show success message
-            setIsEditing(false); // Close modal
+            });
+            setIsEditing(false);
+            await refreshUser();
         } else {
-            toast.error(result.message); // Show error message
+            toast.error(result.message);
         }
 
         setLoading(false);
@@ -66,7 +82,7 @@ const ProfileInfo = ({ userData }) => {
         if (result.success) {
             toast.success(result.message);
             setIsModalOpen(false);
-            window.location.reload();
+            await refreshUser();
         } else {
             toast.error(result.message);
         }
@@ -74,131 +90,158 @@ const ProfileInfo = ({ userData }) => {
         setLoading(false);
     };
 
-    return (
-        <div>
-            <div className="flex justify-between items-center mb-16">
-                <h2 className="text-2xl font-semibold uppercase font-[poppins]">Profile Information</h2>
-                <button
-                    id='Shp-Now-Home-Start'
-                    className="px-6 py-2 bg-[#ffbb00] text-black rounded-full transition-colors"
-                    onClick={() => setIsEditing(true)}
-                >
-                    Edit Profile
-                </button>
-                {isEditing && (
-                    <EditProfileModal
-                        userData={userData}
-                        onClose={() => setIsEditing(false)}
-                        onSave={handleSave}
-                    />
-                )}
+    const { animate, handleDelayNavigation } = useDelayedNavigation();
 
-                {loading && <p className="text-center text-gray-500 mt-2">Updating...</p>}
+    if (loading) {
+        return (
+            <div className='h-screen w-screen bg-[#fbffef] flex items-center justify-center'>
+                <BarLoader />
             </div>
-
-            <div className="flex flex-col justify-between gap-10 px-20">
-                {/* Profile Image Section */}
-                <div className="flex flex-col items-center">
-                    <div className="relative w-40 h-40 rounded-full overflow-hidden border-2 border-[#ffbb00] ml-10">
-                        <img
-                            src={userData.picture}
-                            alt="Profile"
-                            className="w-full h-full object-cover"
-                        />
-                        <div
-                            className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity cursor-pointer"
-                            onClick={() => setIsModalOpen(true)}
+        );
+    } else {
+        return (
+            <>
+                <Transition />
+                <div className='overflow-hidden'>
+                    <div className="flex justify-between items-center mb-16">
+                        <h2 className="text-2xl font-semibold uppercase font-[poppins]">Profile Information</h2>
+                        <button
+                            id='Shp-Now-Home-Start'
+                            className="px-6 py-2 bg-[#ffbb00] text-black rounded-full transition-colors"
+                            onClick={() => setIsEditing(true)}
                         >
-                            <Camera size={30} className="text-gray-300" />
-                        </div>
-
-                        {isModalOpen && (
-                            <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50">
-                                <motion.div
-                                    initial={{ y: 100, opacity: 0 }}
-                                    animate={{ y: 0, opacity: 1 }}
-                                    exit={{ y: 100, opacity: 0 }}
-                                    className="bg-[#111] text-white px-8 py-6 rounded-2xl shadow-xl w-96 relative"
-                                >
-                                    <h2 className="text-xl font-semibold text-center mb-4">Update Profile Picture</h2>
-
-                                    {/* File Input */}
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleFileChange}
-                                        className="w-full bg-[#222] text-white px-4 py-2 rounded-lg mb-4"
-                                        name='picture'
-                                    />
-
-                                    {/* Buttons */}
-                                    <div className="flex justify-between mt-4">
-                                        <button
-                                            onClick={() => setIsModalOpen(false)}
-                                            className="px-5 py-2 bg-gray-600 rounded-lg hover:bg-gray-500 transition cursor-pointer"
-                                        >
-                                            Cancel
-                                        </button>
-                                        <button
-                                            onClick={handleUpload}
-                                            disabled={loading}
-                                            id='Save_Changes_Btn_Profile'
-                                            className="px-5 py-2 bg-[#f5f5f5] text-black rounded-lg transition"
-                                        >
-                                            {loading ? "Uploading..." : "Upload"}
-                                        </button>
-                                    </div>
-                                </motion.div>
-                            </div>
+                            Edit Profile
+                        </button>
+                        {isEditing && (
+                            <EditProfileModal
+                                user={user}
+                                onClose={() => setIsEditing(false)}
+                                onSave={handleSave}
+                            />
                         )}
+
+                        {loading && <p className="text-center text-gray-500 mt-2">Updating...</p>}
                     </div>
+
+                    <motion.div
+                        initial={{ opacity: 0, y: 100 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.35, delayChildren: 0.5, type: "spring", stiffness: 200 }}
+                        className="flex flex-col justify-between gap-10 px-20"
+                    >
+                        {/* Profile Image Section */}
+                        <motion.div
+                            // initial={{ scale: 0 }}
+                            // animate={{ scale: 1 }}
+                            // transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
+                            className="flex flex-col items-center"
+                        >
+                            <div className="relative w-40 h-40 rounded-full overflow-hidden border-2 border-[#ffbb00] ml-10">
+                                <img
+                                    src={user?.picture}
+                                    alt="Profile"
+                                    className="w-full h-full object-cover"
+                                />
+                                <div
+                                    className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity cursor-pointer"
+                                    onClick={() => setIsModalOpen(true)}
+                                >
+                                    <Camera size={30} className="text-gray-300" />
+                                </div>
+
+                                {isModalOpen && (
+                                    <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50">
+                                        <motion.div
+                                            initial={{ y: 100, opacity: 0 }}
+                                            animate={{ y: 0, opacity: 1 }}
+                                            exit={{ y: 100, opacity: 0 }}
+                                            className="bg-[#111] text-white px-8 py-6 rounded-2xl shadow-xl w-96 relative"
+                                        >
+                                            <h2 className="text-xl font-semibold text-center mb-4">Update Profile Picture</h2>
+
+                                            {/* File Input */}
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={handleFileChange}
+                                                className="w-full bg-[#222] text-white px-4 py-2 rounded-lg mb-4"
+                                                name='picture'
+                                            />
+
+                                            {/* Buttons */}
+                                            <div className="flex justify-between mt-4">
+                                                <button
+                                                    onClick={() => setIsModalOpen(false)}
+                                                    className="px-5 py-2 bg-gray-600 rounded-lg hover:bg-gray-500 transition cursor-pointer"
+                                                >
+                                                    Cancel
+                                                </button>
+                                                <button
+                                                    onClick={handleUpload}
+                                                    disabled={loading}
+                                                    id='Save_Changes_Btn_Profile'
+                                                    className="px-5 py-2 bg-[#f5f5f5] text-black rounded-lg transition"
+                                                >
+                                                    {loading ? "Uploading..." : "Upload"}
+                                                </button>
+                                            </div>
+                                        </motion.div>
+                                    </div>
+                                )}
+                            </div>
+                        </motion.div>
+
+                        {/* Profile Details Section */}
+                        <motion.div
+                            className="ml-50"
+                        >
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <h3 className="text-sm text-gray-500">Full Name</h3>
+                                    <p className="font-medium">{user?.fullName}</p>
+                                </div>
+
+                                <div>
+                                    <h3 className="text-sm text-gray-500">Email Address</h3>
+                                    <p className="font-medium">{user?.email}</p>
+                                </div>
+
+                                <div>
+                                    <h3 className="text-sm text-gray-500">Phone Number</h3>
+                                    <p className="font-medium">{user?.contact}</p>
+                                </div>
+
+                                <div className="md:col-span-2">
+                                    <h3 className="text-sm text-gray-500">Address</h3>
+                                    <p className={`font-medium ${user?.address !== "" && user?.address !== undefined && user?.address !== null ? "" : "text-red-500"} `}>{user?.address || "Address is not added"}</p>
+                                </div>
+
+                                <div className='md:col-start-2 row-start-2'>
+                                    <h3 className="text-sm text-gray-500">Date Of Birth</h3>
+                                    <p className="font-medium">{user?.dateOfBirth
+                                        ? new Date(user?.dateOfBirth).toDateString()
+                                        : "Date of Birth Not Available"}</p>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </motion.div>
                 </div>
-
-                {/* Profile Details Section */}
-                <div className="ml-50">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <h3 className="text-sm text-gray-500">Full Name</h3>
-                            <p className="font-medium">{userData.fullName}</p>
-                        </div>
-
-                        <div>
-                            <h3 className="text-sm text-gray-500">Email Address</h3>
-                            <p className="font-medium">{userData.email}</p>
-                        </div>
-
-                        <div>
-                            <h3 className="text-sm text-gray-500">Phone Number</h3>
-                            <p className="font-medium">{userData.contact}</p>
-                        </div>
-
-                        <div className="md:col-span-2">
-                            <h3 className="text-sm text-gray-500">Address</h3>
-                            <p className={`font-medium ${userData.address !== "" && userData.address !== undefined && userData.address !== null ? "" : "text-red-500"} `}>{userData.address || "Address is not added"}</p>
-                        </div>
-
-                        <div className='md:col-start-2 row-start-2'>
-                            <h3 className="text-sm text-gray-500">Date Of Birth</h3>
-                            <p className="font-medium">{userData.dateOfBirth
-                                ? new Date(userData.dateOfBirth).toDateString()
-                                : "Date of Birth Not Available"}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-};
+            </>
+        );
+    };
+}
 
 export default ProfileInfo;
 
-const EditProfileModal = ({ userData, onClose, onSave }) => {
+const EditProfileModal = ({ user, onClose, onSave }) => {
     const [formData, setFormData] = useState({
-        fullName: userData?.fullName || "",
-        email: userData?.email || "",
-        contact: userData?.contact || "",
-        address: userData?.address || "",
-        dateOfBirth: userData?.dateOfBirth || ""
+        fullName: user?.fullName || "",
+        email: user?.email || "",
+        contact: user?.contact || "",
+        address: user?.address || "",
+        dateOfBirth: user?.dateOfBirth
+            ? new Date(user.dateOfBirth).toISOString().split("T")[0]
+            : "",
     });
 
     const handleChange = (e) => {
