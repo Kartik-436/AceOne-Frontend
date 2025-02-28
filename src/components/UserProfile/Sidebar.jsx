@@ -21,7 +21,6 @@ const Sidebar = ({ activeComponent, setActiveComponent, onLogout }) => {
     const refreshUser = async () => {
         try {
             const response = await getUserDetails();
-            console.log(response);
             if (response.success) {
                 setUser(response.user);
             } else {

@@ -32,7 +32,6 @@ export const addToCart = async (productID, quantity = 1) => {
 export const updateCartQuantity = async (productID, change) => {
     try {
         const response = await axios.put("/api/user/cart/update", { productID, change }, { withCredentials: true });
-        console.log(response)
         if (response.data.success) {
             return { success: true, cart: response.data.data };
         } else {

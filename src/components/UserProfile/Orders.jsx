@@ -27,7 +27,7 @@ const Orders = () => {
 
     return (
         <>
-            <Transition />
+            <Transition animate={animate} />
             <div>
                 <h2 className="text-2xl font-bold mb-6">My Orders</h2>
 

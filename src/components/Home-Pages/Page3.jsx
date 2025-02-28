@@ -164,9 +164,12 @@ const Page3 = ({ Kids }) => {
                                 className="flex flex-col items-start justify-between h-full py-6 px-3"
                             >
                                 <div className="flex flex-col items-start justify-center gap-1.5">
-                                    <div>
+                                    <div className='flex flex-col items-start gap-2'>
                                         <h1 className="text-black font-bold font-mono text-xl">{Kids[0].name}</h1>
-                                        <h1 className="text-black font-light font-mono -mt-1">{Kids[0].category}</h1>
+                                        <div className='flex items-start flex-col w-full'>
+                                            <h1 className="text-black font-lighter font-mono">{Kids[0].category} ({Kids[0].size})</h1>
+                                            <h1 className="text-black font-light font-mono mt-[-1.3vh]">{Kids[0].color}</h1>
+                                        </div>
                                     </div>
                                     <div className="flex items-center gap-1.5">
                                         <span className="text-black font-light font-mono">₹{Math.round(Kids[0].discountPrice)}</span>

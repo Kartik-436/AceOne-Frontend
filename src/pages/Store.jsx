@@ -441,7 +441,7 @@ const Store = (props) => {
                                                     </div>
 
                                                     <div className='md:p-5 p-3 bg-[#fff] text-black'>
-                                                        <h3 className='text-xl font-semibold mb-2'>{product.name}</h3>
+                                                        <h3 className='text-xl font-semibold mb-3.5'>{product.name} ( {product.color} )</h3>
                                                         <div className='flex justify-between items-center'>
                                                             <div>
                                                                 {product.discount ? (
@@ -452,7 +452,9 @@ const Store = (props) => {
                                                                 ) : (
                                                                     <span className='text-lg font-bold'>₹{product.price}</span>
                                                                 )}
-                                                                <p className='text-xs mt-1 text-black opacity-80'>{product.category}</p>
+                                                                <div>
+                                                                    <p className='text-xs mt-1 text-black opacity-80'>{product.category}  ( {product.size} )</p>
+                                                                </div>
                                                             </div>
                                                             <div className='flex items-center justify-center gap-2'>
                                                                 <button

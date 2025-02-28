@@ -8,12 +8,18 @@ import { useAuth } from "../../utils/AuthContext";
 import Transition from '../../Transition';
 import { registerUser } from './../../utils/AuthService';
 import "../../stylesheets/Signup.css"
+import { toast } from 'react-toastify';
 
 const FormSignup = () => {
     const [isTyping, setIsTyping] = useState(false);
     const [error, setError] = useState("");
     const { animate, handleDelayNavigation } = useDelayedNavigation();
     const { LoginUser } = useAuth();
+    const [showPassword, setShowPassword] = useState(false);
+    const [password, setPassword] = useState("");
+    const [strength, setStrength] = useState(0);
+
+    const strengthClasses = ["bg-red-500 w-1/5", "bg-orange-500 w-2/5", "bg-yellow-500 w-3/5", "bg-green-500 w-4/5", "bg-blue-500 w-full"];
 
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(signupSchema),
@@ -26,10 +32,20 @@ const FormSignup = () => {
 
         if (result.success) {
             LoginUser(result.user);
+            toast.success("User Registered Successfully !")
             handleDelayNavigation("Home");
         } else {
             setError(result.message);
         }
+    };
+    const evaluateStrength = (value) => {
+        let score = -1;
+        if (value.length >= 8) score++;
+        if (/[A-Z]/.test(value)) score++;
+        if (/[a-z]/.test(value)) score++;
+        if (/[0-9]/.test(value)) score++;
+        if (/[^A-Za-z0-9]/.test(value)) score++;
+        setStrength(score);
     };
 
     return (
@@ -93,16 +109,24 @@ const FormSignup = () => {
                                             placeholder='Password'
                                             name='password'
                                             {...register("password")}
-                                            onFocus={() => setIsTyping(true)}
-                                            onBlur={(e) => !e.target.value && setIsTyping(false)}
+                                            value={password}
+                                            onChange={(e) => {
+                                                setPassword(e.target.value);
+                                                evaluateStrength(e.target.value);
+                                            }}
                                             required
                                         />
-                                        <p className='text-red-500 tracking-tighter md:tracking-normal text-xs md:text-sm md:-mt-3 text-wrap md:max-w-[40vw]'>{errors.password?.message}</p>
-                                        {isTyping && (
-                                            <p id='PassWarn' className='text-red-500 tracking-tighter md:tracking-normal text-xs md:text-sm md:-mt-3 text-wrap md:max-w-[40vw]'>
-                                                The password should contain at least 1 uppercase, 1 lowercase, 1 number, and 1 special character!
-                                            </p>
+                                        {password && (
+                                            <div className='w-full'>
+                                                <div className='h-1 bg-gray-200 rounded-full overflow-hidden'>
+                                                    <div className={`h-full transition-all duration-300 ${strengthClasses[strength]}`}></div>
+                                                </div>
+                                                <p className='text-sm font-semibold text-end'>
+                                                    {["Very Weak", "Weak", "Fair", "Strong", "Very Strong"][strength]}
+                                                </p>
+                                            </div>
                                         )}
+                                        <p className='text-red-500 tracking-tighter md:tracking-normal text-xs md:text-sm md:-mt-3 text-wrap md:max-w-[40vw]'>{errors.password?.message}</p>
 
                                         <input
                                             className='contact-with-icon inline-block px-6 py-4 text-lg bg-[#F0EDFF] rounded-full font-semibold font-[nunito] outline-none min-w-[30vw]'

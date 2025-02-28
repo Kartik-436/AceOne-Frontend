@@ -7,13 +7,20 @@ import useDelayedNavigation from './../../utils/useDelayedNavigation';
 import { useAuth } from "../../utils/AuthContext";
 import Transition from '../../Transition';
 import { loginUser } from './../../utils/AuthService';
+import { Eye, EyeOff } from 'lucide-react';
 import "../../stylesheets/Login.css"
+import { toast } from 'react-toastify';
+
+const strengthClasses = ["bg-red-500 w-1/5", "bg-orange-500 w-2/5", "bg-yellow-500 w-3/5", "bg-green-500 w-4/5", "bg-blue-500 w-full"];
 
 const FormLogin = () => {
     const [isTyping, setIsTyping] = useState(false);
     const [error, setError] = useState("");
     const { animate, handleDelayNavigation } = useDelayedNavigation();
     const { LoginUser } = useAuth();
+    const [showPassword, setShowPassword] = useState(false);
+    const [password, setPassword] = useState("");
+    const [strength, setStrength] = useState(0);
 
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(loginSchema),
@@ -26,10 +33,21 @@ const FormLogin = () => {
 
         if (result.success) {
             LoginUser(result.user);
+            toast.success("User Logged In Successfully !")
             handleDelayNavigation("Home");
         } else {
             setError(result.message);
         }
+    };
+
+    const evaluateStrength = (value) => {
+        let score = -1;
+        if (value.length >= 8) score++;
+        if (/[A-Z]/.test(value)) score++;
+        if (/[a-z]/.test(value)) score++;
+        if (/[0-9]/.test(value)) score++;
+        if (/[^A-Za-z0-9]/.test(value)) score++;
+        setStrength(score);
     };
 
     return (
@@ -49,7 +67,8 @@ const FormLogin = () => {
 
                 <div className='md:w-1/2 flex items-center justify-center h-screen overflow-hidden'>
                     {/* <Link to="/register"> */}
-                    <button id='Signup-Instead-Login-Route'
+                    <button
+                        id='Signup-Instead-Login-Route'
                         className='inline-block text-nowrap md:px-7 md:py-4 cursor-pointer bg-[#1f1f1f] md:bg-transparent text-white text-xl font-bold rounded-full md:min-w-[13vw] absolute md:right-10 right-2 top-6 md:top-10 font-[poppins] py-3 px-5'
                         onClick={() => handleDelayNavigation("register")}
                     >
@@ -82,23 +101,30 @@ const FormLogin = () => {
                                         <input
                                             id='InputLoginPassword'
                                             className='password-with-icon inline-block px-6 py-4 text-lg bg-[#F0EDFF] rounded-full font-semibold font-[nunito] outline-none min-w-[30vw]'
-                                            type="password"
+                                            type={showPassword ? "text" : "password"}
                                             placeholder='Password'
                                             name='password'
                                             {...register("password")}
-                                            onFocus={() => setIsTyping(true)}
-                                            onBlur={(e) => setIsTyping(false)}
+                                            value={password}
+                                            onChange={(e) => {
+                                                setPassword(e.target.value);
+                                                evaluateStrength(e.target.value);
+                                            }}
                                             required
                                         />
+                                        {password && (
+                                            <div className='w-full'>
+                                                <div className='h-1 bg-gray-200 rounded-full overflow-hidden'>
+                                                    <div className={`h-full transition-all duration-300 ${strengthClasses[strength]}`}></div>
+                                                </div>
+                                                <p className='text-sm font-semibold text-end'>
+                                                    {["Very Weak", "Weak", "Fair", "Strong", "Very Strong"][strength]}
+                                                </p>
+                                            </div>
+                                        )}
                                         <p id='PassWarn' className='text-red-500 md:tracking-normal tracking-tighter text-xs md:text-sm md:-mt-3 text-wrap md:max-w-[40vw] max-w-[80%]'>
                                             {errors.password?.message}
                                         </p>
-
-                                        {isTyping && (
-                                            <p id='PassWarn' className='text-red-500 md:tracking-normal tracking-tighter text-xs md:text-sm md:-mt-3 text-wrap md:max-w-[40vw] max-w-[80%]'>
-                                                The password should contain at least 1 uppercase, 1 lowercase, 1 number, and 1 special character!
-                                            </p>
-                                        )}
                                         {error && <p className="text-red-500 text-sm">{error}</p>}
                                     </div>
                                     <input

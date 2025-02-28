@@ -18,7 +18,6 @@ const ProfileInfo = () => {
     const refreshUser = async () => {
         try {
             const response = await getUserDetails();
-            console.log(response);
             if (response.success) {
                 setUser(response.user);
             } else {

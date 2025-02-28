@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react'
 import Footer from '../components/Footer/Footer';
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, easeInOut, motion } from 'motion/react';
 import SmallStringAnimation from '../components/StringAnimations/SmallStringAnimation';
 import BarLoader from '../components/Loaders/CustomLoader1';
 import axios from 'axios';
@@ -161,13 +161,19 @@ const Cart = () => {
                                         </button>
                                     </motion.div>
                                 ) : products.map(product => (
-                                    <div key={product.productId._id} data-key={product.productId._id} className='flex justify-between md:gap-15 h-[20vh] w-full px-2 py-5 border-b-[1px] border-black'>
-                                        <div className='flex gap-2 md:gap-4 h-full w-full'>
+                                    <div key={product.productId._id} data-key={product.productId._id} className='flex justify-between md:gap-15 h-[24vh] w-full px-2 py-5 border-b-[1px] border-black'>
+                                        <div className='flex gap-2 items-start md:gap-4 h-full w-full'>
                                             <div className='border-[1px] border-black h-full min-w-[50%] rounded-sm'>
                                                 <img src={product.productId.image !== "" ? product.productId.image : "placeholder.jpg"} className='h-full w-full object-cover' alt={product.productId.name} />
                                             </div>
-                                            <div className='flex flex-col justify-between gap-2'>
-                                                <h1 className='text-xl font-[poppins] font-normal md:max-w-[10vw] text-wrap'>{product.productId.name}</h1>
+                                            <div className='flex flex-col h-full w-full justify-between gap-2'>
+                                                <div className='flex flex-col items-start justify-center gap-2'>
+                                                    <h1 className='text-lg font-[poppins] font-normal md:max-w-[5vw] text-wrap'>{product.productId.name}</h1>
+                                                    <div>
+                                                        <h1 className='text-xs font-[poppins] font-medium text-wrap'>{product.productId.category} ({product.productId.size})</h1>
+                                                        <h1 className='text-xs font-[poppins] font-medium mt-[-0.3vh] text-wrap'>{product.productId.color}</h1>
+                                                    </div>
+                                                </div>
                                                 {product.productId.discount ? (
                                                     <div className="flex gap-1.5 items-center">
                                                         <span className="text-black font-normal text-sm font-[poppins]">₹{Math.round(product.productId.discountPrice)}</span>
@@ -206,7 +212,7 @@ const Cart = () => {
                                                 </div>
 
                                                 <div onClick={() => removeProduct(product.productId._id)}>
-                                                    <i className="ri-delete-bin-6-line text-[#252525d2] text-lg cursor-pointer scale-y-125"></i>
+                                                    <i className="ri-delete-bin-6-line text-[#252525d2] text-lg cursor-pointer scale-y-125 hover:text-red-500 transition-colors duration-200"></i>
                                                 </div>
                                             </div>
 
@@ -275,13 +281,13 @@ const Cart = () => {
                                 <div>
                                     <button
                                         onClick={() => {
-                                            if (isLoggedIn && user.address) {
-                                                toast.error("Cannot Place an Order Right Now !");
-                                            } else if (!isLoggedIn && user.address) {
-                                                toast.error("Please Login to Place any order !")
+                                            if (isLoggedIn && user?.address) {
+                                                toast.error("Cannot Place an Order Right Now!");
+                                            } else if (!isLoggedIn && user?.address) {
+                                                toast.error("Please Login to Place any order!")
                                                 handleDelayNavigation("login");
                                             } else {
-                                                toast.error("Please Add your Address to place any order !")
+                                                toast.error("Add your Address to place any order!")
                                                 handleDelayNavigation("userprofile");
                                             }
                                         }}

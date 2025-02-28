@@ -220,8 +220,8 @@ const Page2 = ({ bestSelling, Discounted }) => {
                         }
                     }}
                 >
-                    <h1 className='text-black font-bold font-mono text-lg'>{product.name}</h1>
-                    <h1 className="text-black font-light font-mono -mt-1">{Discounted[0].category}</h1>
+                    <h1 className='text-black font-bold font-mono text-lg'>{product.name} ({Discounted[0].color})</h1>
+                    <h1 className="text-black font-light font-mono -mt-1">{Discounted[0].category} ({Discounted[0].size})</h1>
                     <div className='flex items-center gap-1.5'>
                         <span className='text-black font-light font-mono text-md'>${Math.round(product.discountPrice) || Math.round(product.price)}</span>
                         {product.discountPrice && <span className='text-black font-medium font-mono text-sm line-through'>${Math.round(product.price)}</span>}

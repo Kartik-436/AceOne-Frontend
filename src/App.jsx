@@ -17,6 +17,7 @@ import { CartProvider } from "./utils/CartContext";
 import { AuthProvider } from "./utils/AuthContext";
 import OwnerProfile from "./pages/OwnerProfile";
 import { ToastContainer } from "react-toastify";
+import useScrollRestoration from "./components/ScrollRestoration";
 
 const PageTransition = ({ children }) => {
     const containerRef = useRef(null);

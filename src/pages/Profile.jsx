@@ -23,7 +23,6 @@ const Profile = () => {
     const { isLoggedIn, loading } = useAuthStatus();
     const [error, setError] = useState("");
 
-    // State to manage which component is currently active
     const [activeComponent, setActiveComponent] = useState('profile');
     const [isLogoutModalOpen, setLogoutModalOpen] = useState(false);
 

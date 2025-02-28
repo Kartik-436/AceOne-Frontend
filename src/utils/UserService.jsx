@@ -5,6 +5,7 @@ export const getUserOrders = async () => {
         const response = await axios.get(`/api/user/orders`, {
             withCredentials: true,
         });
+
         return response.data.success
             ? { success: true, orders: response.data.data }
             : {
@@ -21,9 +22,17 @@ export const getUserOrders = async () => {
 
 export const placeOrder = async (orderData) => {
     try {
+        if (!orderData.modeOfPayment) {
+            return {
+                success: false,
+                message: "Mode of payment is required.",
+            };
+        }
+
         const response = await axios.post(`/api/user/order/place`, orderData, {
             withCredentials: true,
         });
+
         return response.data.success
             ? { success: true, order: response.data.data }
             : {
@@ -45,8 +54,9 @@ export const cancelOrder = async (orderId) => {
             { orderId },
             { withCredentials: true }
         );
+
         return response.data.success
-            ? { success: true, message: "Order canceled successfully." }
+            ? { success: true, message: "Order cancelled successfully." }
             : {
                 success: false,
                 message: response.data.message || "Failed to cancel order.",
