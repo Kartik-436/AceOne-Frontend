@@ -202,7 +202,7 @@ const Page2 = ({ bestSelling, Discounted }) => {
                 >
                     {product.discountPrice ? "Sale" : "BestSeller"}
                 </motion.div>
-                <img style={{ scale: scale }} src={product.image || "placeholder.jpg"} alt={product.name} className='w-full h-full object-cover' />
+                <img style={{ scale: scale }} src={product.image || "https://icon-library.com/images/products-icon-png/products-icon-png-12.jpg"} alt={product.name} className='w-full h-full object-cover' />
             </motion.div>
 
             <div className='flex w-full items-start justify-between px-3 pr-5'>

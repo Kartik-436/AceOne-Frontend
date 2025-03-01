@@ -29,7 +29,7 @@ export const placeOrder = async (orderData) => {
             };
         }
 
-        const response = await axios.post(`/api/user/order/place`, orderData, {
+        const response = await axios.post(`/api/user/order`, orderData, {
             withCredentials: true,
         });
 

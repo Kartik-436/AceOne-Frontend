@@ -13,7 +13,8 @@ import UsersList from '../components/OwnerProfile/UsersList';
 import Dashboard from '../components/OwnerProfile/Dashboard';
 import { toast } from 'react-toastify';
 import { motion } from "framer-motion";
-import { Home, ShoppingCart, PackageSearch, UserRoundCog, LineChart, LogOut } from "lucide-react";
+import { Home, ShoppingCart, PackageSearch, UserRoundCog, LineChart, LogOut, Cog } from "lucide-react";
+import OwnerSettings from '../components/OwnerProfile/OwnerSettings';
 
 const OwnerProfile = () => {
     const { logout } = useAuth();
@@ -36,15 +37,16 @@ const OwnerProfile = () => {
             <Transition animate={animate} />
             <div className="min-h-screen w-full bg-[#f0efe7] text-black md:p-5 p-2 flex items-start justify-end">
                 {/* Side Bar */}
-                <Sidebar handleLogout={handleLogout} setActiveTab={setActiveTab} />
+                <Sidebar handleLogout={handleLogout} setActiveTab={setActiveTab} activeTab={activeTab} />
 
                 {/* Main Content */}
                 <div className='w-[92%] h-full bg-[#f0efe7] text-black'>
-                    {activeTab === 'dashboard' && <Dashboard />}
+                    {activeTab === 'dashboard' && <Dashboard setActiveTab={setActiveTab} />}
                     {activeTab === 'users' && <UsersList />}
                     {activeTab === 'orders' && <OrdersList />}
                     {activeTab === 'products' && <ProductsManager />}
                     {activeTab === 'analytics' && <Analytics />}
+                    {activeTab === 'settings' && <OwnerSettings />}
                 </div>
             </div>
         </>
@@ -53,7 +55,7 @@ const OwnerProfile = () => {
 
 export default OwnerProfile;
 
-const Sidebar = ({ handleLogout, setActiveTab }) => {
+const Sidebar = ({ handleLogout, setActiveTab, activeTab }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const [active, setActive] = useState('dashboard');
 
@@ -63,6 +65,7 @@ const Sidebar = ({ handleLogout, setActiveTab }) => {
         { icon: <PackageSearch size={24} />, text: 'Products', id: 'products' },
         { icon: <UserRoundCog size={24} />, text: 'Users', id: 'users' },
         { icon: <LineChart size={24} />, text: 'Analytics', id: 'analytics' },
+        { icon: <Cog size={24} />, text: 'Settings', id: 'settings' },
     ];
 
     const handleTabChange = (tabId) => {
@@ -95,7 +98,7 @@ const Sidebar = ({ handleLogout, setActiveTab }) => {
                     {sidebarItems.map((item, index) => (
                         <motion.div
                             key={item.id}
-                            className={`flex items-center rounded-lg w-full pl-4 cursor-pointer py-3 ${active === item.id ? 'bg-[#ffbb00] text-black' : 'hover:bg-[rgba(255,255,255,0.2)]'}`}
+                            className={`flex items-center rounded-lg w-full pl-4 cursor-pointer py-3 ${activeTab === item.id ? 'bg-[#ffbb00] text-black' : 'hover:bg-[rgba(255,255,255,0.2)]'}`}
                             onClick={() => handleTabChange(item.id)}
                             whileTap={{ scale: 0.96 }}
                             transition={{ type: 'spring', stiffness: 300, damping: 15 }}

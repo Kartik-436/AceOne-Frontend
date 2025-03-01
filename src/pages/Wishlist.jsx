@@ -158,7 +158,7 @@ const Wishlist = () => {
                                     >
                                         <div className='relative'>
                                             <img
-                                                src={product.product.image !== "" ? product.product.image : "placeholder.jpg"}
+                                                src={product.product.image || "https://icon-library.com/images/products-icon-png/products-icon-png-12.jpg"}
                                                 alt={product.product.name}
                                                 className='w-full h-64 object-cover text-white'
                                             />

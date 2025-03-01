@@ -50,7 +50,7 @@ const Sidebar = ({ activeComponent, setActiveComponent, onLogout }) => {
             <div className="flex flex-col items-center mb-8">
                 <div className="w-24 h-24 rounded-full overflow-hidden mb-4 border-2 border-[#1f1f1f]">
                     <img
-                        src={user?.picture || "PFplaceholder.jpg"}
+                        src={user?.picture || "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcreazilla-store.fra1.digitaloceanspaces.com%2Ficons%2F3202933%2Fuser-circle-icon-md.png&f=1&nofb=1&ipt=3c31159b2e0bac086a52351ed5919af4e6936e024f7c3baa351b44782de00eb1&ipo=images"}
                         alt="Profile"
                         className="w-full h-full object-cover"
                     />

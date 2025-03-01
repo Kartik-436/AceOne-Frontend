@@ -265,10 +265,10 @@ const BeforeSignedInNavBar = () => {
                                             </button>
                                         </motion.div>
                                     ) : products.map(product => (
-                                        <div key={product.productId._id} data-key={product.productId._id} className="border-b-[1px] border-[#1f1f1f60] py-4">
+                                        <div key={product.productId._id} data-key={product.productId._id} className="border-b-[1px] px-3 border-[#1f1f1f60] py-4">
                                             <div className="flex gap-2 w-full h-full">
                                                 <div className="w-[30%] h-[75%] border-[1px] border-black rounded-md">
-                                                    <img src={product.productId.image || "placeholder.jpg"} alt="shoepic" />
+                                                    <img src={product.productId.image || "https://icon-library.com/images/products-icon-png/products-icon-png-12.jpg"} alt="shoepic" />
                                                 </div>
 
                                                 <div className="flex flex-col w-full h-full gap-1">

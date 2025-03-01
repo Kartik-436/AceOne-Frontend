@@ -37,7 +37,7 @@ const Page4 = ({ Kids, Men, Women }) => {
             if (window.innerWidth < 768) {
                 setOffset(["-180% end", "-80% end"]);
             } else {
-                setOffset(["start end", "center center"]);
+                setOffset(["start end", "center 40%"]);
             }
         };
 

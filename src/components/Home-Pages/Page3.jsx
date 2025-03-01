@@ -155,7 +155,7 @@ const Page3 = ({ Kids }) => {
                                     variants={fadeSideCome}
                                     className='absolute top-2 left-3 px-3 py-0.5 bg-[#ffbb00] text-white rounded-md uppercase font-mono font-medium text-xs'>Sale</motion.div>
 
-                                <img className='w-full h-full object-cover rounded-md text-black' src={Kids[0].image || "placeholder.jpg"} alt="Kids Image" />
+                                <img className='w-full h-full object-cover rounded-md text-black' src={Kids[0].image || "https://icon-library.com/images/products-icon-png/products-icon-png-12.jpg"} alt="Kids Image" />
                             </motion.div>
                             <motion.div
                                 initial='hidden'

@@ -15,6 +15,7 @@ import HalfHome2 from '../components/Home-Pages/HalfHome2';
 import Footer from './../components/Footer/Footer';
 import useAuthStatus from '../utils/IsLoggedInChecker';
 import { getAllProducts, getBestSellingProducts, getDiscountedProducts } from './../utils/ProductService';
+import { getOwnerProfile } from '../utils/OwnerService';
 
 const Home = () => {
     const { animate, handleDelayNavigation } = useDelayedNavigation();
@@ -69,6 +70,20 @@ const Home = () => {
         };
 
         fetchAllProductData();
+
+        const handleOwnerLoggedIn = async () => {
+            try {
+                const response = await getOwnerProfile();
+
+                if (response.success && response.profile) {
+                    handleDelayNavigation("ownerProfile")
+                }
+            } catch (error) {
+                console.error("getting Owner Error: ", error)
+            }
+        }
+
+        handleOwnerLoggedIn();
     }, []);
 
     // Setup smooth scrolling with Lenis

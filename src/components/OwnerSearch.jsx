@@ -55,7 +55,7 @@ const OwnerSearch = () => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -50 }}
                         transition={{ duration: 0.5, staggerChildren: 0.5, delay: 0.3, ease: "anticipate" }}
-                        className="absolute bg-white border border-gray-300 rounded-lg mt-3 w-[34vw] max-h-[40vh] overflow-y-auto p-2 overflow-x-hidden noScrollbar shadow-lg shadow-black"
+                        className="absolute bg-white border border-gray-300 rounded-lg mt-3 w-[34vw] max-h-[40vh] overflow-y-auto p-2 overflow-x-hidden noScrollbar shadow-lg shadow-black z-20"
                     >
                         {results.map((product) => {
                             const discountPrice =

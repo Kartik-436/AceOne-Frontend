@@ -147,6 +147,7 @@ export const removeDiscount = async (id) => {
 export const getAllOrders = async () => {
     try {
         const response = await axios.get("/api/owner/all-orders", { withCredentials: true });
+        console.log(response)
         return response.data.success ? { success: true, orders: response.data.data } : { success: false, message: response.data.message || "Failed to fetch orders." };
     } catch (err) {
         return { success: false, message: err.response?.data?.message || "Something went wrong." };

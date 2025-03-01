@@ -24,6 +24,7 @@ import { toast } from 'react-toastify';
 import { StoreIcon } from 'lucide-react';
 import { addToWishlist } from './../utils/UserService';
 import { Heart } from 'lucide-react';
+import SortMenuStore from '../components/SortOptionsStore';
 
 const Store = (props) => {
     const { animate, handleDelayNavigation } = useDelayedNavigation();
@@ -40,25 +41,48 @@ const Store = (props) => {
     const scrollDirection = useRef(0); // 1 for down, -1 for up
     const skewX = useSpring(0, { stiffness: 500, damping: 90 });
 
-    const [selectedCategory, setSelectedCategory] = useState(category || "All_Products");
-    const [priceRange, setPriceRange] = useState([200, 2000]);
+    const [selectedSort, setSelectedSort] = useState(searchParams.get("sort") || "name:asc");
+    const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") || "All_Products");
+    const [priceRange, setPriceRange] = useState([
+        parseFloat(searchParams.get("minPrice")) || 200,
+        parseFloat(searchParams.get("maxPrice")) || 2000
+    ]);
     const [products, setProducts] = useState([]);
-    const [storeloading, setStoreLoading] = useState(false);
+    const [storeLoading, setStoreLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    // Handle category change and update URL
     const handleCategoryChange = (category) => {
         setSelectedCategory(category);
-        setSearchParams({ category }); // Updates URL
+        setSearchParams({ category, sort: selectedSort, minPrice: priceRange[0], maxPrice: priceRange[1] });
     };
 
+    // Handle sorting change and update URL
+    const handleSortChange = (sortOption) => {
+        setSelectedSort(sortOption);
+        setSearchParams({ category: selectedCategory, sort: sortOption, minPrice: priceRange[0], maxPrice: priceRange[1] });
+    };
+
+    // Sync category & sorting with URL when the component mounts
     useEffect(() => {
-        if (category) {
-            setSelectedCategory(category);
+        if (searchParams.get("category")) {
+            setSelectedCategory(searchParams.get("category"));
         }
-    }, [category]); // Update category state when query param changes
+        if (searchParams.get("sort")) {
+            setSelectedSort(searchParams.get("sort"));
+        }
+        if (searchParams.get("minPrice") || searchParams.get("maxPrice")) {
+            setPriceRange([
+                parseFloat(searchParams.get("minPrice")) || 200,
+                parseFloat(searchParams.get("maxPrice")) || 2000
+            ]);
+        }
+    }, [searchParams]);
+
+
 
     // Function to fetch products based on selected filters
-    const fetchProducts = async () => {
+    const fetchSortedProducts = async () => {
         setStoreLoading(true);
 
         const filters = {
@@ -66,13 +90,15 @@ const Store = (props) => {
             maxPrice: priceRange[1]
         };
 
+        const sortOptions = selectedSort ? { sort: selectedSort } : {}; // Example: "price:asc"
+
         let response;
         if (selectedCategory === "All_Products") {
-            response = await getAllProducts(filters);
+            response = await getAllProducts({ ...filters, ...sortOptions });
         } else if (selectedCategory === "Discounted") {
             response = await getDiscountedProducts();
         } else {
-            response = await getAllProducts({ category: selectedCategory, ...filters });
+            response = await getAllProducts({ category: selectedCategory, ...filters, ...sortOptions });
         }
 
         if (response.success) {
@@ -80,14 +106,14 @@ const Store = (props) => {
         } else {
             console.error(response.message);
         }
+
         setStoreLoading(false);
     };
 
-
     // Fetch products when category or price changes
     useEffect(() => {
-        fetchProducts();
-    }, [selectedCategory, priceRange]);
+        fetchSortedProducts();
+    }, [selectedCategory, priceRange, selectedSort]);
 
     // Handle Price Change
     const handlePriceChange = (e) => {
@@ -371,10 +397,13 @@ const Store = (props) => {
                                 <div className='min-h-full w-full bg-[#fbffef] text-black p-8'>
                                     {/* Product Grid Section */}
                                     <div className='w-full'>
-                                        <div>
+                                        <div className='w-full flex items-center justify-between'>
                                             <div className='mb-8'>
                                                 <h2 className='text-3xl font-light text-black font-[poppins]'>Featured Products</h2>
                                                 <div className='w-24 h-0.5 bg-black mt-2'></div>
+                                            </div>
+                                            <div>
+                                                <SortMenuStore setselectedSort={setSelectedSort} selectedSort={selectedSort} handleSortChange={handleSortChange} />
                                             </div>
                                         </div>
 
@@ -390,12 +419,12 @@ const Store = (props) => {
                                                 perspective: "5000px",
                                             }}
                                         >
-                                            {storeloading &&
+                                            {storeLoading &&
                                                 <div className='w-full h-full flex items-center justify-center'>
                                                     <BarLoader />
                                                 </div>
                                             }
-                                            {!storeloading && products.length === 0 ? (
+                                            {!storeLoading && products.length === 0 ? (
                                                 <motion.div
                                                     initial={{ opacity: 0, y: 100 }}
                                                     animate={{ opacity: 1, y: 0 }}
@@ -419,7 +448,7 @@ const Store = (props) => {
                                                 <motion.div
                                                     key={product._id}
                                                     data-key={product._id}
-                                                    className='bg-[#1f1f1f] rounded-xl overflow-hidden shadow-xl flex flex-col justify-between'
+                                                    className='rounded-xl bg-gray-500 overflow-hidden shadow-xl flex flex-col justify-between'
                                                     variants={productCardVariants}
                                                     whileHover={{
                                                         scale: 1.05,
@@ -429,15 +458,15 @@ const Store = (props) => {
                                                 >
                                                     <div className='relative'>
                                                         <img
-                                                            src={product.image !== "" ? product.image : "placeholder.jpg"}
+                                                            src={product.image || "https://icon-library.com/images/products-icon-png/products-icon-png-12.jpg"}
                                                             alt={product.name}
                                                             className='w-full h-64 object-cover text-white'
                                                         />
-                                                        {product.discount && (
+                                                        {product.discount > 0 ? (
                                                             <div className='absolute top-2 right-2 bg-[#ffbb00] text-white px-2 py-0.5 rounded-full font-medium font-[poppins] uppercase text-sm'>
                                                                 SALE
                                                             </div>
-                                                        )}
+                                                        ) : <div />}
                                                     </div>
 
                                                     <div className='md:p-5 p-3 bg-[#fff] text-black'>
@@ -461,7 +490,7 @@ const Store = (props) => {
                                                                     onClick={() => {
                                                                         handleAddToCart(product._id);
                                                                     }}
-                                                                    className='bg-[#1f1f1f] font-semibold text-white py-2 px-5 rounded-full text-sm AddToCartInStore'>
+                                                                    className='bg-[#1f1f1f] font-semibold text-white py-2 px-5 rounded-full text-sm AddToCartInStore border-[1.7px]'>
                                                                     Add to Cart
                                                                 </button>
                                                                 <span

@@ -56,7 +56,6 @@ input[type="range"]::-moz-range-thumb {
     z-index: 1;
     transition: all 0.4s ease-in-out;
     overflow: hidden;
-    border: 1.7px solid black;
     position: relative;
 }
 
