@@ -112,7 +112,7 @@ const Page1 = ({ Discounted }) => {
                 {/* Background Image */}
                 <motion.div
                     style={{ y, opacity }}
-                    className='fixed md:top-0 top-[5%] left-[-85%] md:left-0 w-[300vw] md:w-full h-[110vh] md:h-[115vh] z-[-1]'
+                    className='fixed md:top-0 top-[5%] left-[-100%] md:left-0 w-[340vw] md:w-full h-[110vh] md:h-[115vh] z-[-1]'
                 >
                     <img className='w-full h-full object-fill' src="ShoeBG-1.jpg" alt="Background" />
                 </motion.div>
