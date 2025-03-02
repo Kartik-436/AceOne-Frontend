@@ -56,7 +56,7 @@ const Page1 = ({ Discounted }) => {
         offset: ["start end", "end start"],
     });
 
-    const y = useTransform(scrollYProgress, [0, 1], ["20%", "-20%"]);
+    const y = useTransform(scrollYProgress, [0, 1], ["20%", "-26%"]);
     const opacity = useTransform(scrollYProgress, [0.999, 1], [1, 0]);
 
     const containerRef = useRef(null);
@@ -112,7 +112,7 @@ const Page1 = ({ Discounted }) => {
                 {/* Background Image */}
                 <motion.div
                     style={{ y, opacity }}
-                    className='fixed md:top-0 top-[-2%] left-[-90%] md:left-0 w-[320vw] md:w-full h-[110vh] z-[-1]'
+                    className='fixed md:top-0 top-[-2%] left-[-127%] md:left-0 w-[385vw] md:w-full h-[115vh] z-[-1]'
                 >
                     <img className='w-full h-full object-fill' src="ShoeBG-1.jpg" alt="Background" />
                 </motion.div>
