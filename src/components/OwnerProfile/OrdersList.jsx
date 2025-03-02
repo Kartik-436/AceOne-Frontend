@@ -22,7 +22,6 @@ const OrdersList = () => {
         try {
             setLoading(true)
             const response = await getAllOrders();
-            console.log(response)
             if (response.success) {
                 setOrders(response.orders);
             } else {

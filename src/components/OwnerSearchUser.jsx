@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -10,6 +11,7 @@ const OwnerUserSearch = () => {
     const [query, setQuery] = useState("");
     const [results, setResults] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
     useEffect(() => {
         const delayDebounce = setTimeout(() => {
@@ -96,10 +98,13 @@ const OwnerUserSearch = () => {
                                 <button
                                     className="p-3.5 text-sm border rounded-full transition-all cursor-pointer"
                                     id="Shp-Now-Home-Start"
-                                    onClick={() => handleDeleteUser(user._id)}
+                                    onClick={() => {
+                                        setConfirmModalOpen(true)
+                                    }}
                                 >
                                     <Trash2 size={20} />
                                 </button>
+                                <ConfirmationModal isOpen={confirmModalOpen} onClose={() => { setConfirmModalOpen(false) }} onConfirm={() => { handleDeleteUser(user._id) }} user={user} />
                             </motion.li>
                         ))}
                     </motion.ul>
@@ -110,3 +115,40 @@ const OwnerUserSearch = () => {
 };
 
 export default OwnerUserSearch;
+
+
+const ConfirmationModal = ({ isOpen, onClose, onConfirm, user }) => {
+    return (
+        <AnimatePresence>
+            {isOpen && (
+                <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black/30 backdrop-blur-sm z-50">
+                    <motion.div
+                        key="logout-modal"
+                        initial={{ opacity: 0, scale: 0.3, y: 200 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.3, y: 200 }}
+                        transition={{ duration: 0.5, ease: "backOut" }}
+                        className="bg-white p-6 rounded-lg shadow-lg border-2 border-black"
+                    >
+                        <h2 className="text-lg font-semibold">Confirm Deletion</h2>
+                        <p className="text-gray-600 mt-2">Are you sure you want to Delete {user.fullName} with {user.orders.length} orders ?</p>
+                        <div className="mt-4 flex justify-end gap-3">
+                            <button
+                                onClick={onClose}
+                                className="px-4 py-2 bg-gray-300 rounded-lg cursor-pointer active:scale-95"
+                            >
+                                No
+                            </button>
+                            <button
+                                onClick={onConfirm}
+                                className="px-4 py-2 bg-red-500 text-white rounded-lg cursor-pointer active:scale-95"
+                            >
+                                Yes, Delete
+                            </button>
+                        </div>
+                    </motion.div>
+                </div>
+            )}
+        </AnimatePresence>
+    );
+};

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -5,11 +6,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import BarLoader from './Loaders/CustomLoader1';
 import { Heart, Trash2 } from 'lucide-react';
 import { toast } from "react-toastify";
+import { deleteProduct } from "../utils/OwnerService";
 
 const OwnerSearch = () => {
     const [query, setQuery] = useState("");
     const [results, setResults] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
     useEffect(() => {
         const delayDebounce = setTimeout(() => {
@@ -32,6 +35,21 @@ const OwnerSearch = () => {
             console.error("Search error:", error.message);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleDeleteProduct = async (Pid) => {
+        try {
+            const response = await deleteProduct(Pid);
+            if (response.success) {
+                toast.success("Product deleted successfully");
+            } else {
+                console.error("product deletion error: ", response.messages)
+                toast.error("Failed to delete product")
+            }
+        } catch (error) {
+            console.error("Delete error:", error.message);
+            toast.error("Failed to delete product");
         }
     };
 
@@ -95,18 +113,16 @@ const OwnerSearch = () => {
                                     </div>
                                     <div className="flex gap-2 items-center h-full w-[40%] justify-end">
                                         <button
+                                            onClick={() => {
+                                                setConfirmModalOpen(true)
+                                            }}
                                             id="Shp-Now-Home-Start"
-                                            className="px-2.5 py-1 text-sm bg-[#fff] text-black rounded-full transition-all"
+                                            className="p-4 text-sm border border-gray-400 rounded-full hover:bg-gray-300 transition-all"
                                         >
-                                            Edit Product
-                                        </button>
-                                        <button
-                                            id="Shp-Now-Home-Start"
-                                            className="p-2 text-sm border border-gray-400 rounded-full hover:bg-gray-300 transition-all"
-                                        >
-                                            <Trash2 size={15} />
+                                            <Trash2 size={20} />
                                         </button>
                                     </div>
+                                    <ConfirmationModal isOpen={confirmModalOpen} onClose={() => { setConfirmModalOpen(false) }} onConfirm={() => { handleDeleteProduct(product._id) }} />
                                 </motion.li>
                             );
                         })}
@@ -118,3 +134,39 @@ const OwnerSearch = () => {
 };
 
 export default OwnerSearch;
+
+const ConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
+    return (
+        <AnimatePresence>
+            {isOpen && (
+                <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center backdrop-blur-sm z-50">
+                    <motion.div
+                        key="logout-modal"
+                        initial={{ opacity: 0, scale: 0.3, y: 200 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.3, y: 200 }}
+                        transition={{ duration: 0.5, ease: "backOut" }}
+                        className="bg-white p-6 rounded-lg shadow-lg border-2 border-black"
+                    >
+                        <h2 className="text-lg font-semibold">Confirm Deletion</h2>
+                        <p className="text-gray-600 mt-2">Are you sure you want to Delete a product ?</p>
+                        <div className="mt-4 flex justify-end gap-3">
+                            <button
+                                onClick={onClose}
+                                className="px-4 py-2 bg-gray-300 rounded-lg cursor-pointer active:scale-95"
+                            >
+                                No
+                            </button>
+                            <button
+                                onClick={onConfirm}
+                                className="px-4 py-2 bg-red-500 text-white rounded-lg cursor-pointer active:scale-95"
+                            >
+                                Yes, Delete
+                            </button>
+                        </div>
+                    </motion.div>
+                </div>
+            )}
+        </AnimatePresence>
+    );
+};

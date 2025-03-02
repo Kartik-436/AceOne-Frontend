@@ -12,7 +12,7 @@ import OrdersList from '../components/OwnerProfile/OrdersList';
 import UsersList from '../components/OwnerProfile/UsersList';
 import Dashboard from '../components/OwnerProfile/Dashboard';
 import { toast } from 'react-toastify';
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Home, ShoppingCart, PackageSearch, UserRoundCog, LineChart, LogOut, Cog } from "lucide-react";
 import OwnerSettings from '../components/OwnerProfile/OwnerSettings';
 
@@ -58,6 +58,7 @@ export default OwnerProfile;
 const Sidebar = ({ handleLogout, setActiveTab, activeTab }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const [active, setActive] = useState('dashboard');
+    const [logOut, setLogOut] = useState(false);
 
     const sidebarItems = [
         { icon: <Home size={24} />, text: 'Dashboard', id: 'dashboard' },
@@ -119,7 +120,7 @@ const Sidebar = ({ handleLogout, setActiveTab, activeTab }) => {
             </div>
 
             <motion.button
-                onClick={handleLogout}
+                onClick={() => { setLogOut(true) }}
                 className={`text-red-600 bg-[#f8f8f8] p-3 pr-0 w-full rounded-lg mb-2 flex items-center cursor-pointer`}
                 whileTap={{ scale: 0.96 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 15 }}
@@ -133,6 +134,44 @@ const Sidebar = ({ handleLogout, setActiveTab, activeTab }) => {
                     Logout
                 </motion.span>
             </motion.button>
-        </motion.div>
+
+            <LogoutModal isOpen={logOut} onClose={() => { setLogOut(false) }} onConfirm={handleLogout} />
+        </motion.div >
+    );
+};
+
+const LogoutModal = ({ isOpen, onClose, onConfirm }) => {
+    return (
+        <AnimatePresence>
+            {isOpen && (
+                <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black/30 backdrop-blur-sm z-50">
+                    <motion.div
+                        key="logout-modal"
+                        initial={{ opacity: 0, scale: 0.3, y: 200 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.3, y: 200 }}
+                        transition={{ duration: 0.5, ease: "backOut" }}
+                        className="bg-white p-6 rounded-lg shadow-lg border-2 border-black"
+                    >
+                        <h2 className="text-lg font-semibold">Confirm Logout</h2>
+                        <p className="text-gray-600 mt-2">Are you sure you want to log out?</p>
+                        <div className="mt-4 flex justify-end gap-3">
+                            <button
+                                onClick={onClose}
+                                className="px-4 py-2 bg-gray-300 rounded-lg cursor-pointer active:scale-95"
+                            >
+                                No
+                            </button>
+                            <button
+                                onClick={onConfirm}
+                                className="px-4 py-2 bg-red-500 text-white rounded-lg cursor-pointer active:scale-95"
+                            >
+                                Yes, Logout
+                            </button>
+                        </div>
+                    </motion.div>
+                </div>
+            )}
+        </AnimatePresence>
     );
 };
