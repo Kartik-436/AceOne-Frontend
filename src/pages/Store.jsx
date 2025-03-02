@@ -45,7 +45,7 @@ const Store = (props) => {
     const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") || "All_Products");
     const [priceRange, setPriceRange] = useState([
         parseFloat(searchParams.get("minPrice")) || 200,
-        parseFloat(searchParams.get("maxPrice")) || 2000
+        parseFloat(searchParams.get("maxPrice")) || 20000
     ]);
     const [products, setProducts] = useState([]);
     const [storeLoading, setStoreLoading] = useState(false);
@@ -74,7 +74,7 @@ const Store = (props) => {
         if (searchParams.get("minPrice") || searchParams.get("maxPrice")) {
             setPriceRange([
                 parseFloat(searchParams.get("minPrice")) || 200,
-                parseFloat(searchParams.get("maxPrice")) || 2000
+                parseFloat(searchParams.get("maxPrice")) || 20000
             ]);
         }
     }, [searchParams]);
@@ -373,7 +373,7 @@ const Store = (props) => {
                                                             className="w-full appearance-none h-2 bg-gray-300 rounded-lg outline-none transition-all"
                                                             type="range"
                                                             min="200"
-                                                            max="2000"
+                                                            max="20000"
                                                             value={priceRange[1]}
                                                             onChange={handlePriceChange}
                                                             name="range"
@@ -470,7 +470,7 @@ const Store = (props) => {
                                                     </div>
 
                                                     <div className='md:p-5 p-3 bg-[#fff] text-black'>
-                                                        <h3 className='text-xl font-semibold mb-3.5'>{product.name} ( {product.color} )</h3>
+                                                        <h3 className='text-xl tracking-tight font-semibold mb-3.5'>{product.name} ( {product.color} )</h3>
                                                         <div className='flex justify-between items-center'>
                                                             <div>
                                                                 {product.discount ? (

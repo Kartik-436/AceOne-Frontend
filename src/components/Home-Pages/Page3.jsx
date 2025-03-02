@@ -142,7 +142,7 @@ const Page3 = ({ Kids }) => {
                     <motion.div
                         className="w-full hidden md:flex items-center justify-end"
                     >
-                        <motion.div key={Kids[0]._id} className='w-[32vw] h-[34vh] bg-[#ffffff4e] rounded-md flex items-center justify-between px-2.5'>
+                        <motion.div key={Kids[0]?._id} className='w-[32vw] h-[34vh] bg-[#ffffff4e] rounded-md flex items-center justify-between px-2.5'>
                             <motion.div
                                 initial='hidden'
                                 animate={isInView ? 'visible' : 'hidden'}
@@ -155,7 +155,7 @@ const Page3 = ({ Kids }) => {
                                     variants={fadeSideCome}
                                     className='absolute top-2 left-3 px-3 py-0.5 bg-[#ffbb00] text-white rounded-md uppercase font-mono font-medium text-xs'>Sale</motion.div>
 
-                                <img className='w-full h-full object-cover rounded-md text-black' src={Kids[0].image || "https://icon-library.com/images/products-icon-png/products-icon-png-12.jpg"} alt="Kids Image" />
+                                <img className='w-full h-full object-cover rounded-md text-black' src={Kids[0]?.image || "https://icon-library.com/images/products-icon-png/products-icon-png-12.jpg"} alt="Kids Image" />
                             </motion.div>
                             <motion.div
                                 initial='hidden'
@@ -165,20 +165,20 @@ const Page3 = ({ Kids }) => {
                             >
                                 <div className="flex flex-col items-start justify-center gap-1.5">
                                     <div className='flex flex-col items-start gap-2'>
-                                        <h1 className="text-black font-bold font-mono text-xl">{Kids[0].name}</h1>
+                                        <h1 className="text-black font-bold font-mono text-xl">{Kids[0]?.name}</h1>
                                         <div className='flex items-start flex-col w-full'>
-                                            <h1 className="text-black font-lighter font-mono">{Kids[0].category} ({Kids[0].size})</h1>
-                                            <h1 className="text-black font-light font-mono mt-[-1.3vh]">{Kids[0].color}</h1>
+                                            <h1 className="text-black font-lighter font-mono">{Kids[0]?.category} ({Kids[0]?.size})</h1>
+                                            <h1 className="text-black font-light font-mono mt-[-1.3vh]">{Kids[0]?.color}</h1>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-1.5">
-                                        <span className="text-black font-light font-mono">₹{Math.round(Kids[0].discountPrice)}</span>
-                                        <span className="text-black font-light font-mono line-through">₹{Kids[0].price}</span>
+                                        <span className="text-black font-light font-mono">₹{Math.round(Kids[0]?.discountPrice)}</span>
+                                        <span className="text-black font-light font-mono line-through">₹{Kids[0]?.price}</span>
                                     </div>
                                 </div>
                                 <div className='flex items-center justify-center gap-2'>
                                     <button
-                                        onClick={() => handleAddToCart(Kids[0]._id)}
+                                        onClick={() => handleAddToCart(Kids[0]?._id)}
                                         id="Shp-Now-Home-Start"
                                         className="px-4 py-1.5 text-sm rounded-full bg-[#fff] uppercase font-mono text-black font-bold tracking-wide text-nowrap">
                                         Add to Cart
@@ -186,7 +186,7 @@ const Page3 = ({ Kids }) => {
                                     <span
                                         onClick={async () => {
                                             if (isLoggedIn) {
-                                                await addToWl(Kids[0]._id)
+                                                await addToWl(Kids[0]?._id)
                                             } else {
                                                 handleDelayNavigation("login")
                                                 toast.error("Login to add items to your Wishlist !", {

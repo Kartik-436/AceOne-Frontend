@@ -157,7 +157,7 @@ const Page2 = ({ bestSelling, Discounted }) => {
 
     const productCard = (product, index) => (
         <motion.div
-            key={product._id}
+            key={product?._id}
             className='h-[70vh] w-[80vw] md:w-full flex flex-col items-center md:items-start gap-4 md:px-4 py-2 rounded-xl'
             initial="hidden"
             animate={isInView ? "visible" : "hidden"}
@@ -200,9 +200,9 @@ const Page2 = ({ bestSelling, Discounted }) => {
                         }
                     }}
                 >
-                    {product.discountPrice ? "Sale" : "BestSeller"}
+                    {product?.discountPrice ? "Sale" : "BestSeller"}
                 </motion.div>
-                <img style={{ scale: scale }} src={product.image || "https://icon-library.com/images/products-icon-png/products-icon-png-12.jpg"} alt={product.name} className='w-full h-full object-cover' />
+                <img style={{ scale: scale }} src={product?.image || "https://icon-library.com/images/products-icon-png/products-icon-png-12.jpg"} alt={product?.name} className='w-full h-full object-cover' />
             </motion.div>
 
             <div className='flex w-full items-start justify-between px-3 pr-5'>
@@ -220,17 +220,17 @@ const Page2 = ({ bestSelling, Discounted }) => {
                         }
                     }}
                 >
-                    <h1 className='text-black font-bold font-mono text-lg'>{product.name} ({product.color})</h1>
-                    <h1 className="text-black font-light font-mono -mt-1">{product.category} ({product.size})</h1>
+                    <h1 className='text-black font-bold font-mono text-lg'>{product?.name} ({product?.color})</h1>
+                    <h1 className="text-black font-light font-mono -mt-1">{product?.category} ({product?.size})</h1>
                     <div className='flex items-center gap-1.5'>
-                        <span className='text-black font-light font-mono text-md'>${Math.round(product.discountPrice) || Math.round(product.price)}</span>
-                        {product.discountPrice && <span className='text-black font-medium font-mono text-sm line-through'>${Math.round(product.price)}</span>}
+                        <span className='text-black font-light font-mono text-md'>${Math.round(product?.discountPrice) || Math.round(product?.price)}</span>
+                        {product?.discountPrice && <span className='text-black font-medium font-mono text-sm line-through'>${Math.round(product?.price)}</span>}
                     </div>
                 </motion.div>
 
                 <div className='flex items-center justify-center gap-2'>
                     <button
-                        onClick={() => handleAddToCart(product._id)}
+                        onClick={() => handleAddToCart(product?._id)}
                         id="Shp-Now-Home-Start"
                         className="px-4 py-1.5 text-sm rounded-full bg-transparent uppercase font-mono text-black font-bold tracking-wide text-nowrap">
                         Add to Cart
@@ -238,7 +238,7 @@ const Page2 = ({ bestSelling, Discounted }) => {
                     <span
                         onClick={async () => {
                             if (isLoggedIn) {
-                                await addToWl(product._id)
+                                await addToWl(product?._id)
                             } else {
                                 handleDelayNavigation("login")
                                 toast.error("Login to add items to your Wishlist !", {
