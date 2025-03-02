@@ -112,19 +112,19 @@ const Page1 = ({ Discounted }) => {
                 {/* Background Image */}
                 <motion.div
                     style={{ y, opacity }}
-                    className='fixed md:top-0 top-[-2%] left-[-127%] md:left-0 w-[385vw] md:w-full h-[115vh] z-[-1]'
+                    className='fixed md:top-0 top-[5%] left-[-135%] md:left-0 w-[410vw] md:w-full h-[110vh] md:h-[115vh] z-[-1]'
                 >
                     <img className='w-full h-full object-fill' src="ShoeBG-1.jpg" alt="Background" />
                 </motion.div>
 
                 {/* Content Section */}
-                <div ref={containerRef} className='relative z-[2] h-screen md:h-[125vh] w-full flex flex-col items-start justify-between pt-[22vh] px-8.5 pr-20 text-white'>
+                <div ref={containerRef} className='relative z-[2] h-screen md:h-[125vh] w-full flex flex-col items-start justify-between pt-[16vh] md:pt-[22vh] px-8.5 pr-20 text-white'>
                     <motion.div
                         initial='hidden'
                         ref={Head}
                         animate={isHeadInView ? 'visible' : 'hidden'}
                         variants={fadeSideCome}
-                        className='md:h-[32vh] h-[26vh] flex flex-col items-start justify-between'
+                        className='md:h-[32vh] h-[25vh] flex flex-col items-start justify-between'
                     >
                         <h1 className='md:text-8xl text-5xl text-black font-semibold font-[Roboto]'>
                             Step-Up Your Stride
