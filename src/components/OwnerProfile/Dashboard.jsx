@@ -5,11 +5,12 @@ import OwnerSearch from '../OwnerSearch'
 import Transition from '../../Transition'
 import useDelayedNavigation from '../../utils/useDelayedNavigation';
 import SortByMenu from './../SortOptions';
-import { deleteProduct, getAllOrders, getAllProducts, getAllUsers, getOwnerProfile } from '../../utils/OwnerService';
+import { deleteProduct, getAllOrders, getAllProducts, getAllUsers, getOwnerProfile, updateProduct } from '../../utils/OwnerService';
 import BarLoader from './../Loaders/CustomLoader1';
 import { AnimatePresence, motion } from 'motion/react';
-import { LucidePackage2, Package, Package2, ShoppingBasket, ShoppingCart, Trash2 } from 'lucide-react';
+import { LucidePackage2, Package, Package2, Pencil, ShoppingBasket, ShoppingCart, Trash2 } from 'lucide-react';
 import { toast } from 'react-toastify';
+import EditProductModal from './EditProductModal';
 
 const Dashboard = ({ setActive, setActiveTab }) => {
     const { animate, handleDelayNavigation } = useDelayedNavigation();
@@ -23,6 +24,12 @@ const Dashboard = ({ setActive, setActiveTab }) => {
     const [CompletedOrders, setCompletedOrders] = useState([]);
     const [CancelledOrders, setCancelledOrders] = useState([]);
     const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [editModalOpen, setEditModalOpen] = useState(false);
+
+    const handleselectedProduct = (product) => {
+        setSelectedProduct(product);
+    };
 
     const refreshOwner = async () => {
         try {
@@ -289,12 +296,12 @@ const Dashboard = ({ setActive, setActiveTab }) => {
                                             </div>
 
                                             <div className='flex flex-col items-start h-full'>
-                                                <h1 className='text-black font-[poppins] font-medium'>{product.name}</h1>
+                                                <h1 className='text-black font-[poppins] font-medium max-w-[85%]'>{product.name}</h1>
                                                 <h1 className='text-black font-[poppins] font-light'>{product.category} ({product.size})</h1>
                                             </div>
                                         </div>
                                         <h1 className='text-black font-[poppins] font-medium'>{product.stock}</h1>
-                                        <h1 className='text-black font-[poppins] font-medium'>₹ {product.price}</h1>
+                                        <h1 className='text-black font-[poppins] font-medium'>₹ {product.price.toFixed(2)}</h1>
                                         <h1 className='text-black font-[poppins] font-medium'>{product.discount}</h1>
                                         <h1 className='text-black font-[poppins] font-medium'>{product.category}</h1>
                                         <h1 className='text-black font-[poppins] font-medium'>{product.size}</h1>
@@ -302,12 +309,18 @@ const Dashboard = ({ setActive, setActiveTab }) => {
                                         <div className='text-black font-[poppins] font-medium flex flex-col items-end justify-center w-full gap-3 pr-5'>
                                             <button
                                                 id="Shp-Now-Home-Start"
-                                                className="px-5 py-3 w-fit h-fit text-sm text-nowrap bg-[#fff] text-black rounded-full transition-all flex items-center justify-center active:scale-90 "
+                                                onClick={() => {
+                                                    handleselectedProduct(product)
+                                                    setEditModalOpen(true)
+                                                }}
+                                                title="Edit Product"
+                                                className="px-5 py-3 w-fit h-fit text-sm text-nowrap bg-[#fff] text-black rounded-full transition-all flex items-center gap-2 justify-center active:scale-90 "
                                             >
-                                                Edit Product
+                                                <Pencil size={16} />Edit Product
                                             </button>
                                             <button
                                                 onClick={() => {
+                                                    handleselectedProduct(product)
                                                     setConfirmModalOpen(true)
                                                 }}
                                                 id="Shp-Now-Home-Start"
@@ -315,7 +328,20 @@ const Dashboard = ({ setActive, setActiveTab }) => {
                                             >
                                                 <Trash2 size={15} />
                                             </button>
-                                            <ConfirmationModal isOpen={confirmModalOpen} onClose={() => { setConfirmModalOpen(false) }} onConfirm={() => { handleDeleteProduct(product._id) }} />
+
+                                            <ConfirmationModal
+                                                isOpen={confirmModalOpen}
+                                                onClose={() => { setConfirmModalOpen(false) }}
+                                                onConfirm={() => { handleDeleteProduct(product._id) }}
+                                                product={selectedProduct}
+                                            />
+
+                                            <EditProductModal
+                                                isOpen={editModalOpen}
+                                                onClose={() => setEditModalOpen(false)}
+                                                product={selectedProduct}
+                                                onProductUpdated={refreshProducts}
+                                            />
                                         </div>
                                     </div>
                                 ))}
@@ -323,28 +349,29 @@ const Dashboard = ({ setActive, setActiveTab }) => {
                         }
                     </div>
                 </div>
-            </div>
+            </div >
         </>
     )
 }
 
 export default Dashboard
 
-const ConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
+const ConfirmationModal = ({ isOpen, onClose, onConfirm, product }) => {
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center backdrop-blur-sm z-50">
+                <div className="fixed inset-0 w-full h-full flex items-center justify-center backdrop-blur-xs bg-[#11111105] transition-all duration-150 z-20">
                     <motion.div
-                        key="logout-modal"
-                        initial={{ opacity: 0, scale: 0.3, y: 200 }}
+                        key="delete-modal"
+                        initial={{ opacity: 0, scale: 0.3, y: 400 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.3, y: 200 }}
-                        transition={{ duration: 0.5, ease: "backOut" }}
-                        className="bg-white p-6 rounded-lg shadow-lg border-2 border-black"
+                        exit={{ opacity: 0, scale: 0.2, y: 800 }}
+                        transition={{ duration: 0.6, ease: "backOut" }}
+                        style={{ willChange: "transform", translateZ: 0 }}
+                        className="bg-white p-6 rounded-lg shadow-sm border-2 border-black"
                     >
                         <h2 className="text-lg font-semibold">Confirm Deletion</h2>
-                        <p className="text-gray-600 mt-2">Are you sure you want to Delete a product ?</p>
+                        <p className="text-gray-600 mt-2">Are you sure you want to Delete <span className='text-black font-bold'>&quot;{product.name}&quot;</span> ?</p>
                         <div className="mt-4 flex justify-end gap-3">
                             <button
                                 onClick={onClose}

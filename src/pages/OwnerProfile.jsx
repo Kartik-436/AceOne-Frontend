@@ -13,7 +13,7 @@ import UsersList from '../components/OwnerProfile/UsersList';
 import Dashboard from '../components/OwnerProfile/Dashboard';
 import { toast } from 'react-toastify';
 import { AnimatePresence, motion } from "framer-motion";
-import { Home, ShoppingCart, PackageSearch, UserRoundCog, LineChart, LogOut, Cog } from "lucide-react";
+import { Home, ShoppingCart, PackageSearch, UserRoundCog, LineChart, LogOut, Cog, PackagePlus } from "lucide-react";
 import OwnerSettings from '../components/OwnerProfile/OwnerSettings';
 
 const OwnerProfile = () => {
@@ -62,11 +62,11 @@ const Sidebar = ({ handleLogout, setActiveTab, activeTab }) => {
 
     const sidebarItems = [
         { icon: <Home size={24} />, text: 'Dashboard', id: 'dashboard' },
-        { icon: <ShoppingCart size={24} />, text: 'Orders', id: 'orders' },
-        { icon: <PackageSearch size={24} />, text: 'Products', id: 'products' },
-        { icon: <UserRoundCog size={24} />, text: 'Users', id: 'users' },
+        { icon: <ShoppingCart size={24} />, text: 'All Orders', id: 'orders' },
+        { icon: <PackagePlus size={24} />, text: 'Add Product', id: 'products' },
+        { icon: <UserRoundCog size={24} />, text: 'All Users', id: 'users' },
         { icon: <LineChart size={24} />, text: 'Analytics', id: 'analytics' },
-        { icon: <Cog size={24} />, text: 'Settings', id: 'settings' },
+        { icon: <Cog size={24} />, text: 'Edit Profile', id: 'settings' },
     ];
 
     const handleTabChange = (tabId) => {
@@ -144,13 +144,14 @@ const LogoutModal = ({ isOpen, onClose, onConfirm }) => {
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black/30 backdrop-blur-sm z-50">
+                <div className="fixed inset-0 w-full h-full flex items-center justify-center backdrop-blur-md  bg-[#11111116] transition-all duration-150 z-20">
                     <motion.div
                         key="logout-modal"
-                        initial={{ opacity: 0, scale: 0.3, y: 200 }}
+                        initial={{ opacity: 0, scale: 0.3, y: 400 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.3, y: 200 }}
-                        transition={{ duration: 0.5, ease: "backOut" }}
+                        exit={{ opacity: 0, scale: 0.2, y: 800 }}
+                        transition={{ duration: 0.6, ease: "backOut" }}
+                        style={{ willChange: "transform", translateZ: 0 }}
                         className="bg-white p-6 rounded-lg shadow-lg border-2 border-black"
                     >
                         <h2 className="text-lg font-semibold">Confirm Logout</h2>

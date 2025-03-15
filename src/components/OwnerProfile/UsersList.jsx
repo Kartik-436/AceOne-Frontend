@@ -22,6 +22,7 @@ const UsersList = () => {
     const [CompletedOrders, setCompletedOrders] = useState([]);
     const [CancelledOrders, setCancelledOrders] = useState([]);
     const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
 
     const refreshUsers = async () => {
         try {
@@ -158,7 +159,7 @@ const UsersList = () => {
 
                                                                 {/* Order-Level Details */}
                                                                 <div className="flex flex-col items-start mt-2">
-                                                                    <h1 className="text-black font-[poppins] font-medium">Total: ₹ {order.totalAmount}</h1>
+                                                                    <h1 className="text-black font-[poppins] font-medium">Total: ₹ {order.totalAmount.toFixed(2)}</h1>
                                                                     <h1 className="text-black font-[poppins] font-medium">{order.orderStatus}</h1>
                                                                     <h1 className="text-black font-[poppins] font-medium">
                                                                         {new Date(order.orderDate).toLocaleString("en-US", {
@@ -181,14 +182,22 @@ const UsersList = () => {
                                         <div className='text-black font-[poppins] font-medium flex items-start justify-end w-full pr-2'>
                                             <button
                                                 onClick={() => {
-                                                    setConfirmModalOpen(true)
+                                                    setSelectedUser(user); // Set the selected user
+                                                    setConfirmModalOpen(true);
                                                 }}
                                                 id="Shp-Now-Home-Start"
                                                 className="p-4 flex items-center justify-center text-sm w-fit h-fit border text-nowrap rounded-full transition-all active:scale-90 gap-1 cursor-pointer"
                                             >
                                                 <Trash2 size={21} />
                                             </button>
-                                            <ConfirmationModal isOpen={confirmModalOpen} onClose={() => { setConfirmModalOpen(false) }} onConfirm={() => { handleDeleteUser(user._id) }} user={user} />
+
+                                            <ConfirmationModal
+                                                isOpen={confirmModalOpen}
+                                                onClose={() => setConfirmModalOpen(false)}
+                                                onConfirm={() => handleDeleteUser(selectedUser?._id)}
+                                                user={selectedUser}
+                                            />
+
                                         </div>
                                     </div>
                                 ))}
@@ -207,17 +216,18 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, user }) => {
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center backdrop-blur-sm z-50">
+                <div className="fixed inset-0 w-full h-full flex items-center justify-center backdrop-blur-sm bg-[#11111116] transition-all duration-150 z-20">
                     <motion.div
-                        key="logout-modal"
-                        initial={{ opacity: 0, scale: 0.3, y: 200 }}
+                        key="delete-user-modal"
+                        initial={{ opacity: 0, scale: 0.3, y: 400 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.3, y: 200 }}
-                        transition={{ duration: 0.5, ease: "backOut" }}
+                        exit={{ opacity: 0, scale: 0.5, y: 800 }}
+                        transition={{ duration: 0.6, ease: "backOut" }}
+                        style={{ willChange: "transform", translateZ: 0 }}
                         className="bg-white p-6 rounded-lg shadow-lg border-2 border-black"
                     >
                         <h2 className="text-lg font-semibold">Confirm Deletion</h2>
-                        <p className="text-gray-600 mt-2">Are you sure you want to Delete {user.fullName} with {user.orders.length} orders ?</p>
+                        <p className="text-gray-600 mt-2">Are you sure you want to Delete the user <span className='text-black font-bold'>&quot;{user.fullName}&quot;</span> with <span className='text-black font-bold'>{user.orders.length}</span> orders ?</p>
                         <div className="mt-4 flex justify-end gap-3">
                             <button
                                 onClick={onClose}

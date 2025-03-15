@@ -141,7 +141,7 @@ const SearchProducts = () => {
                                             className="w-20 h-20 rounded-lg object-cover border-[1px] border-black"
                                         />
                                         <div className="flex flex-col justify-between h-full">
-                                            <p className="text-sm font-semibold">{product.name}</p>
+                                            <p className="text-sm font-semibold max-w-[80%]">{product.name}</p>
 
                                             {product.discount > 0 ? (
                                                 <p className="text-sm text-black font-semibold">
@@ -156,14 +156,14 @@ const SearchProducts = () => {
                                     <div className="flex gap-2">
                                         <button
                                             id="Shp-Now-Home-Start"
-                                            className="px-3 py-1 text-sm bg-[#fff] text-black rounded-full transition-all"
+                                            className="px-3 py-1 text-sm bg-[#fff] text-black rounded-full transition-all text-nowrap"
                                             onClick={() => handleAddToCart(product._id)}
                                         >
                                             Add to Cart
                                         </button>
                                         <button
                                             id="Shp-Now-Home-Start"
-                                            className="px-2 py-1.5 text-sm border border-gray-400 rounded-full hover:bg-gray-200 transition-all"
+                                            className="px-2 py-1.5 text-sm border border-gray-400 rounded-full hover:bg-gray-200 transition-all text-nowrap"
                                             onClick={() => handleAddToWishlist(product._id)}
                                         >
                                             <Heart size={15} />

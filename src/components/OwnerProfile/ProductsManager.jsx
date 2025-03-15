@@ -81,7 +81,6 @@ const ProductsManager = () => {
         if (file) {
             setImageFile(file);
 
-            // Create preview
             const reader = new FileReader();
             reader.onloadend = () => {
                 setImagePreview(reader.result);

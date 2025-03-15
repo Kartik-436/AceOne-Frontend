@@ -135,7 +135,7 @@ const OrdersList = () => {
                                                                 hour12: true
                                                             })}
                                                         </h1>
-                                                        <h1 className="text-black font-[poppins] font-medium row-span-full" rowSpan={order.items.length}>₹ {order.totalAmount}</h1>
+                                                        <h1 className="text-black font-[poppins] font-medium row-span-full" rowSpan={order.items.length}>₹ {order.totalAmount.toFixed(2)}</h1>
                                                         <h1 className="text-black font-[poppins] font-medium row-span-full" rowSpan={order.items.length}>{order.modeOfPayment}</h1>
                                                         <h1 className="text-black font-[poppins] text-wrap max-w-[80%] overflow-x-scroll font-medium row-span-full noScrollbar" rowSpan={order.items.length}>{order._id}</h1>
                                                     </>

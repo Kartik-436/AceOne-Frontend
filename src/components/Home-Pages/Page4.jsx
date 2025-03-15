@@ -11,13 +11,13 @@ const Page4 = ({ Kids, Men, Women }) => {
     const { animate, handleDelayNavigation } = useDelayedNavigation();
 
     const fadeInUp = {
-        hidden: { opacity: 0, y: 50 },
+        hidden: { opacity: 0, y: 100 },
         visible: (i) => ({
             opacity: 1,
             y: 0,
             transition: {
-                duration: 0.8,
-                delay: i * 0.1,
+                duration: 0.5,
+                delay: i * 0.08,
                 ease: "easeOut"
             }
         })
@@ -30,14 +30,14 @@ const Page4 = ({ Kids, Men, Women }) => {
     ];
 
     const imgContainerRef = useRef(null);
-    const [offset, setOffset] = useState(["start end", "center 55%"]);
+    const [offset, setOffset] = useState(["start 130%", "60% 60%"]);
 
     useEffect(() => {
         const handleResize = () => {
             if (window.innerWidth < 768) {
                 setOffset(["-180% end", "-80% end"]);
             } else {
-                setOffset(["start end", "center 40%"]);
+                setOffset(["start 130%", "60% 40%"]);
             }
         };
 
@@ -108,19 +108,6 @@ const Page4 = ({ Kids, Men, Women }) => {
                                             className='md:px-7 md:py-1 px-5 bg-[#fff] text-black rounded-full uppercase font-mono font-medium text-lg'
                                             whileHover={{ scale: 1.05 }}
                                             onClick={() => { handleDelayNavigation(collection.href) }}
-                                            initial='hidden'
-                                            animate={isInView ? 'visible' : 'hidden'}
-                                            variants={{
-                                                hidden: { opacity: 0, x: -50 },
-                                                visible: {
-                                                    opacity: 1,
-                                                    x: 0,
-                                                    transition: {
-                                                        duration: 0.3,
-                                                        ease: "easeOut"
-                                                    }
-                                                }
-                                            }}
                                         >
                                             {collection.title}
                                         </motion.button>
