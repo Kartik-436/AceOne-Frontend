@@ -18,6 +18,7 @@ import { AuthProvider } from "./utils/AuthContext";
 import OwnerProfile from "./pages/OwnerProfile";
 import { ToastContainer } from "react-toastify";
 import useScrollRestoration from "./components/ScrollRestoration";
+import { Analytics } from "@vercel/analytics/react"
 
 const PageTransition = ({ children }) => {
     const containerRef = useRef(null);
