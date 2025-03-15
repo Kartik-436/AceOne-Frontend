@@ -61,3 +61,11 @@
     background-position: 20px center;
     padding-left: 50px;
 }
+
+.bgGradient-Change_ {
+    background: linear-gradient(to right, #9181F4, #5038ED);
+}
+
+.bgGradient-Change_:hover {
+    background: linear-gradient(to right, #5038ED, #9181F4);
+}

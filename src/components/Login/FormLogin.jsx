@@ -127,11 +127,13 @@ const FormLogin = () => {
                                         </p>
                                         {error && <p className="text-red-500 text-sm">{error}</p>}
                                     </div>
-                                    <input
-                                        className='inline-block px-7 py-3 cursor-pointer text-white text-xl font-bold bg-gradient-to-r from-[#9181F4] to-[#5038ED] rounded-full min-w-[13vw]'
-                                        type="submit"
-                                        value="Login Now"
-                                    />
+                                    <button
+                                    type='submit'
+                                        className="bg-gradient-to-r from-[#9181F4] to-[#5038ED] border border-white overflow-hidden relative px-7 py-3 cursor-pointer text-white text-xl font-bold rounded-full min-w-[13vw] hover:brightness-110 active:opacity-75 active:scale-90 outline-none duration-500 group">
+                                        <span
+                                            className="bg-white shadow-white absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(255,255,255,0.3)] cursor-pointer"></span>
+                                        Login Now
+                                    </button>
                                 </form>
                             </div>
                         </div>
