@@ -1,214 +1,381 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import React, { useState } from 'react';
-import { Eye, EyeOff, Check } from 'lucide-react';
-import { resetPassword } from '../../utils/UserService';
-import Transition from '../../Transition';
+import React, { useRef, useState } from 'react'
+import Transition from './../../Transition';
 import useDelayedNavigation from '../../utils/useDelayedNavigation';
+import { forgotPassword, resetPassword, verifyResetToken } from '../../utils/UserService';
+import { toast } from 'react-toastify';
+import { resenVerificationOtp } from '../../utils/AuthService';
+import { EyeClosed, EyeIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const PasswordReset = () => {
-    const [currentPassword, setCurrentPassword] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [showCurrent, setShowCurrent] = useState(false);
-    const [showNew, setShowNew] = useState(false);
-    const [showConfirm, setShowConfirm] = useState(false);
-    const [success, setSuccess] = useState(false);
-    const [errors, setErrors] = useState({});
-    const [loading, setLoading] = useState(false);
-    const [apiError, setApiError] = useState('');
-
-    // Password validation
-    const validatePassword = () => {
-        const newErrors = {};
-
-        if (!currentPassword) {
-            newErrors.currentPassword = 'Current password is required';
-        }
-
-        if (!newPassword) {
-            newErrors.newPassword = 'New password is required';
-        } else if (newPassword.length < 8) {
-            newErrors.newPassword = 'Password must be at least 8 characters';
-        }
-
-        if (newPassword !== confirmPassword) {
-            newErrors.confirmPassword = 'Passwords do not match';
-        }
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
-
-    // Handle form submission
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        if (!validatePassword()) return;
-
-        setLoading(true);
-        setApiError('');
-        setSuccess(false);
-
-        try {
-            const response = await resetPassword(null, currentPassword, newPassword);
-
-            if (response.success) {
-                setSuccess(true);
-                setCurrentPassword('');
-                setNewPassword('');
-                setConfirmPassword('');
-            } else {
-                setApiError(response.message);
-            }
-        } catch (error) {
-            setApiError('Failed to reset password.');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const getPasswordStrength = (password) => {
-        let strength = 0;
-        if (password.length >= 8) strength++;
-        if (/[A-Z]/.test(password)) strength++;
-        if (/[0-9]/.test(password)) strength++;
-        if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) strength++;
-        return strength;
-    };
-
-    const strength = getPasswordStrength(newPassword);
-    const strengthClasses = [
-        "w-1/6 bg-red-500",
-        "w-2/6 bg-orange-500",
-        "w-3/6 bg-yellow-500",
-        "w-5/6 bg-blue-500",
-        "w-full bg-green-500",
-    ];
-
     const { animate, handleDelayNavigation } = useDelayedNavigation();
+    const [emailSubmitted, setEmailSubmitted] = useState(false);
+    const [isTokenVerified, setIsTokenVerified] = useState(false);
+    const [userEmail, setUserEmail] = useState("");
+    const [OTP, setOTP] = useState("");
+    const [error, setError] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+    const [strength, setStrength] = useState(0);
+    const [password, setPassword] = useState("");
+
+    const strengthClasses = ["bg-red-500 w-1/5", "bg-orange-500 w-2/5", "bg-yellow-500 w-3/5", "bg-green-500 w-4/5", "bg-blue-500 w-full"];
+
+    const evaluateStrength = (value) => {
+        let score = -1;
+        if (value.length >= 8) score++;
+        if (/[A-Z]/.test(value)) score++;
+        if (/[a-z]/.test(value)) score++;
+        if (/[0-9]/.test(value)) score++;
+        if (/[^A-Za-z0-9]/.test(value)) score++;
+        setStrength(score);
+    };
+
+    const ForgotPass = async (e) => {
+        e.preventDefault();
+        if (!userEmail.trim()) {
+            toast.error("Please enter a valid email");
+            return;
+        }
+
+        const response = await forgotPassword(userEmail);
+
+        if (response.success) {
+            toast.success(response.message);
+            setEmailSubmitted(true);
+        } else {
+            setError(response.message);
+            toast.error(response.message);
+        }
+    };
+
+    const VerifyToken = async (e) => {
+        e.preventDefault();
+        if (OTP.length !== 6) {
+            toast.error("Please enter a valid 6-digit OTP");
+            return;
+        }
+
+        const response = await verifyResetToken({ email: userEmail, otp: OTP });
+
+        if (response.success) {
+            toast.success(response.message);
+            setIsTokenVerified(true);
+        } else {
+            setError(response.message);
+            toast.error(response.message);
+        }
+    };
+
+    const ResetPass = async (e) => {
+        e.preventDefault();
+        if (password.length < 8) {
+            toast.error("Password must be at least 8 characters");
+            return;
+        }
+
+        const response = await resetPassword({ email: userEmail, password });
+
+        if (response.success) {
+            toast.success(response.message);
+            setEmailSubmitted(false);
+            setIsTokenVerified(false);
+            handleDelayNavigation("login");
+        } else {
+            setError(response.message);
+            toast.error(response.message);
+        }
+    };
+
+    const resendVerificationOtp = async () => {
+        const response = await resenVerificationOtp();
+
+        if (response.success) {
+            toast.success("Verification code sent successfully!");
+        } else {
+            setError(response.message);
+            toast.error(response.message);
+        }
+    };
+
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                duration: 0.5,
+                staggerChildren: 0.2
+            }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { y: 100, opacity: 0 },
+        visible: {
+            y: 0,
+            opacity: 1,
+            transition: { type: "spring", stiffness: 100 }
+        }
+    };
+
+    const formVariants = {
+        hidden: { scale: 0.7, opacity: 0 },
+        visible: {
+            scale: 1,
+            opacity: 1,
+            transition: { type: "spring", stiffness: 100, delay: 0.3 }
+        }
+    };
+
+    const buttonVariants = {
+        hidden: { scale: 0.7, opacity: 0 },
+        visible: {
+            scale: 1,
+            opacity: 1,
+            transition: { type: "spring", stiffness: 200, delay: 0.5 }
+        },
+        tap: { scale: 0.95 }
+    };
 
     return (
         <>
-            <Transition />
-            <div>
-                <h2 className="text-2xl font-bold mb-6">Reset Password</h2>
+            <Transition animate={animate} />
 
-                {success ? (
+            <div className='h-full z-50 w-full overflow-hidden'>
+
+                <motion.div
+                    className='w-full h-full items-center justify-center flex'
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5 }}
+                >
                     <motion.div
-                        initial={{ opacity: 0, x: -100 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.3, delayChildren: 0.5, type: "spring", stiffness: 200 }}
-                        className="bg-green-100 border border-green-200 text-green-800 rounded-lg p-4 flex items-center"
+                        className="bg-white rounded-2xl min-h-[47vh] w-[40vw] p-5 py-10 flex flex-col items-center justify-between"
+                        initial={{ y: 50, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ type: "spring", stiffness: 120, damping: 20 }}
                     >
-                        <Check size={20} className="mr-2" />
-                        <span>Your password has been updated successfully!</span>
-                    </motion.div>
-                ) : (
-                    <form onSubmit={handleSubmit} className="max-w-md">
                         <motion.div
-                            initial={{ opacity: 0, x: 100 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.35, delayChildren: 0.5, type: "spring", stiffness: 200 }}
-                            className="space-y-6"
+                            initial={{ scale: 0.8, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ delay: 0.2, type: "spring", stiffness: 150 }}
                         >
-                            {/* Current Password */}
-                            <div>
-                                <label className="block text-sm font-medium mb-1">Current Password</label>
-                                <div className="relative">
-                                    <input
-                                        type={showCurrent ? "text" : "password"}
-                                        value={currentPassword}
-                                        onChange={(e) => setCurrentPassword(e.target.value)}
-                                        className={`w-full p-3 border ${errors.currentPassword ? 'border-red-300' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-[#ffbb00] focus:outline-none pr-10`}
-                                    />
-                                    <button
-                                        type="button"
-                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
-                                        onClick={() => setShowCurrent(!showCurrent)}
-                                    >
-                                        {showCurrent ? <EyeOff size={20} /> : <Eye size={20} />}
-                                    </button>
-                                </div>
-                                {errors.currentPassword && (
-                                    <p className="text-red-500 text-sm mt-1">{errors.currentPassword}</p>
-                                )}
-                            </div>
-
-                            {/* New Password */}
-                            <div>
-                                <label className="block text-sm font-medium mb-1">New Password</label>
-                                <div className="relative">
-                                    <input
-                                        type={showNew ? "text" : "password"}
-                                        value={newPassword}
-                                        onChange={(e) => setNewPassword(e.target.value)}
-                                        className={`w-full p-3 border ${errors.newPassword ? 'border-red-300' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-[#ffbb00] focus:outline-none pr-10`}
-                                    />
-                                    <button
-                                        type="button"
-                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
-                                        onClick={() => setShowNew(!showNew)}
-                                    >
-                                        {showNew ? <EyeOff size={20} /> : <Eye size={20} />}
-                                    </button>
-                                </div>
-                                {errors.newPassword && (
-                                    <p className="text-red-500 text-sm mt-1">{errors.newPassword}</p>
-                                )}
-
-                                {/* Password strength indicator */}
-                                {newPassword && (
-                                    <div className="mt-2">
-                                        <div className="h-2 mt-2 w-full bg-gray-200 rounded-md overflow-hidden">
-                                            <div className={`h-full transition-all duration-300 ${strengthClasses[strength]}`}></div>
-                                        </div>
-                                        <p className="text-sm font-semibold mt-2">
-                                            {["Very Weak", "Weak", "Fair", "Strong", "Very Strong"][strength]}
-                                        </p>
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* Confirm Password */}
-                            <div>
-                                <label className="block text-sm font-medium mb-1">Confirm New Password</label>
-                                <div className="relative">
-                                    <input
-                                        type={showConfirm ? "text" : "password"}
-                                        value={confirmPassword}
-                                        onChange={(e) => setConfirmPassword(e.target.value)}
-                                        className={`w-full p-3 border ${errors.confirmPassword ? 'border-red-300' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-[#ffbb00] focus:outline-none pr-10`}
-                                    />
-                                    <button
-                                        type="button"
-                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
-                                        onClick={() => setShowConfirm(!showConfirm)}
-                                    >
-                                        {showConfirm ? <EyeOff size={20} /> : <Eye size={20} />}
-                                    </button>
-                                </div>
-                                {errors.confirmPassword && (
-                                    <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
-                                )}
-                            </div>
-
-                            {apiError && <p className="text-red-500 text-sm">{apiError}</p>}
-
-                            <button
-                                type="submit"
-                                id='Shp-Now-Home-Start'
-                                className="w-full py-3 bg-[#ffbb00] text-[#1f1f1f] rounded-lg transition-colors font-medium mt-4"
-                                disabled={loading}
-                            >
-                                {loading ? "Updating..." : "Update Password"}
-                            </button>
+                            <h1 className='w-full text-center text-6xl text-nowrap font-[poppins] font-medium'>Reset Your Password !</h1>
                         </motion.div>
-                    </form>
-                )}
+
+                        <motion.form
+                            className='w-full'
+                            onSubmit={isTokenVerified ? ResetPass : emailSubmitted ? VerifyToken : ForgotPass}
+                            variants={formVariants}
+                            initial="hidden"
+                            animate="visible"
+                        >
+                            <motion.div
+                                className='flex flex-col items-center justify-around gap-6.5 w-full'
+                                variants={containerVariants}
+                            >
+                                {!isTokenVerified && (
+                                    <motion.div
+                                        className='flex flex-col items-center justify-around'
+                                        variants={itemVariants}
+                                    >
+                                        {emailSubmitted && (
+                                            <motion.div
+                                                className='flex flex-col gap-2 items-center'
+                                                initial={{ height: 0, opacity: 0 }}
+                                                animate={{ height: "auto", opacity: 1 }}
+                                                transition={{ type: "spring", stiffness: 100, duration: 0.3 }}
+                                            >
+                                                <motion.h1
+                                                    className='text-sm font-light font-[poppins] tracking-tight'
+                                                    variants={itemVariants}
+                                                >
+                                                    Please Enter the OTP you recieved on your entered Mail !
+                                                </motion.h1>
+                                                <motion.div variants={itemVariants}>
+                                                    <OTPInput onChangeOTP={(otp) => setOTP(otp)} />
+                                                </motion.div>
+                                                <motion.div
+                                                    className='flex items-center justify-end w-full'
+                                                    variants={itemVariants}
+                                                >
+                                                    <motion.h1
+                                                        onClick={resendVerificationOtp}
+                                                        className='tracking-tight text-sm font-[roboto] capitalize px-6 cursor-pointer text-blue-400 hover:underline underline-offset-1'
+                                                        whileHover={{ scale: 1.05 }}
+                                                        whileTap={{ scale: 0.95 }}
+                                                    >
+                                                        Resend Verification code
+                                                    </motion.h1>
+                                                </motion.div>
+                                            </motion.div>
+                                        )}
+
+                                        {!emailSubmitted && (
+                                            <motion.div
+                                                className='flex flex-col gap-2 items-start justify-center'
+                                                initial={{ height: 0, opacity: 0 }}
+                                                animate={{ height: "auto", opacity: 1 }}
+                                                transition={{ type: "spring", stiffness: 100, duration: 0.3 }}
+                                            >
+                                                <motion.h1
+                                                    className='text-sm font-light font-[poppins] tracking-tight'
+                                                    variants={itemVariants}
+                                                >
+                                                    Please Enter your registered email to change your password !
+                                                </motion.h1>
+                                                <motion.input
+                                                    className='email-with-icon inline-block px-6 py-4 text-lg bg-[#021]/10 rounded-full font-semibold font-[nunito] outline-2 min-w-[30vw] '
+                                                    type="email"
+                                                    placeholder='Email'
+                                                    name='email'
+                                                    required
+                                                    autoComplete="off"
+                                                    value={userEmail}
+                                                    onChange={(e) => { setUserEmail(e.target.value) }}
+                                                    variants={itemVariants}
+                                                    whileFocus={{ scale: 1.02, boxShadow: "0 0 0 2px rgba(0,0,0,0.1)" }}
+                                                />
+                                            </motion.div>
+                                        )}
+                                    </motion.div>
+                                )}
+
+                                {isTokenVerified && (
+                                    <motion.div
+                                        className='flex flex-col gap-2 items-center'
+                                        initial={{ height: 0, opacity: 0 }}
+                                        animate={{ height: "auto", opacity: 1 }}
+                                        transition={{ type: "spring", stiffness: 100, duration: 0.3 }}
+                                    >
+                                        <motion.h1
+                                            className='text-sm font-light font-[poppins] tracking-tight'
+                                            variants={itemVariants}
+                                        >
+                                            Please set the new password !
+                                        </motion.h1>
+                                        <motion.div
+                                            className='w-full relative'
+                                            variants={itemVariants}
+                                        >
+                                            <motion.input
+                                                id='InputLoginPassword'
+                                                className='password-with-icon inline-block px-6 py-4 text-lg bg-[#F0EDFF] rounded-full font-semibold font-[nunito] outline-none min-w-[30vw]'
+                                                type={showPassword ? "text" : "password"}
+                                                placeholder='Password'
+                                                name='password'
+                                                value={password}
+                                                onChange={(e) => {
+                                                    setPassword(e.target.value);
+                                                    evaluateStrength(e.target.value);
+                                                }}
+                                                required
+                                                whileFocus={{ scale: 1.02, boxShadow: "0 0 0 2px rgba(0,0,0,0.1)" }}
+                                            />
+                                            <motion.button
+                                                type="button"
+                                                className="absolute inset-y-0 right-6 flex items-center text-gray-600 cursor-pointer"
+                                                onClick={() => setShowPassword(!showPassword)}
+                                                whileHover={{ scale: 1.1 }}
+                                                whileTap={{ scale: 0.9 }}
+                                            >
+                                                {showPassword ? <EyeClosed /> : <EyeIcon />}
+                                            </motion.button>
+                                        </motion.div>
+
+                                        {password && (
+                                            <motion.div
+                                                className='w-full'
+                                                initial={{ opacity: 0 }}
+                                                animate={{ opacity: 1 }}
+                                                transition={{ duration: 0.3 }}
+                                            >
+                                                <div className='h-1 bg-gray-200 rounded-full overflow-hidden'>
+                                                    <motion.div
+                                                        className={`h-full transition-all duration-300 ${strengthClasses[strength]}`}
+                                                        initial={{ width: 0 }}
+                                                        animate={{ width: strengthClasses[strength].split(' ')[1] }}
+                                                        transition={{ type: "spring", stiffness: 100 }}
+                                                    ></motion.div>
+                                                </div>
+                                                <motion.p
+                                                    className='text-sm font-semibold text-end'
+                                                    initial={{ opacity: 0 }}
+                                                    animate={{ opacity: 1 }}
+                                                    transition={{ delay: 0.2 }}
+                                                >
+                                                    {["Very Weak", "Weak", "Fair", "Strong", "Very Strong"][strength]}
+                                                </motion.p>
+                                            </motion.div>
+                                        )}
+                                    </motion.div>
+                                )}
+
+                                <motion.div
+                                    className={`w-full flex items-center justify-center px-50`}
+                                    variants={itemVariants}
+                                >
+                                    <motion.button
+                                        type='submit'
+                                        id="NavBarButtons"
+                                        className="px-[100%] flex items-center justify-center py-2.5 bg-[#ffbb00] text-black rounded-2xl border-2 cursor-pointer active:scale-95 tracking-wide font-medium font-[poppins]"
+                                        variants={buttonVariants}
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap="tap"
+                                    >
+                                        SUBMIT
+                                    </motion.button>
+                                </motion.div>
+                            </motion.div>
+                        </motion.form>
+                    </motion.div>
+                </motion.div>
             </div>
         </>
+    )
+}
+
+export default PasswordReset
+
+const OTPInput = ({ length = 6, onChangeOTP }) => {
+    const [otp, setOtp] = useState(new Array(length).fill(""));
+    const inputRefs = useRef([]);
+
+    const handleChange = (e, index) => {
+        const value = e.target.value;
+        if (!/^\d*$/.test(value)) return;
+
+        const newOtp = [...otp];
+        newOtp[index] = value;
+        setOtp(newOtp);
+        onChangeOTP(newOtp.join(""));
+
+        if (value && index < length - 1) {
+            inputRefs.current[index + 1].focus();
+        }
+    };
+
+    const handleKeyDown = (e, index) => {
+        if (e.key === "Backspace" && !otp[index] && index > 0) {
+            inputRefs.current[index - 1].focus();
+        }
+    };
+
+    return (
+        <div className="flex space-x-2">
+            {otp.map((digit, index) => (
+                <input
+                    key={index}
+                    ref={(el) => (inputRefs.current[index] = el)}
+                    type="text"
+                    maxLength={1}
+                    value={digit}
+                    onChange={(e) => handleChange(e, index)}
+                    onKeyDown={(e) => handleKeyDown(e, index)}
+                    className="w-12 h-12 text-center text-xl font-semibold border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+            ))}
+        </div>
     );
 };
-
-export default PasswordReset;

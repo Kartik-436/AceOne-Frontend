@@ -12,8 +12,8 @@ const Sidebar = ({ activeComponent, setActiveComponent, onLogout }) => {
         { id: 'orders', label: 'My Orders', icon: <Package size={20} /> },
         { id: 'wishlist', label: 'My Wishlist', icon: <Heart size={20} /> },
         { id: 'cart', label: 'My Cart', icon: <ShoppingCart size={20} /> },
-        { id: 'Home', label: 'Go To Home', icon: <Home size={20} /> },
         { id: 'password', label: 'Reset Password', icon: <Key size={20} /> },
+        { id: 'Home', label: 'Go To Home', icon: <Home size={20} /> },
     ];
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(false);

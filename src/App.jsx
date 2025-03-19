@@ -17,9 +17,7 @@ import { CartProvider } from "./utils/CartContext";
 import { AuthProvider } from "./utils/AuthContext";
 import OwnerProfile from "./pages/OwnerProfile";
 import { ToastContainer } from "react-toastify";
-import useScrollRestoration from "./components/ScrollRestoration";
-import { Analytics } from "@vercel/analytics/react"
-import { inject } from "@vercel/analytics"
+import ForgotPassword from "./components/Login/ForgotPassword";
 
 const PageTransition = ({ children }) => {
     const containerRef = useRef(null);
@@ -51,6 +49,7 @@ function AnimatedRoutes() {
                 <Route path="/Home" element={<Home />} />
 
                 <Route path="/About" element={<About />} />
+                <Route path="/ForgotPassword" element={<ForgotPassword />} />
 
                 <Route path="/register" element={<SignUp />} />
                 <Route path="/login" element={<LogIn />} />

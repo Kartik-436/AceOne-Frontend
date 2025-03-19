@@ -1,14 +1,17 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { signupSchema } from "../../utils/Validation";
 import useDelayedNavigation from './../../utils/useDelayedNavigation';
 import { useAuth } from "../../utils/AuthContext";
 import Transition from '../../Transition';
-import { registerUser } from './../../utils/AuthService';
+import { registerUser, resenVerificationOtp, verifyRegisteredUser } from './../../utils/AuthService';
 import "../../stylesheets/Signup.css"
 import { toast } from 'react-toastify';
+import { AnimatePresence, motion } from 'framer-motion';
+import { EyeClosed, EyeIcon } from 'lucide-react';
 
 const FormSignup = () => {
     const [isTyping, setIsTyping] = useState(false);
@@ -18,6 +21,10 @@ const FormSignup = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [password, setPassword] = useState("");
     const [strength, setStrength] = useState(0);
+    const [isVerifying, setIsVerifying] = useState(false);
+    const [userEmail, setUserEmail] = useState(null);
+    const [OTP, setOTP] = useState("");
+    const [VerificationModalOpen, setVerificationModalOpen] = useState(false);
 
     const strengthClasses = ["bg-red-500 w-1/5", "bg-orange-500 w-2/5", "bg-yellow-500 w-3/5", "bg-green-500 w-4/5", "bg-blue-500 w-full"];
 
@@ -31,15 +38,50 @@ const FormSignup = () => {
         const result = await registerUser(data);
 
         if (result.success) {
-            LoginUser(result.user);
-            toast.success("User Registered Successfully !")
-            handleDelayNavigation("Home");
+            toast.success("Please verify your registered email!");
+            setIsVerifying(true);
+            setUserEmail(result.email);
+            setVerificationModalOpen(true);
         } else {
             setError(result.message);
         }
     };
+
+    const onVerification = async () => {
+        if (!OTP) {
+            toast.error("Please enter OTP!");
+            return;
+        }
+
+        setError("");
+
+        const result = await verifyRegisteredUser({ email: userEmail, otp: OTP });
+
+        if (result.success) {
+            LoginUser(result.user);
+            setIsVerifying(false);
+            toast.success("User Logged In Successfully!");
+            setVerificationModalOpen(false);
+            handleDelayNavigation("Home");
+        } else {
+            setError(result.message);
+            toast.error(result.message);
+        }
+    };
+
+    const resendVerificationOtp = async () => {
+        const message = await resenVerificationOtp();
+
+        if (message.success) {
+            toast.success("Verification code sent succesfully !")
+        } else {
+            setError(message.message);
+            toast.error(message.message);
+        }
+    }
+
     const evaluateStrength = (value) => {
-        let score = -1;
+        let score = 0;
         if (value.length >= 8) score++;
         if (/[A-Z]/.test(value)) score++;
         if (/[a-z]/.test(value)) score++;
@@ -102,20 +144,29 @@ const FormSignup = () => {
                                         />
                                         <p className='text-red-500 tracking-tighter md:tracking-normal text-xs md:text-sm md:-mt-3 text-wrap md:max-w-[40vw]'>{errors.email?.message}</p>
 
-                                        <input
-                                            id='InputLoginPassword'
-                                            className='password-with-icon inline-block px-6 py-4 text-lg bg-[#F0EDFF] rounded-full font-semibold font-[nunito] outline-none min-w-[30vw]'
-                                            type="password"
-                                            placeholder='Password'
-                                            name='password'
-                                            {...register("password")}
-                                            value={password}
-                                            onChange={(e) => {
-                                                setPassword(e.target.value);
-                                                evaluateStrength(e.target.value);
-                                            }}
-                                            required
-                                        />
+                                        <div className='w-full relative'>
+                                            <input
+                                                id='InputLoginPassword'
+                                                className='password-with-icon inline-block px-6 py-4 text-lg bg-[#F0EDFF] rounded-full font-semibold font-[nunito] outline-none min-w-[30vw]'
+                                                type={showPassword ? "text" : "password"}
+                                                placeholder='Password'
+                                                name='password'
+                                                {...register("password")}
+                                                value={password}
+                                                onChange={(e) => {
+                                                    setPassword(e.target.value);
+                                                    evaluateStrength(e.target.value);
+                                                }}
+                                                required
+                                            />
+                                            <button
+                                                type="button"
+                                                className="absolute inset-y-0 right-6 flex items-center text-gray-600 cursor-pointer"
+                                                onClick={() => setShowPassword(!showPassword)}
+                                            >
+                                                {showPassword ? <EyeClosed /> : <EyeIcon />}
+                                            </button>
+                                        </div>
                                         {password && (
                                             <div className='w-full'>
                                                 <div className='h-1 bg-gray-200 rounded-full overflow-hidden'>
@@ -168,10 +219,116 @@ const FormSignup = () => {
                         </div>
                     </div>
                 </div>
+
+                <VerificationModal
+                    isOpen={VerificationModalOpen}
+                    onClose={() => setVerificationModalOpen(false)}
+                    onConfirm={onVerification}
+                    setOTP={setOTP}
+                    resendVerificationOtp={resendVerificationOtp}
+                />
             </div>
         </>
     );
 };
 
-// const WrappedSignup = Transition(FormSignup)
 export default FormSignup;
+
+const VerificationModal = ({ isOpen, onClose, onConfirm, setOTP, resendVerificationOtp }) => {
+    return (
+        <AnimatePresence>
+            {isOpen && (
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.3, y: 400 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.2, y: 800 }}
+                    transition={{ duration: 0.3, ease: "backOut" }}
+                    style={{ willChange: "transform", translateZ: 0 }}
+                    className="fixed inset-0 w-full h-full flex items-center justify-center backdrop-blur-xs bg-[#11111105] transition-all duration-150 z-20"
+                >
+                    <div className="bg-white border-2 rounded-xl h-fit w-fit md:h-[45vh] md:w-[40vw] flex items-center justify-between flex-col p-5 py-10 relative">
+
+                        <button
+                            onClick={onClose}
+                            className="text-black hover:text-[#ffbb00] transition-colors cursor-pointer absolute right-8 top-5"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                                <line x1="22" y1="6" x2="6" y2="22"></line>
+                                <line x1="6" y1="6" x2="22" y2="22"></line>
+                            </svg>
+                        </button>
+
+                        <h2 className="text-3xl font-semibold text-center font-[poppins]">Enter OTP</h2>
+                        <div className='flex flex-col gap-7 items-center justify-center'>
+                            <div className='flex flex-col gap-2 items-center'>
+                                <h1 className='text-sm font-light font-[poppins] tracking-tight'>
+                                    Please Enter the OTP you recieved on your entered Mail !
+                                </h1>
+                                <OTPInput onChangeOTP={(otp) => setOTP(otp)} />
+                                <div className='flex items-center justify-end w-full'>
+                                    <h1
+                                        onClick={resendVerificationOtp}
+                                        className='tracking-tight text-sm font-[roboto] capitalize px-6 cursor-pointer text-blue-400 hover:underline underline-offset-2'
+                                    >
+                                        Resend Verification code
+                                    </h1>
+                                </div>
+                            </div>
+                            <div className='w-full flex items-center justify-center px-24'>
+                                <button
+                                    onClick={onConfirm}
+                                    id="NavBarButtons"
+                                    className="px-[100%] flex items-center justify-center py-2.5 bg-[#ffbb00] text-black rounded-lg border-2 cursor-pointer active:scale-95 tracking-wide font-medium font-[poppins]"
+                                >
+                                    VERIFY
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </motion.div>
+            )}
+        </AnimatePresence>
+    );
+};
+
+const OTPInput = ({ length = 6, onChangeOTP }) => {
+    const [otp, setOtp] = useState(new Array(length).fill(""));
+    const inputRefs = useRef([]);
+
+    const handleChange = (e, index) => {
+        const value = e.target.value;
+        if (!/^\d*$/.test(value)) return;
+
+        const newOtp = [...otp];
+        newOtp[index] = value;
+        setOtp(newOtp);
+        onChangeOTP(newOtp.join(""));
+
+        if (value && index < length - 1) {
+            inputRefs.current[index + 1].focus();
+        }
+    };
+
+    const handleKeyDown = (e, index) => {
+        if (e.key === "Backspace" && !otp[index] && index > 0) {
+            inputRefs.current[index - 1].focus();
+        }
+    };
+
+    return (
+        <div className="flex space-x-2">
+            {otp.map((digit, index) => (
+                <input
+                    key={index}
+                    ref={(el) => (inputRefs.current[index] = el)}
+                    type="text"
+                    maxLength={1}
+                    value={digit}
+                    onChange={(e) => handleChange(e, index)}
+                    onKeyDown={(e) => handleKeyDown(e, index)}
+                    className="w-12 h-12 text-center text-xl font-semibold border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+            ))}
+        </div>
+    );
+};

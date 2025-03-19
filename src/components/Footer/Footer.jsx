@@ -127,18 +127,18 @@ const Footer = () => {
                                     <h1>Contact</h1>
                                 </motion.div>
 
-                                <a href="mailto:gargkartik503@gmail.com">
+                                <a href="mailto:aceonefw@gmail.com">
                                     <motion.div className='w-full px-6 py-1 bg-transparent text-white border-[1px] border-white rounded-lg cursor-pointer'>
-                                        <h1>gargkartik503@gmail.com</h1>
+                                        <h1>aceonefw@gmail.com</h1>
                                     </motion.div>
                                 </a>
 
                                 <motion.div className='w-full px-6 py-1 bg-transparent text-white border-[1px] border-white rounded-lg'>
-                                    <h1>1234567890</h1>
+                                    <h1>123456XXXX</h1>
                                 </motion.div>
 
                                 <motion.div className='w-full px-6 py-1 bg-transparent text-white border-[1px] border-white rounded-lg'>
-                                    <h1>Address...</h1>
+                                    <h1>Delhi</h1>
                                 </motion.div>
 
                                 <motion.div className='w-full px-6 py-1 bg-white text-black rounded-lg font-semibold uppercase'>

@@ -5,7 +5,35 @@ export const registerUser = async (userData) => {
         const response = await axios.post("/api/user/register", userData, { withCredentials: true });
 
         if (response.data.success) {
+            return { success: true, email: response.data.data };
+        } else {
+            return { success: false, message: response.data.message || "Registration failed." };
+        }
+    } catch (err) {
+        return { success: false, message: err.response?.data?.message || "Something went wrong. Try again." };
+    }
+};
+
+export const verifyRegisteredUser = async (OTP_Email) => {
+    try {
+        const response = await axios.post("/api/user/verify-email", { OTP_Email }, { withCredentials: true });
+
+        if (response.data.success) {
             return { success: true, user: response.data.data };
+        } else {
+            return { success: false, message: response.data.message || "Registration failed." };
+        }
+    } catch (err) {
+        return { success: false, message: err.response?.data?.message || "Something went wrong. Try again." };
+    }
+};
+
+export const resenVerificationOtp = async (email) => {
+    try {
+        const response = await axios.post("/api/user/resend-verification", email, { withCredentials: true });
+
+        if (response.data.success) {
+            return { success: true, message: response.data.message };
         } else {
             return { success: false, message: response.data.message || "Registration failed." };
         }

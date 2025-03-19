@@ -55,3 +55,17 @@ export const removeFromCart = async (productID) => {
         return { success: false, message: err.response?.data?.message || "Something went wrong." };
     }
 };
+
+export const clearCart = async () => {
+    try {
+        const response = await axios.delete("/api/user/cart/clear", { withCredentials: true });
+
+        if (response.data.success) {
+            return { success: true, cart: response.data.data };
+        } else {
+            return { success: false, message: response.data.message || "Failed to remove product from cart." };
+        }
+    } catch (err) {
+        return { success: false, message: err.response?.data?.message || "Something went wrong." };
+    }
+};

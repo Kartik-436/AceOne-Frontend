@@ -168,11 +168,25 @@ export const updateProfilePicture = async (formData) => {
     }
 };
 
-export const resetPassword = async (token, oldPassword, newPassword) => {
+export const getUserDetails = async () => {
     try {
-        const response = await axios.put(`/api/user/reset-password`, { oldPassword, newPassword }, { withCredentials: true });
+        const response = await axios.get("/api/user/profile", { withCredentials: true });
+
+        if (response.data.success) {
+            return { success: true, user: response.data.data };
+        } else {
+            return { success: false, message: response.data.message || "Failed to fetch user details." };
+        }
+    } catch (err) {
+        return { success: false, message: err.response?.data?.message || "Something went wrong." };
+    }
+};
+
+export const forgotPassword = async (email) => {
+    try {
+        const response = await axios.post(`/api/user/forgot-password`, { email }, { withCredentials: true });
         return response.data.success
-            ? { success: true, message: "Password reset successfully." }
+            ? { success: true, message: "Password reset code sent successfully." }
             : {
                 success: false,
                 message: response.data.message || "Failed to reset password.",
@@ -185,16 +199,36 @@ export const resetPassword = async (token, oldPassword, newPassword) => {
     }
 };
 
-export const getUserDetails = async () => {
+export const verifyResetToken = async (Email_Otp) => {
     try {
-        const response = await axios.get("/api/user/profile", { withCredentials: true });
-
-        if (response.data.success) {
-            return { success: true, user: response.data.data };
-        } else {
-            return { success: false, message: response.data.message || "Failed to fetch user details." };
-        }
+        const response = await axios.post(`/api/user/verify-reset-token`, { Email_Otp }, { withCredentials: true });
+        return response.data.success
+            ? { success: true, message: "Password reset code verified successfully." }
+            : {
+                success: false,
+                message: response.data.message || "Failed to reset password.",
+            };
     } catch (err) {
-        return { success: false, message: err.response?.data?.message || "Something went wrong." };
+        return {
+            success: false,
+            message: err.response?.data?.message || "Something went wrong.",
+        };
+    }
+};
+
+export const resetPassword = async (newPass) => {
+    try {
+        const response = await axios.put(`/api/user/reset-password`, { newPass }, { withCredentials: true });
+        return response.data.success
+            ? { success: true, message: "Password reset successfully, Please Login with New Password !" }
+            : {
+                success: false,
+                message: response.data.message || "Failed to reset password.",
+            };
+    } catch (err) {
+        return {
+            success: false,
+            message: err.response?.data?.message || "Something went wrong.",
+        };
     }
 };

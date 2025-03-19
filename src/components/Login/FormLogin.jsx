@@ -7,7 +7,7 @@ import useDelayedNavigation from './../../utils/useDelayedNavigation';
 import { useAuth } from "../../utils/AuthContext";
 import Transition from '../../Transition';
 import { loginUser } from './../../utils/AuthService';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeClosed, EyeIcon, EyeOff } from 'lucide-react';
 import "../../stylesheets/Login.css"
 import { toast } from 'react-toastify';
 
@@ -98,20 +98,29 @@ const FormLogin = () => {
                                             {errors.email?.message}
                                         </p>
 
-                                        <input
-                                            id='InputLoginPassword'
-                                            className='password-with-icon inline-block px-6 py-4 text-lg bg-[#F0EDFF] rounded-full font-semibold font-[nunito] outline-none min-w-[30vw]'
-                                            type={showPassword ? "text" : "password"}
-                                            placeholder='Password'
-                                            name='password'
-                                            {...register("password")}
-                                            value={password}
-                                            onChange={(e) => {
-                                                setPassword(e.target.value);
-                                                evaluateStrength(e.target.value);
-                                            }}
-                                            required
-                                        />
+                                        <div className='w-full relative'>
+                                            <input
+                                                id='InputLoginPassword'
+                                                className='password-with-icon inline-block px-6 py-4 text-lg bg-[#F0EDFF] rounded-full font-semibold font-[nunito] outline-none min-w-[30vw]'
+                                                type={showPassword ? "text" : "password"}
+                                                placeholder='Password'
+                                                name='password'
+                                                {...register("password")}
+                                                value={password}
+                                                onChange={(e) => {
+                                                    setPassword(e.target.value);
+                                                    evaluateStrength(e.target.value);
+                                                }}
+                                                required
+                                            />
+                                            <button
+                                                type="button"
+                                                className="absolute inset-y-0 right-6 flex items-center text-gray-600 cursor-pointer"
+                                                onClick={() => setShowPassword(!showPassword)}
+                                            >
+                                                {showPassword ? <EyeClosed /> : <EyeIcon />}
+                                            </button>
+                                        </div>
                                         {password && (
                                             <div className='w-full'>
                                                 <div className='h-1 bg-gray-200 rounded-full overflow-hidden'>
@@ -126,9 +135,18 @@ const FormLogin = () => {
                                             {errors.password?.message}
                                         </p>
                                         {error && <p className="text-red-500 text-sm">{error}</p>}
+
+                                        <div className='flex justify-end w-full -mt-5.5 z-30 h-full px-7.5'>
+                                            <div
+                                                onClick={() => { handleDelayNavigation("ForgotPassword") }}
+                                                className='cursor-pointer text-gray-500 font-[poppins] font-medium hover:text-gray-700 transition-all duration-250 ease-in-out'
+                                            >
+                                                Forgot Password?
+                                            </div>
+                                        </div>
                                     </div>
                                     <button
-                                    type='submit'
+                                        type='submit'
                                         className="bg-gradient-to-r from-[#9181F4] to-[#5038ED] border border-white overflow-hidden relative px-7 py-3 cursor-pointer text-white text-xl font-bold rounded-full min-w-[13vw] hover:brightness-110 active:opacity-75 active:scale-90 outline-none duration-500 group">
                                         <span
                                             className="bg-white shadow-white absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(255,255,255,0.3)] cursor-pointer"></span>
@@ -144,5 +162,4 @@ const FormLogin = () => {
     );
 };
 
-// const WrappedLogin = Transition(FormLogin)
 export default FormLogin;
