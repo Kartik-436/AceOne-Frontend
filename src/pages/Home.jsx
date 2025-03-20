@@ -48,9 +48,9 @@ const Home = () => {
                 ] = await Promise.all([
                     getBestSellingProducts(),
                     getDiscountedProducts(),
-                    getAllProducts({ category: 'Kids' }),
-                    getAllProducts({ category: 'Men' }),
-                    getAllProducts({ category: 'Women' })
+                    getAllProducts({ category: 'kids' }),
+                    getAllProducts({ category: 'mens' }),
+                    getAllProducts({ category: 'womens' })
                 ]);
 
                 // Update state with fetched data

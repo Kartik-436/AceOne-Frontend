@@ -18,6 +18,7 @@ import { AuthProvider } from "./utils/AuthContext";
 import OwnerProfile from "./pages/OwnerProfile";
 import { ToastContainer } from "react-toastify";
 import ForgotPassword from "./components/Login/ForgotPassword";
+import CursorAnimation from './components/CursorAnimation';
 
 const PageTransition = ({ children }) => {
     const containerRef = useRef(null);
@@ -66,7 +67,7 @@ function AnimatedRoutes() {
     );
 }
 
-const App = () => {
+const CompleteApp = () => {
     return (
         <AuthProvider>
             <CartProvider>
@@ -74,6 +75,17 @@ const App = () => {
                 <AnimatedRoutes />
             </CartProvider>
         </AuthProvider>
+    );
+};
+
+const App = () => {
+    const Main = useRef(null)
+
+    return (
+        <div ref={Main} className='w-full overflow-hidden h-full'>
+            {/* <CursorAnimation parentRef={Main} /> */}
+            <CompleteApp />
+        </div>
     );
 };
 

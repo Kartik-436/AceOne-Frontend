@@ -100,7 +100,7 @@ const SearchProducts = () => {
     return (
         <div className="relative w-full">
             <input
-                className="search-with-icon px-4 py-2 bg-[#fff] md:inline-block hidden outline-none border-2 border-[#111] rounded-full w-full transition-all"
+                className="search-with-icon px-4 py-1 bg-[#fff] md:inline-block hidden outline-none border-2 border-[#111] rounded-full w-full transition-all"
                 type="search"
                 name="search"
                 id="search-with-icon"

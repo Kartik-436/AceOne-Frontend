@@ -340,7 +340,7 @@ const Store = (props) => {
                                                 <SmallStringAnimation />
                                             </div>
                                             <div className='w-full pl-5 flex flex-col items-start gap-2'>
-                                                {["All_Products", "Discounted", "Men", "Women", "Kids"].map((category) => (
+                                                {["All_Products", "Discounted", "mens", "womens", "kids"].map((category) => (
                                                     <div key={category} onClick={() => handleCategoryChange(category)}>
                                                         <FlipLink
                                                             size="text-[1.2vw]"
@@ -397,8 +397,8 @@ const Store = (props) => {
                                 <div className='min-h-full w-full bg-[#fbffef] text-black p-8'>
                                     {/* Product Grid Section */}
                                     <div className='w-full'>
-                                        <div className='w-full flex items-center justify-between'>
-                                            <div className='mb-8'>
+                                        <div className='w-full flex items-center justify-between mb-8 gap-4'>
+                                            <div>
                                                 <h2 className='text-3xl font-light text-black font-[poppins]'>Featured Products</h2>
                                                 <div className='w-24 h-0.5 bg-black mt-2'></div>
                                             </div>

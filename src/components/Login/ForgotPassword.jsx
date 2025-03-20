@@ -7,6 +7,7 @@ import { forgotPassword, resetPassword, verifyResetToken } from '../../utils/Use
 import { toast } from 'react-toastify';
 import { resenVerificationOtp } from '../../utils/AuthService';
 import { EyeClosed, EyeIcon } from 'lucide-react';
+import BarLoader from '../Loaders/CustomLoader1';
 
 const ForgotPassword = () => {
     const { animate, handleDelayNavigation } = useDelayedNavigation();
@@ -18,6 +19,7 @@ const ForgotPassword = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [strength, setStrength] = useState(0);
     const [password, setPassword] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const strengthClasses = ["bg-red-500 w-1/5", "bg-orange-500 w-2/5", "bg-yellow-500 w-3/5", "bg-green-500 w-4/5", "bg-blue-500 w-full"];
 
@@ -32,6 +34,7 @@ const ForgotPassword = () => {
     };
 
     const ForgotPass = async (e) => {
+        setIsLoading(true);
         e.preventDefault();
         if (!userEmail.trim()) {
             toast.error("Please enter a valid email");
@@ -47,9 +50,12 @@ const ForgotPassword = () => {
             setError(response.message);
             toast.error(response.message);
         }
+
+        setIsLoading(false);
     };
 
     const VerifyToken = async (e) => {
+        setIsLoading(true);
         e.preventDefault();
         if (OTP.length !== 6) {
             toast.error("Please enter a valid 6-digit OTP");
@@ -65,9 +71,12 @@ const ForgotPassword = () => {
             setError(response.message);
             toast.error(response.message);
         }
+
+        setIsLoading(false);
     };
 
     const ResetPass = async (e) => {
+        setIsLoading(true);
         e.preventDefault();
         if (password.length < 8) {
             toast.error("Password must be at least 8 characters");
@@ -85,9 +94,12 @@ const ForgotPassword = () => {
             setError(response.message);
             toast.error(response.message);
         }
+
+        setIsLoading(false);
     };
 
     const resendVerificationOtp = async () => {
+        setIsLoading(true);
         const response = await resenVerificationOtp();
 
         if (response.success) {
@@ -96,13 +108,20 @@ const ForgotPassword = () => {
             setError(response.message);
             toast.error(response.message);
         }
+
+        setIsLoading(false);
     };
 
     return (
         <>
             <Transition animate={animate} />
+            {isLoading && (
+                <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20'>
+                    <BarLoader />
+                </div>
+            )}
 
-            <div className='h-screen z-50 w-screen overflow-hidden'>
+            <div className={`h-screen z-50 w-screen overflow-hidden ${isLoading ? "blur-xs pointer-events-none select-none cursor-not-allowed" : "blur-none pointer-events-auto"}`}>
 
                 <div>
                     <div className='w-screen h-screen overflow-hidden fixed flex items-center justify-between bg-[#59c0ec] z-[-1] user-select-none'>

@@ -44,17 +44,17 @@ const StaggeredDropDown = () => {
                             className="w-4 h-4 rounded-full bg-white"></motion.span>
                         <Option setOpen={setOpen} text="Discounted" />
                     </div>
-                    <div className="flex items-center justify-center gap-4" onClick={() => { handleDelayNavigation("store?category=Kids") }}>
+                    <div className="flex items-center justify-center gap-4" onClick={() => { handleDelayNavigation("store?category=kids") }}>
                         <motion.span
                             className="w-4 h-4 rounded-full bg-white"></motion.span>
                         <Option setOpen={setOpen} text="Kids" />
                     </div>
-                    <div className="flex items-center justify-center gap-4" onClick={() => { handleDelayNavigation("store?category=Men") }}>
+                    <div className="flex items-center justify-center gap-4" onClick={() => { handleDelayNavigation("store?category=mens") }}>
                         <motion.span
                             className="w-4 h-4 rounded-full bg-white"></motion.span>
                         <Option setOpen={setOpen} text="Mens" />
                     </div>
-                    <div className="flex items-center justify-center gap-4" onClick={() => { handleDelayNavigation("store?category=Women") }}>
+                    <div className="flex items-center justify-center gap-4" onClick={() => { handleDelayNavigation("store?category=womens") }}>
                         <motion.span
                             className="w-4 h-4 rounded-full bg-white"></motion.span>
                         <Option setOpen={setOpen} text="Womens" />

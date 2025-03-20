@@ -10,7 +10,7 @@ const EditProductModal = ({ isOpen, onClose, product, onProductUpdated }) => {
     const [imageFile, setImageFile] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
     const [errors, setErrors] = useState({});
-    const categories = ["Kids", "Mens", "Womens"];
+    const categories = ["kids", "mens", "womens"];
 
     const [productData, setProductData] = useState({
         name: '',

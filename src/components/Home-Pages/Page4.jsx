@@ -24,9 +24,9 @@ const Page4 = ({ Kids, Men, Women }) => {
     };
 
     const collections = [
-        { title: "Male Collection", src: "https://static.wixstatic.com/media/c837a6_7407d6560448416a996712cac8ce5c9c~mv2.jpg/v1/fill/w_601,h_650,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/c837a6_7407d6560448416a996712cac8ce5c9c~mv2.jpg", href: "store?category=Men" },
-        { title: "Female Collection", src: "https://static.wixstatic.com/media/c837a6_a5a5863d6d7341958148ce678ac1a49a~mv2.jpg/v1/fill/w_604,h_650,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/c837a6_a5a5863d6d7341958148ce678ac1a49a~mv2.jpg", href: "store?category=Women" },
-        { title: "Kids Collection", src: "https://static.wixstatic.com/media/c837a6_d70089b44d104fc59d5366f6ff53851b~mv2.jpg/v1/fill/w_604,h_650,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/c837a6_d70089b44d104fc59d5366f6ff53851b~mv2.jpg", href: "store?category=Kids" }
+        { title: "Male Collection", src: "https://static.wixstatic.com/media/c837a6_7407d6560448416a996712cac8ce5c9c~mv2.jpg/v1/fill/w_601,h_650,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/c837a6_7407d6560448416a996712cac8ce5c9c~mv2.jpg", href: "store?category=mens" },
+        { title: "Female Collection", src: "https://static.wixstatic.com/media/c837a6_a5a5863d6d7341958148ce678ac1a49a~mv2.jpg/v1/fill/w_604,h_650,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/c837a6_a5a5863d6d7341958148ce678ac1a49a~mv2.jpg", href: "store?category=womens" },
+        { title: "Kids Collection", src: "https://static.wixstatic.com/media/c837a6_d70089b44d104fc59d5366f6ff53851b~mv2.jpg/v1/fill/w_604,h_650,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/c837a6_d70089b44d104fc59d5366f6ff53851b~mv2.jpg", href: "store?category=kids" }
     ];
 
     const imgContainerRef = useRef(null);

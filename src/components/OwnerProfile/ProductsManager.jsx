@@ -22,7 +22,7 @@ const ProductsManager = () => {
     const [imagePreview, setImagePreview] = useState(null);
     const [errors, setErrors] = useState({});
 
-    const categories = ["Kids", "Mens", "Womens"];
+    const categories = ["kids", "mens", "womens"];
 
     const refreshProducts = async () => {
         try {

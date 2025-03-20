@@ -18,7 +18,7 @@ export default function SortMenuStore({ setselectedSort, selectedSort, handleSor
     return (
         <div className="relative inline-block">
             <button
-                className="font-[nunito] font-medium py-2 px-4 border-[1px] border-dashed cursor-pointer flex items-center gap-2"
+                className="font-[nunito] font-medium md:py-2 md:px-4 w-full px-2 py-1 border-[1px] border-dashed cursor-pointer flex items-center gap-2"
                 onClick={() => setIsOpen(!isOpen)}
             >
                 Sort by: {sortOption}

@@ -11,10 +11,11 @@ import AfterSignedInNavBar from '../components/NavBars/AfterSignedInNavBar';
 import Transition from '../Transition';
 import useDelayedNavigation from '../utils/useDelayedNavigation';
 import useAuthStatus from '../utils/IsLoggedInChecker';
-import { getUserCart, removeFromCart, updateCartQuantity } from '../utils/CartService';
+import { clearCart, getUserCart, removeFromCart, updateCartQuantity } from '../utils/CartService';
 import { addToWishlist, getUserDetails, placeOrder } from '../utils/UserService';
 import { toast } from 'react-toastify';
 import { Heart, ShoppingBasket, X } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 
 const Cart = () => {
     const [user, setuser] = useState(null);
@@ -107,6 +108,20 @@ const Cart = () => {
         setLoadingCart(false);
     };
 
+    const ClearCart = async () => {
+        try {
+            const response = await clearCart();
+            if (response.success) {
+                setProducts(response.cart);
+            } else {
+                console.error("Failed to refresh cart:", response.message);
+            }
+        } catch (error) {
+            console.error("Error refreshing cart:", error);
+        }
+        setLoadingCart(false);
+    }
+
     useEffect(() => {
         ; (async () => {
             await refreshCart();
@@ -141,7 +156,14 @@ const Cart = () => {
                             <div className='flex flex-col items-center justify-center'>
                                 <div className='w-full h-full flex items-center justify-between mb-5'>
                                     <div className='text-xl font-[poppins] scale-y-110 text-black font-light'>My Cart</div>
-                                    <div onClick={refreshCart} className='cursor-pointer'><i className="ri-restart-line text-2xl font-[poppins] scale-y-110 text-black font-light cursor-pointer"></i></div>
+
+                                    <div
+                                        id="NavBarButtons"
+                                        onClick={ClearCart}
+                                        className='cursor-pointer border-2 px-4 py-1 rounded-full'>
+                                        <div className='flex items-center justify-center gap-2 uppercase font-light font-[poppins]'>Clear Cart <Trash2 size={18} />
+                                        </div>
+                                    </div>
                                 </div>
                                 <hr className='w-full h-[1px]' />
                             </div>

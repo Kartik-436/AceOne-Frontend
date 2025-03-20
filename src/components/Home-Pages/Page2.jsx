@@ -158,7 +158,7 @@ const Page2 = ({ bestSelling, Discounted }) => {
     const productCard = (product, index) => (
         <motion.div
             key={product?._id}
-            className='h-[70vh] w-[80vw] md:w-full flex flex-col items-center md:items-start gap-4 md:px-4 py-2 rounded-xl'
+            className='min-h-[60vh] w-[80vw] md:w-full flex flex-col items-center md:items-start gap-4 md:px-4 py-2 rounded-xl'
             initial="hidden"
             animate={isInView ? "visible" : "hidden"}
             variants={{
@@ -175,7 +175,7 @@ const Page2 = ({ bestSelling, Discounted }) => {
         >
             <motion.div
                 ref={imgContainerRef}
-                className='h-[60vh] md:w-full w-[75vw] rounded-xl bg-[#aeaeaeec] relative flex items-center justify-center overflow-hidden'
+                className='min-h-[53vh] md:w-full w-[75vw] rounded-xl bg-[#e8e8e848] relative flex items-center justify-center overflow-hidden'
                 variants={{
                     hidden: { opacity: 0, y: 50 },
                     visible: {
@@ -185,8 +185,14 @@ const Page2 = ({ bestSelling, Discounted }) => {
                     }
                 }}
             >
+                <img
+                    src={product?.image || "https://icon-library.com/images/products-icon-png/products-icon-png-12.jpg"}
+                    alt={product?.name}
+                    className="scale-200 rounded-xl"
+                />
+
                 <motion.div
-                    className='absolute top-3 left-3 px-3 py-0.5 bg-[#ffbb00] text-white rounded-md uppercase font-mono font-medium text-xs'
+                    className='absolute top-3 left-3 px-3 py-0.5 bg-[#ffbb00] text-black rounded-sm uppercase font-mono font-medium text-xs'
                     variants={{
                         hidden: { opacity: 0, x: -30 },
                         visible: {
@@ -202,10 +208,9 @@ const Page2 = ({ bestSelling, Discounted }) => {
                 >
                     {product?.discountPrice ? "Sale" : "BestSeller"}
                 </motion.div>
-                <img style={{ scale: scale }} src={product?.image || "https://icon-library.com/images/products-icon-png/products-icon-png-12.jpg"} alt={product?.name} className='w-full h-full object-cover' />
             </motion.div>
 
-            <div className='flex w-full items-start justify-between px-3 pr-5'>
+            <div className='flex w-full items-start justify-between px-2 gap-3 pr-5'>
                 <motion.div
                     className='flex flex-col items-start justify-center gap-0 pl-1'
                     variants={{
@@ -220,8 +225,8 @@ const Page2 = ({ bestSelling, Discounted }) => {
                         }
                     }}
                 >
-                    <h1 className='text-black font-bold font-mono text-lg'>{product?.name} ({product?.color})</h1>
-                    <h1 className="text-black font-light font-mono -mt-1">{product?.category} ({product?.size})</h1>
+                    <h1 className='text-black font-bold font-mono mb-2'>{product?.name} ({product?.color})</h1>
+                    <h1 className="text-black font-light font-mono text-sm -mt-1">{product?.category} ({product?.size})</h1>
                     <div className='flex items-center gap-1.5'>
                         <span className='text-black font-light font-mono text-md'>${Math.round(product?.discountPrice) || Math.round(product?.price)}</span>
                         {product?.discountPrice && <span className='text-black font-medium font-mono text-sm line-through'>${Math.round(product?.price)}</span>}
@@ -232,7 +237,7 @@ const Page2 = ({ bestSelling, Discounted }) => {
                     <button
                         onClick={() => handleAddToCart(product?._id)}
                         id="Shp-Now-Home-Start"
-                        className="px-4 py-1.5 text-sm rounded-full bg-transparent uppercase font-mono text-black font-bold tracking-wide text-nowrap">
+                        className="px-4 py-1.5 text-xs rounded-full bg-transparent uppercase font-mono text-black font-bold tracking-wide text-nowrap">
                         Add to Cart
                     </button>
                     <span
@@ -256,7 +261,7 @@ const Page2 = ({ bestSelling, Discounted }) => {
                         id="Shp-Now-Home-Start"
                         className='bg-white rounded-full px-2 py-2 border-[1px] border-black text-black'
                     >
-                        <Heart size={25} />
+                        <Heart size={17} />
                     </span>
                 </div>
             </div>

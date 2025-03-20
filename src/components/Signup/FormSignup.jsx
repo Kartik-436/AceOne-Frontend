@@ -12,6 +12,7 @@ import "../../stylesheets/Signup.css"
 import { toast } from 'react-toastify';
 import { AnimatePresence, motion } from 'framer-motion';
 import { EyeClosed, EyeIcon } from 'lucide-react';
+import BarLoader from './../Loaders/CustomLoader1';
 
 const FormSignup = () => {
     const [isTyping, setIsTyping] = useState(false);
@@ -25,6 +26,7 @@ const FormSignup = () => {
     const [userEmail, setUserEmail] = useState(null);
     const [OTP, setOTP] = useState("");
     const [VerificationModalOpen, setVerificationModalOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const strengthClasses = ["bg-red-500 w-1/5", "bg-orange-500 w-2/5", "bg-yellow-500 w-3/5", "bg-green-500 w-4/5", "bg-blue-500 w-full"];
 
@@ -33,6 +35,7 @@ const FormSignup = () => {
     });
 
     const onSubmit = async (data) => {
+        setIsLoading(true)
         setError("");
 
         const result = await registerUser(data);
@@ -45,9 +48,13 @@ const FormSignup = () => {
         } else {
             setError(result.message);
         }
+
+        setIsLoading(false)
     };
 
     const onVerification = async () => {
+        setIsLoading(true);
+
         if (!OTP) {
             toast.error("Please enter OTP!");
             return;
@@ -67,9 +74,13 @@ const FormSignup = () => {
             setError(result.message);
             toast.error(result.message);
         }
+
+        setIsLoading(false);
     };
 
     const resendVerificationOtp = async () => {
+        setIsLoading(true)
+
         const message = await resenVerificationOtp();
 
         if (message.success) {
@@ -78,6 +89,8 @@ const FormSignup = () => {
             setError(message.message);
             toast.error(message.message);
         }
+
+        setIsLoading(false);
     }
 
     const evaluateStrength = (value) => {
@@ -93,9 +106,12 @@ const FormSignup = () => {
     return (
         <>
             <Transition animate={animate} />
-
-            <div className='h-screen z-50 w-screen overflow-hidden'>
-
+            {isLoading && (
+                <div className='absolute top-1/2 left-1/2 -translate-x-1/2 backdrop-blur-xs -translate-y-1/2 z-20'>
+                    <BarLoader />
+                </div>
+            )}
+            <div className={`h-screen z-50 w-screen overflow-hidden ${isLoading ? "blur-xs cursor-not-allowed" : "blur-none"}`}>
                 <div>
                     <div className='w-screen h-screen overflow-hidden fixed flex items-center justify-between bg-[#59c0ec] z-[-1] user-select-none'>
                         <img className='md:w-screen z-50 rotate-90' src="LS-Right.svg" alt="" />
@@ -107,6 +123,7 @@ const FormSignup = () => {
                     {/* <Link to="/login"> */}
                     <button
                         id='Login-Instead-SignUp-Route'
+                        disabled={isLoading}
                         className='inline-block text-nowrap md:px-7 md:py-4 cursor-pointer bg-[#1f1f1f] md:bg-transparent text-white text-xl font-bold rounded-full md:min-w-[13vw] absolute md:right-10 right-2 top-6 md:top-10 font-[poppins] py-3 px-5'
                         onClick={() => handleDelayNavigation("login")}
                     >
@@ -207,11 +224,15 @@ const FormSignup = () => {
                                     </div>
                                     <div className='flex items-center justify-center'>
                                         <button
-                                            type='submit'
-                                            className="bg-gradient-to-r from-[#9181F4] to-[#5038ED] border border-white overflow-hidden relative px-7 py-3 cursor-pointer text-white text-xl font-bold rounded-full min-w-[13vw] hover:brightness-110 active:opacity-75 active:scale-90 outline-none duration-500 group">
+                                            type="submit"
+                                            disabled={isLoading}
+                                            className={`bg-gradient-to-r from-[#9181F4] to-[#5038ED] border border-white overflow-hidden relative px-7 py-3 cursor-pointer text-white text-xl font-bold rounded-full min-w-[13vw] hover:brightness-110 active:opacity-75 active:scale-90 outline-none duration-500 group
+                                            ${isLoading ? "cursor-not-allowed" : ""}`}
+                                        >
                                             <span
-                                                className="bg-white shadow-white absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(255,255,255,0.3)] cursor-pointer"></span>
-                                            Register Now
+                                                className="bg-white shadow-white absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(255,255,255,0.3)] cursor-pointer">
+                                            </span>
+                                            {isLoading ? "Loading..." : "Register Now"}
                                         </button>
                                     </div>
                                 </form>
@@ -226,6 +247,7 @@ const FormSignup = () => {
                     onConfirm={onVerification}
                     setOTP={setOTP}
                     resendVerificationOtp={resendVerificationOtp}
+                    isLoading={isLoading}
                 />
             </div>
         </>
@@ -234,7 +256,7 @@ const FormSignup = () => {
 
 export default FormSignup;
 
-const VerificationModal = ({ isOpen, onClose, onConfirm, setOTP, resendVerificationOtp }) => {
+const VerificationModal = ({ isOpen, onClose, onConfirm, setOTP, resendVerificationOtp, isLoading }) => {
     return (
         <AnimatePresence>
             {isOpen && (
@@ -250,6 +272,7 @@ const VerificationModal = ({ isOpen, onClose, onConfirm, setOTP, resendVerificat
 
                         <button
                             onClick={onClose}
+                            disabled={isLoading}
                             className="text-black hover:text-[#ffbb00] transition-colors cursor-pointer absolute right-8 top-5"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
@@ -259,35 +282,47 @@ const VerificationModal = ({ isOpen, onClose, onConfirm, setOTP, resendVerificat
                         </button>
 
                         <h2 className="text-3xl font-semibold text-center font-[poppins]">Enter OTP</h2>
-                        <div className='flex flex-col gap-7 items-center justify-center'>
-                            <div className='flex flex-col gap-2 items-center'>
-                                <h1 className='text-sm font-light font-[poppins] tracking-tight'>
-                                    Please Enter the OTP you recieved on your entered Mail !
-                                </h1>
-                                <OTPInput onChangeOTP={(otp) => setOTP(otp)} />
-                                <div className='flex items-center justify-end w-full'>
-                                    <h1
-                                        onClick={resendVerificationOtp}
-                                        className='tracking-tight text-sm font-[roboto] capitalize px-6 cursor-pointer text-blue-400 hover:underline underline-offset-2'
-                                    >
-                                        Resend Verification code
-                                    </h1>
+                        {isLoading
+                            ?
+                            (
+                                <div className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'>
+                                    <BarLoader />
                                 </div>
-                            </div>
-                            <div className='w-full flex items-center justify-center px-24'>
-                                <button
-                                    onClick={onConfirm}
-                                    id="NavBarButtons"
-                                    className="px-[100%] flex items-center justify-center py-2.5 bg-[#ffbb00] text-black rounded-lg border-2 cursor-pointer active:scale-95 tracking-wide font-medium font-[poppins]"
-                                >
-                                    VERIFY
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </motion.div>
+                            )
+                            :
+                            (
+                                <div className='flex flex-col gap-7 items-center justify-center'>
+                                    <div className='flex flex-col gap-2 items-center'>
+                                        <h1 className='text-sm font-light font-[poppins] tracking-tight'>
+                                            Please Enter the OTP you recieved on your entered Mail !
+                                        </h1>
+                                        <OTPInput onChangeOTP={(otp) => setOTP(otp)} />
+                                        <div className='flex items-center justify-end w-full'>
+                                            <h1
+                                                onClick={resendVerificationOtp}
+                                                className='tracking-tight text-sm font-[roboto] capitalize px-6 cursor-pointer text-blue-400 hover:underline underline-offset-2'
+                                            >
+                                                Resend Verification code
+                                            </h1>
+                                        </div>
+                                    </div>
+                                    <div className='w-full flex items-center justify-center px-24'>
+                                        <button
+                                            onClick={onConfirm}
+                                            disabled={isLoading}
+                                            id="NavBarButtons"
+                                            className="px-[100%] flex items-center justify-center py-2.5 bg-[#ffbb00] text-black rounded-lg border-2 cursor-pointer active:scale-95 tracking-wide font-medium font-[poppins]"
+                                        >
+                                            VERIFY
+                                        </button>
+                                    </div>
+                                </div>
+                            )
+                        }
+                    </div >
+                </motion.div >
             )}
-        </AnimatePresence>
+        </AnimatePresence >
     );
 };
 

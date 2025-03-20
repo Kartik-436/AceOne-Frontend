@@ -7,19 +7,33 @@
     backface-visibility: 'hidden';
 }
 
+.crackler {
+    position: absolute;
+    width: 3px;
+    height: 8px;
+    background-color: #fff;
+    border-radius: 2px;
+    transform-origin: center;
+    opacity: 0;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    mix-blend-mode: difference;
+    z-index: 99999;
+}
+
 .email-with-icon {
     background-image: url('./assets/mail-line.svg');
-    /* Change to your image path */
     background-size: 20px;
     background-repeat: no-repeat;
     background-position: 20px center;
     padding-left: 50px;
-    /* Push text to the right */
 }
 
 .password-with-icon {
     background-image: url('./assets/Lock-Pass.svg');
-    /* Change to your image path */
     background-size: 20px;
     background-repeat: no-repeat;
     background-position: 20px center;
@@ -28,7 +42,6 @@
 
 .fullName-with-icon {
     background-image: url('./assets/User-Email.svg');
-    /* Change to your image path */
     background-size: 20px;
     background-repeat: no-repeat;
     background-position: 20px center;
@@ -37,7 +50,6 @@
 
 .contact-with-icon {
     background-image: url('./assets/contacts-line.svg');
-    /* Change to your image path */
     background-size: 20px;
     background-repeat: no-repeat;
     background-position: 20px center;
@@ -46,7 +58,6 @@
 
 .dateOfBirth-with-icon {
     background-image: url('./assets/calendar-line.svg');
-    /* Change to your image path */
     background-size: 20px;
     background-repeat: no-repeat;
     background-position: 20px center;
@@ -55,7 +66,6 @@
 
 .search-with-icon {
     background-image: url('./assets/search-line.svg');
-    /* Change to your image path */
     background-size: 20px;
     background-repeat: no-repeat;
     background-position: 20px center;

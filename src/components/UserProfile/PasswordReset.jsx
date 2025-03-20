@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import { resenVerificationOtp } from '../../utils/AuthService';
 import { EyeClosed, EyeIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
+import BarLoader from '../Loaders/CustomLoader1';
 
 const PasswordReset = () => {
     const { animate, handleDelayNavigation } = useDelayedNavigation();
@@ -19,6 +20,7 @@ const PasswordReset = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [strength, setStrength] = useState(0);
     const [password, setPassword] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const strengthClasses = ["bg-red-500 w-1/5", "bg-orange-500 w-2/5", "bg-yellow-500 w-3/5", "bg-green-500 w-4/5", "bg-blue-500 w-full"];
 
@@ -33,6 +35,7 @@ const PasswordReset = () => {
     };
 
     const ForgotPass = async (e) => {
+        setIsLoading(true);
         e.preventDefault();
         if (!userEmail.trim()) {
             toast.error("Please enter a valid email");
@@ -48,9 +51,12 @@ const PasswordReset = () => {
             setError(response.message);
             toast.error(response.message);
         }
+
+        setIsLoading(false);
     };
 
     const VerifyToken = async (e) => {
+        setIsLoading(true);
         e.preventDefault();
         if (OTP.length !== 6) {
             toast.error("Please enter a valid 6-digit OTP");
@@ -66,9 +72,12 @@ const PasswordReset = () => {
             setError(response.message);
             toast.error(response.message);
         }
+
+        setIsLoading(false);
     };
 
     const ResetPass = async (e) => {
+        setIsLoading(true);
         e.preventDefault();
         if (password.length < 8) {
             toast.error("Password must be at least 8 characters");
@@ -86,9 +95,12 @@ const PasswordReset = () => {
             setError(response.message);
             toast.error(response.message);
         }
+
+        setIsLoading(false);
     };
 
     const resendVerificationOtp = async () => {
+        setIsLoading(true);
         const response = await resenVerificationOtp();
 
         if (response.success) {
@@ -97,6 +109,8 @@ const PasswordReset = () => {
             setError(response.message);
             toast.error(response.message);
         }
+
+        setIsLoading(false);
     };
 
     const containerVariants = {
@@ -141,8 +155,13 @@ const PasswordReset = () => {
     return (
         <>
             <Transition animate={animate} />
+            {isLoading && (
+                <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20'>
+                    <BarLoader />
+                </div>
+            )}
 
-            <div className='h-full z-50 w-full overflow-hidden'>
+            <div className={`h-full z-50 w-full overflow-hidden ${isLoading ? "blur-xs pointer-events-none select-none cursor-not-allowed" : "blur-none pointer-events-auto"}`}>
 
                 <motion.div
                     className='w-full h-full items-center justify-center flex'
@@ -189,19 +208,18 @@ const PasswordReset = () => {
                                             >
                                                 <motion.h1
                                                     className='text-sm font-light font-[poppins] tracking-tight'
-                                                    variants={itemVariants}
                                                 >
                                                     Please Enter the OTP you recieved on your entered Mail !
                                                 </motion.h1>
-                                                <motion.div variants={itemVariants}>
+                                                <div>
                                                     <OTPInput onChangeOTP={(otp) => setOTP(otp)} />
-                                                </motion.div>
+                                                </div>
                                                 <motion.div
                                                     className='flex items-center justify-end w-full'
-                                                    variants={itemVariants}
                                                 >
                                                     <motion.h1
                                                         onClick={resendVerificationOtp}
+                                                        disabled={isLoading}
                                                         className='tracking-tight text-sm font-[roboto] capitalize px-6 cursor-pointer text-blue-400 hover:underline underline-offset-1'
                                                         whileHover={{ scale: 1.05 }}
                                                         whileTap={{ scale: 0.95 }}
@@ -221,7 +239,6 @@ const PasswordReset = () => {
                                             >
                                                 <motion.h1
                                                     className='text-sm font-light font-[poppins] tracking-tight'
-                                                    variants={itemVariants}
                                                 >
                                                     Please Enter your registered email to change your password !
                                                 </motion.h1>
@@ -251,13 +268,11 @@ const PasswordReset = () => {
                                     >
                                         <motion.h1
                                             className='text-sm font-light font-[poppins] tracking-tight'
-                                            variants={itemVariants}
                                         >
                                             Please set the new password !
                                         </motion.h1>
                                         <motion.div
                                             className='w-full relative'
-                                            variants={itemVariants}
                                         >
                                             <motion.input
                                                 id='InputLoginPassword'
@@ -285,29 +300,14 @@ const PasswordReset = () => {
                                         </motion.div>
 
                                         {password && (
-                                            <motion.div
-                                                className='w-full'
-                                                initial={{ opacity: 0 }}
-                                                animate={{ opacity: 1 }}
-                                                transition={{ duration: 0.3 }}
-                                            >
+                                            <div className='w-full'>
                                                 <div className='h-1 bg-gray-200 rounded-full overflow-hidden'>
-                                                    <motion.div
-                                                        className={`h-full transition-all duration-300 ${strengthClasses[strength]}`}
-                                                        initial={{ width: 0 }}
-                                                        animate={{ width: strengthClasses[strength].split(' ')[1] }}
-                                                        transition={{ type: "spring", stiffness: 100 }}
-                                                    ></motion.div>
+                                                    <div className={`h-full transition-all duration-300 ${strengthClasses[strength]}`}></div>
                                                 </div>
-                                                <motion.p
-                                                    className='text-sm font-semibold text-end'
-                                                    initial={{ opacity: 0 }}
-                                                    animate={{ opacity: 1 }}
-                                                    transition={{ delay: 0.2 }}
-                                                >
+                                                <p className='text-sm font-semibold text-end'>
                                                     {["Very Weak", "Weak", "Fair", "Strong", "Very Strong"][strength]}
-                                                </motion.p>
-                                            </motion.div>
+                                                </p>
+                                            </div>
                                         )}
                                     </motion.div>
                                 )}
@@ -318,6 +318,7 @@ const PasswordReset = () => {
                                 >
                                     <motion.button
                                         type='submit'
+                                        disabled={isLoading}
                                         id="NavBarButtons"
                                         className="px-[100%] flex items-center justify-center py-2.5 bg-[#ffbb00] text-black rounded-2xl border-2 cursor-pointer active:scale-95 tracking-wide font-medium font-[poppins]"
                                         variants={buttonVariants}

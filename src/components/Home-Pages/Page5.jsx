@@ -102,7 +102,7 @@ const Page5 = () => {
                             className="md:w-[28vw] w-[70vw] h-[50vh] md:h-[36vh] bg-[#111111a9] rounded-md flex items-center justify-center"
                         >
                             <motion.div
-                                className="md:w-[26vw] w-[70vw] h-[50vh] md:h-[32vh] bg-transparent rounded-md flex items-center justify-center relative"
+                                className="md:w-[26vw] w-[70vw] h-[50vh] md:h-[33vh] bg-transparent rounded-md flex items-center justify-center relative"
                             >
                                 <motion.div
                                     className='w-full h-full p-3 flex flex-col items-start justify-between'
@@ -122,9 +122,12 @@ const Page5 = () => {
                                             variants={fadeSideCome}
                                             className='text-wrap text-sm text-white font-normal font-[roboto]'
                                         >
-                                            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Reiciendis nesciunt laboriosam at doloribus facilis in officiis aliquid sequi aliquam optio.
+                                            At AceOne Footwear, we prioritize sustainability by using eco-friendly materials and ethical practices. Every step you take with us contributes to a greener, more responsible future.
                                         </motion.p>
-                                        <motion.button id="Shp-Now-Home-Start" className="px-5 py-2 rounded-full bg-[#ffbb00] uppercase font-mono text-black font-bold tracking-wide">
+                                        <motion.button
+                                            onClick={() => { handleDelayNavigation("About") }}
+                                            id="Shp-Now-Home-Start"
+                                            className="px-5 py-2 rounded-full bg-[#ffbb00] uppercase font-mono text-black font-bold tracking-wide">
                                             Read more
                                         </motion.button>
                                     </div>
