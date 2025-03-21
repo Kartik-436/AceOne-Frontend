@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const getUserCart = async () => {
     try {
-        const response = await axios.get("/api/user/cart", { withCredentials: true });
+        const response = await axios.get("https://aceone-backend-wcgq.onrender.com/user/cart", { withCredentials: true });
         // console.log("Full API response:", response); // Debugging
         // console.log("Data response:", response.data.data); // Debugging
         if (response.data.success) {
@@ -17,7 +17,7 @@ export const getUserCart = async () => {
 
 export const addToCart = async (productID, quantity = 1) => {
     try {
-        const response = await axios.post("/api/user/cart/add", { productID, quantity }, { withCredentials: true });
+        const response = await axios.post("https://aceone-backend-wcgq.onrender.com/user/cart/add", { productID, quantity }, { withCredentials: true });
 
         if (response.data.success) {
             return { success: true, cart: response.data.data };
@@ -31,7 +31,7 @@ export const addToCart = async (productID, quantity = 1) => {
 
 export const updateCartQuantity = async (productID, change) => {
     try {
-        const response = await axios.put("/api/user/cart/update", { productID, change }, { withCredentials: true });
+        const response = await axios.put("https://aceone-backend-wcgq.onrender.com/user/cart/update", { productID, change }, { withCredentials: true });
         if (response.data.success) {
             return { success: true, cart: response.data.data };
         } else {
@@ -44,7 +44,7 @@ export const updateCartQuantity = async (productID, change) => {
 
 export const removeFromCart = async (productID) => {
     try {
-        const response = await axios.delete("/api/user/cart/remove", { data: { productID }, withCredentials: true });
+        const response = await axios.delete("https://aceone-backend-wcgq.onrender.com/user/cart/remove", { data: { productID }, withCredentials: true });
 
         if (response.data.success) {
             return { success: true, cart: response.data.data };
@@ -58,7 +58,7 @@ export const removeFromCart = async (productID) => {
 
 export const clearCart = async () => {
     try {
-        const response = await axios.delete("/api/user/cart/clear", { withCredentials: true });
+        const response = await axios.delete("https://aceone-backend-wcgq.onrender.com/user/cart/clear", { withCredentials: true });
 
         if (response.data.success) {
             return { success: true, cart: response.data.data };

@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const registerUser = async (userData) => {
     try {
-        const response = await axios.post("/api/user/register", userData, { withCredentials: true });
+        const response = await axios.post("https://aceone-backend-wcgq.onrender.com/user/register", userData, { withCredentials: true });
 
         if (response.data.success) {
             return { success: true, email: response.data.data };
@@ -16,7 +16,7 @@ export const registerUser = async (userData) => {
 
 export const verifyRegisteredUser = async (OTP_Email) => {
     try {
-        const response = await axios.post("/api/user/verify-email", { OTP_Email }, { withCredentials: true });
+        const response = await axios.post("https://aceone-backend-wcgq.onrender.com/user/verify-email", { OTP_Email }, { withCredentials: true });
 
         if (response.data.success) {
             return { success: true, user: response.data.data };
@@ -30,7 +30,7 @@ export const verifyRegisteredUser = async (OTP_Email) => {
 
 export const resenVerificationOtp = async (email) => {
     try {
-        const response = await axios.post("/api/user/resend-verification", email, { withCredentials: true });
+        const response = await axios.post("https://aceone-backend-wcgq.onrender.com/user/resend-verification", email, { withCredentials: true });
 
         if (response.data.success) {
             return { success: true, message: response.data.message };
@@ -44,7 +44,7 @@ export const resenVerificationOtp = async (email) => {
 
 export const loginUser = async (credentials) => {
     try {
-        const response = await axios.post("/api/user/login", credentials, { withCredentials: true });
+        const response = await axios.post("https://aceone-backend-wcgq.onrender.com/user/login", credentials, { withCredentials: true });
 
         if (response.data.success) {
             return { success: true, user: response.data.data };
@@ -58,7 +58,7 @@ export const loginUser = async (credentials) => {
 
 export const loginOwner = async (credentials) => {
     try {
-        const response = await axios.post("/api/owner/login", credentials, { withCredentials: true });
+        const response = await axios.post("https://aceone-backend-wcgq.onrender.com/owner/login", credentials, { withCredentials: true });
 
         if (response.data.success) {
             return { success: true, owner: response.data.data };
@@ -72,7 +72,7 @@ export const loginOwner = async (credentials) => {
 
 export const logoutUser = async () => {
     try {
-        const response = await axios.get("/api/user/logout", { withCredentials: true });
+        const response = await axios.get("https://aceone-backend-wcgq.onrender.com/user/logout", { withCredentials: true });
 
         if (response.data.success) {
             return { success: true, user: response.data.data };
@@ -86,7 +86,7 @@ export const logoutUser = async () => {
 
 export const logoutOwner = async () => {
     try {
-        const response = await axios.get("/api/owner/logout", { withCredentials: true });
+        const response = await axios.get("https://aceone-backend-wcgq.onrender.com/owner/logout", { withCredentials: true });
 
         if (response.data.success) {
             return { success: true, owner: response.data.data };
