@@ -24,6 +24,7 @@ const OwnerProfile = () => {
 
     const handleLogout = async () => {
         setError("");
+
         const result = await logoutOwner();
         if (result.success) {
             toast.success("Owner Logged Out Successfully !")

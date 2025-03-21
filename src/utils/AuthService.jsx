@@ -72,9 +72,20 @@ export const loginOwner = async (credentials) => {
 
 export const logoutUser = async () => {
     try {
-        const response = await axios.get("https://aceone-backend-wcgq.onrender.com/user/logout", { withCredentials: true });
+        const response = await axios.get("https://aceone-backend-wcgq.onrender.com/user/logout", {
+            withCredentials: true, headers: {
+                'Cache-Control': 'no-cache, no-store',
+                'Pragma': 'no-cache'
+            }
+        });
 
         if (response.data.success) {
+
+            if (caches && caches.keys) {
+                const cacheKeys = await caches.keys();
+                await Promise.all(cacheKeys.map(key => caches.delete(key)));
+            }
+
             return { success: true, user: response.data.data };
         } else {
             return { success: false, message: response.data.message || "Logout failed." };
@@ -86,9 +97,20 @@ export const logoutUser = async () => {
 
 export const logoutOwner = async () => {
     try {
-        const response = await axios.get("https://aceone-backend-wcgq.onrender.com/owner/logout", { withCredentials: true });
+        const response = await axios.get("https://aceone-backend-wcgq.onrender.com/owner/logout", {
+            withCredentials: true, headers: {
+                'Cache-Control': 'no-cache, no-store',
+                'Pragma': 'no-cache'
+            }
+        });
 
         if (response.data.success) {
+
+            if (caches && caches.keys) {
+                const cacheKeys = await caches.keys();
+                await Promise.all(cacheKeys.map(key => caches.delete(key)));
+            }
+
             return { success: true, owner: response.data.data };
         } else {
             return { success: false, message: response.data.message || "Logout failed." };
