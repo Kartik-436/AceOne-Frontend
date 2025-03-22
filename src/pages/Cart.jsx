@@ -16,9 +16,10 @@ import { addToWishlist, getUserDetails, placeOrder } from '../utils/UserService'
 import { toast } from 'react-toastify';
 import { Heart, ShoppingBasket, X } from 'lucide-react';
 import { Trash2 } from 'lucide-react';
+import { CheckoutButton } from '../components/EnhancedPaymentIntegration';
 
 const Cart = () => {
-    const [user, setuser] = useState(null);
+    const [user, setUser] = useState(null);
     const [deliveryFee, setDeliveryFee] = useState(50);
     const { animate, handleDelayNavigation } = useDelayedNavigation();
     const [products, setProducts] = useState([]);
@@ -30,12 +31,12 @@ const Cart = () => {
             const response = await getUserDetails();
             if (response.success) {
                 await refreshCart();
-                setuser(response.user);
+                setUser(response.user);
             } else {
                 console.error(response.message);
             }
         } catch (error) {
-            console.error("Error increasing quantity:", error);
+            console.error("Error fetching user details:", error);
         }
     };
 
@@ -108,16 +109,16 @@ const Cart = () => {
         setLoadingCart(false);
     };
 
-    const ClearCart = async () => {
+    const clearCartItems = async () => {
         try {
             const response = await clearCart();
             if (response.success) {
                 setProducts(response.cart);
             } else {
-                console.error("Failed to refresh cart:", response.message);
+                console.error("Failed to clear cart:", response.message);
             }
         } catch (error) {
-            console.error("Error refreshing cart:", error);
+            console.error("Error clearing cart:", error);
         }
         setLoadingCart(false);
     }
@@ -159,7 +160,7 @@ const Cart = () => {
 
                                     <div
                                         id="NavBarButtons"
-                                        onClick={ClearCart}
+                                        onClick={clearCartItems}
                                         className='cursor-pointer border-2 px-4 py-1 rounded-full'>
                                         <div className='flex items-center justify-center gap-2 uppercase font-light font-[poppins]'>Clear Cart <Trash2 size={18} />
                                         </div>
@@ -323,7 +324,13 @@ const Cart = () => {
                                 </div>
 
                                 <div>
-                                    <CheckoutButton isLoggedIn={isLoggedIn} user={user} deliveryFee={deliveryFee} refreshCart={refreshCart} refreshUser={refreshUser} />
+                                    <CheckoutButton
+                                        isLoggedIn={isLoggedIn}
+                                        user={user}
+                                        deliveryFee={total}
+                                        refreshCart={refreshCart}
+                                        refreshUser={refreshUser}
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -341,138 +348,138 @@ const Cart = () => {
 
 export default Cart
 
-const CheckoutButton = ({ isLoggedIn, user, deliveryFee, refreshCart, refreshUser }) => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const { animate, handleDelayNavigation } = useDelayedNavigation();
+// const CheckoutButton = ({ isLoggedIn, user, deliveryFee, refreshCart, refreshUser }) => {
+//     const [isModalOpen, setIsModalOpen] = useState(false);
+//     const { animate, handleDelayNavigation } = useDelayedNavigation();
 
-    const handleCheckoutClick = () => {
-        if (isLoggedIn && user?.address) {
-            setIsModalOpen(true); // Open modal
-        } else if (!isLoggedIn) {
-            toast.error("Please Login to Place any order!");
-            handleDelayNavigation("login");
-        } else {
-            toast.error("Add your Address to place any order!");
-            handleDelayNavigation("userprofile");
-        }
-    };
+//     const handleCheckoutClick = () => {
+//         if (isLoggedIn && user?.address) {
+//             setIsModalOpen(true); // Open modal
+//         } else if (!isLoggedIn) {
+//             toast.error("Please Login to Place any order!");
+//             handleDelayNavigation("login");
+//         } else {
+//             toast.error("Add your Address to place any order!");
+//             handleDelayNavigation("userprofile");
+//         }
+//     };
 
-    const handlePaymentConfirm = async (paymentMode) => {
-        setIsModalOpen(false);
+//     const handlePaymentConfirm = async (paymentMode) => {
+//         setIsModalOpen(false);
 
-        const orderData = {
-            modeOfPayment: paymentMode,
-            deliveryFee
-        };
+//         const orderData = {
+//             modeOfPayment: paymentMode,
+//             deliveryFee
+//         };
 
-        const result = await placeOrder(orderData);
+//         const result = await placeOrder(orderData);
 
-        if (result.success) {
-            await refreshCart();
-            await refreshUser();
-            toast.success(`Order placed successfully with ${paymentMode} mode !`);
-        } else {
-            toast.error(result.message || "Failed to place order.");
-        }
-    };
+//         if (result.success) {
+//             await refreshCart();
+//             await refreshUser();
+//             toast.success(`Order placed successfully with ${paymentMode} mode !`);
+//         } else {
+//             toast.error(result.message || "Failed to place order.");
+//         }
+//     };
 
-    return (
-        <>
-            <button
-                onClick={handleCheckoutClick}
-                id="NavBarButtons"
-                className="px-30 py-2 uppercase md:text-base text-lg font-mono font-semibold text-black border-black rounded-full active:scale-90 mt-4 bg-[#ffbb00]"
-            >
-                Checkout
-            </button>
+//     return (
+//         <>
+//             <button
+//                 onClick={handleCheckoutClick}
+//                 id="NavBarButtons"
+//                 className="px-30 py-2 uppercase md:text-base text-lg font-mono font-semibold text-black border-black rounded-full active:scale-90 mt-4 bg-[#ffbb00]"
+//             >
+//                 Checkout
+//             </button>
 
-            {/* Payment Modal */}
-            <PaymentModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                onConfirm={handlePaymentConfirm}
-            />
-        </>
-    );
-};
+//             {/* Payment Modal */}
+//             <PaymentModal
+//                 isOpen={isModalOpen}
+//                 onClose={() => setIsModalOpen(false)}
+//                 onConfirm={handlePaymentConfirm}
+//             />
+//         </>
+//     );
+// };
 
-const PaymentModal = ({ isOpen, onClose, onConfirm }) => {
-    const [selectedPayment, setSelectedPayment] = useState("");
+// const PaymentModal = ({ isOpen, onClose, onConfirm }) => {
+//     const [selectedPayment, setSelectedPayment] = useState("");
 
-    return (
-        <AnimatePresence>
-            {isOpen && (
-                <motion.div
-                    className="fixed inset-0 bg-black/30 flex items-center justify-center z-50"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                >
-                    <motion.div
-                        className="bg-[#1f1f1f] text-white p-6 rounded-2xl w-96 shadow-lg relative"
-                        initial={{ scale: 0.35, opacity: 0, y: 200 }}
-                        animate={{ scale: 1, opacity: 1, y: 0 }}
-                        exit={{ scale: 0.35, opacity: 0, y: 200 }}
-                        transition={{ duration: 0.4, ease: "easeInOut" }}
-                    >
-                        {/* Close Button */}
-                        <button
-                            onClick={onClose}
-                            className="absolute top-3 right-3 text-[#fff] hover:text-red-500 cursor-pointer transition"
-                        >
-                            <X size={28} />
-                        </button>
+//     return (
+//         <AnimatePresence>
+//             {isOpen && (
+//                 <motion.div
+//                     className="fixed inset-0 bg-black/30 flex items-center justify-center z-50"
+//                     initial={{ opacity: 0 }}
+//                     animate={{ opacity: 1 }}
+//                     exit={{ opacity: 0 }}
+//                 >
+//                     <motion.div
+//                         className="bg-[#1f1f1f] text-white p-6 rounded-2xl w-96 shadow-lg relative"
+//                         initial={{ scale: 0.35, opacity: 0, y: 200 }}
+//                         animate={{ scale: 1, opacity: 1, y: 0 }}
+//                         exit={{ scale: 0.35, opacity: 0, y: 200 }}
+//                         transition={{ duration: 0.4, ease: "easeInOut" }}
+//                     >
+//                         {/* Close Button */}
+//                         <button
+//                             onClick={onClose}
+//                             className="absolute top-3 right-3 text-[#fff] hover:text-red-500 cursor-pointer transition"
+//                         >
+//                             <X size={28} />
+//                         </button>
 
-                        <h2 className="text-2xl font-semibold text-center mb-4 text-[#fff]">
-                            Select Payment Mode
-                        </h2>
+//                         <h2 className="text-2xl font-semibold text-center mb-4 text-[#fff]">
+//                             Select Payment Mode
+//                         </h2>
 
-                        {/* Payment Options */}
-                        <div className="space-y-3">
-                            <button
-                                className={`w-full py-3 rounded-xl border-[1px] border-white transition-all ${selectedPayment === "Online"
-                                    ? "bg-[#ffbb00] text-black border-[#ffbb00]"
-                                    : "bg-[#1f1f1f] text-white border-gray-500 hover:border-[#ffbb00]"
-                                    } AddToCartInStore`}
-                                onClick={() => setSelectedPayment("Online")}
-                            >
-                                Online Payment
-                            </button>
+//                         {/* Payment Options */}
+//                         <div className="space-y-3">
+//                             <button
+//                                 className={`w-full py-3 rounded-xl border-[1px] border-white transition-all ${selectedPayment === "Online"
+//                                     ? "bg-[#ffbb00] text-black border-[#ffbb00]"
+//                                     : "bg-[#1f1f1f] text-white border-gray-500 hover:border-[#ffbb00]"
+//                                     } AddToCartInStore`}
+//                                 onClick={() => setSelectedPayment("Online")}
+//                             >
+//                                 Online Payment
+//                             </button>
 
-                            <button
-                                className={`w-full py-3 rounded-xl border-[1px] border-white transition-all ${selectedPayment === "Cash on Delivery"
-                                    ? "bg-[#ffbb00] text-black border-[#ffbb00]"
-                                    : "bg-[#1f1f1f] text-white border-gray-500 hover:border-[#ffbb00]"
-                                    } AddToCartInStore`}
-                                onClick={() => setSelectedPayment("Cash on Delivery")}
-                            >
-                                Cash on Delivery
-                            </button>
-                        </div>
+//                             <button
+//                                 className={`w-full py-3 rounded-xl border-[1px] border-white transition-all ${selectedPayment === "Cash on Delivery"
+//                                     ? "bg-[#ffbb00] text-black border-[#ffbb00]"
+//                                     : "bg-[#1f1f1f] text-white border-gray-500 hover:border-[#ffbb00]"
+//                                     } AddToCartInStore`}
+//                                 onClick={() => setSelectedPayment("Cash on Delivery")}
+//                             >
+//                                 Cash on Delivery
+//                             </button>
+//                         </div>
 
-                        {/* Confirm & Cancel Buttons */}
-                        <div className="mt-6 flex justify-between">
-                            <button
-                                onClick={onClose}
-                                className="px-5 py-2 text-white border border-gray-500 rounded-lg hover:border-[#ffbb00] cursor-pointer transition"
-                            >
-                                Cancel
-                            </button>
+//                         {/* Confirm & Cancel Buttons */}
+//                         <div className="mt-6 flex justify-between">
+//                             <button
+//                                 onClick={onClose}
+//                                 className="px-5 py-2 text-white border border-gray-500 rounded-lg hover:border-[#ffbb00] cursor-pointer transition"
+//                             >
+//                                 Cancel
+//                             </button>
 
-                            <button
-                                onClick={() => onConfirm(selectedPayment)}
-                                disabled={!selectedPayment}
-                                className={`px-5 py-2 rounded-lg transition ${selectedPayment
-                                    ? "bg-[#ffbb00] text-black hover:bg-[#e6a800] cursor-pointer"
-                                    : "bg-gray-500 text-gray-300 cursor-not-allowed"
-                                    }`}
-                            >
-                                Confirm
-                            </button>
-                        </div>
-                    </motion.div>
-                </motion.div>
-            )}
-        </AnimatePresence>
-    );
-};
+//                             <button
+//                                 onClick={() => onConfirm(selectedPayment)}
+//                                 disabled={!selectedPayment}
+//                                 className={`px-5 py-2 rounded-lg transition ${selectedPayment
+//                                     ? "bg-[#ffbb00] text-black hover:bg-[#e6a800] cursor-pointer"
+//                                     : "bg-gray-500 text-gray-300 cursor-not-allowed"
+//                                     }`}
+//                             >
+//                                 Confirm
+//                             </button>
+//                         </div>
+//                     </motion.div>
+//                 </motion.div>
+//             )}
+//         </AnimatePresence>
+//     );
+// };
