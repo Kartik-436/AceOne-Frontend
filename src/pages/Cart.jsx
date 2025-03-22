@@ -330,6 +330,7 @@ const Cart = () => {
                                         deliveryFee={total}
                                         refreshCart={refreshCart}
                                         refreshUser={refreshUser}
+                                        cart={products}
                                     />
                                 </div>
                             </div>

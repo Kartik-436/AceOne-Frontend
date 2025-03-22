@@ -7,13 +7,18 @@ import { toast } from 'react-toastify';
 import { placeOrder } from '../utils/UserService';
 import useDelayedNavigation from '../utils/useDelayedNavigation';
 
-// Enhanced CheckoutButton component
-const CheckoutButton = ({ isLoggedIn, user, deliveryFee, refreshCart, refreshUser }) => {
+const CheckoutButton = ({ isLoggedIn, user, deliveryFee, refreshCart, refreshUser, cart }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
     const { animate, handleDelayNavigation } = useDelayedNavigation();
 
     const handleCheckoutClick = () => {
+        // Check if cart is empty
+        if (!cart || cart.length === 0) {
+            toast.error("Your cart is empty. Add some items before checkout!");
+            return;
+        }
+
         if (isLoggedIn && user?.address) {
             setIsModalOpen(true);
         } else if (!isLoggedIn) {
