@@ -327,7 +327,7 @@ const Cart = () => {
                                     <CheckoutButton
                                         isLoggedIn={isLoggedIn}
                                         user={user}
-                                        deliveryFee={total}
+                                        deliveryFee={deliveryFee}
                                         refreshCart={refreshCart}
                                         refreshUser={refreshUser}
                                         cart={products}
