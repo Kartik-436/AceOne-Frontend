@@ -227,9 +227,35 @@ const Orders = () => {
                                                                 </div>
                                                                 <div className="flex-1">
                                                                     <p className="font-medium text-sm">{item.product?.name || 'Product Name'}</p>
-                                                                    <p className="text-xs text-gray-600">Qty: {item.quantity} × ₹{item.product?.price || 0}</p>
+                                                                    <div className="flex items-center text-xs text-gray-600">
+                                                                        <span>Qty: {item.quantity} ×</span>
+                                                                        {item.product?.discount > 0 ? (
+                                                                            <span className="flex items-center ml-1">
+                                                                                <span className="line-through text-gray-400 mr-1">₹{item.product?.price || 0}</span>
+                                                                                <span className="text-green-600 font-medium">₹{item.product?.discountPrice.toFixed(2) || 0}</span>
+                                                                                <span className="ml-1 bg-green-100 text-green-700 px-1 rounded text-xxs">
+                                                                                    {item.product?.discount}% OFF
+                                                                                </span>
+                                                                            </span>
+                                                                        ) : (
+                                                                            <span className="ml-1">₹{item.product?.price || 0}</span>
+                                                                        )}
+                                                                    </div>
                                                                 </div>
-                                                                <p className="font-medium">₹{(item.quantity * (item.product?.price || 0))}</p>
+                                                                <div className="text-right">
+                                                                    {item.product?.discount > 0 ? (
+                                                                        <>
+                                                                            <p className="font-medium">
+                                                                                ₹{(item.product?.discountPrice * item.quantity).toFixed(2)}
+                                                                            </p>
+                                                                            <p className="text-xs text-gray-400 line-through">
+                                                                                ₹{(item.quantity * (item.product?.price || 0)).toFixed(2)}
+                                                                            </p>
+                                                                        </>
+                                                                    ) : (
+                                                                        <p className="font-medium">₹{(item.quantity * (item.product?.price || 0)).toFixed(2)}</p>
+                                                                    )}
+                                                                </div>
                                                             </div>
                                                         ))}
                                                     </div>
