@@ -98,7 +98,7 @@ const AboutEnlargeOnScroll = () => {
                                     ref={imgContainerRef}
                                     className='h-[70vh] md:w-full w-[80vw] bg-[#aeaeaeec] relative flex items-center justify-center overflow-hidden'
                                 >
-                                    <div className='absolute bottom-4 right-4 bg-[#ffffff]/50 w-full md:w-[15vw] z-[2] backdrop-blur-sm rounded-md'>
+                                    <div className='absolute bottom-0 right-0 md:bottom-4 md:right-4 bg-[#ffffff]/50 w-full md:w-[15vw] z-[2] backdrop-blur-sm rounded-md'>
                                         <div ref={HeadViewRef} className='h-full w-full flex flex-col items-start gap-2 justify-between p-3 py-4 overflow-hidden'>
                                             <motion.h1
                                                 className='font-semibold font-[poppins] flex items-center justify-center gap-2 overflow-hidden'
