@@ -111,17 +111,29 @@ const Cart = () => {
 
     const clearCartItems = async () => {
         try {
+            if (products.length === 0) {
+                toast.error("Your cart is already empty!");
+                return;
+            }
+
+            setLoadingCart(true);
+
             const response = await clearCart();
             if (response.success) {
                 setProducts(response.cart);
+                toast.success("Cart cleared successfully!");
             } else {
                 console.error("Failed to clear cart:", response.message);
+                toast.error(response.message || "Failed to clear cart.");
             }
         } catch (error) {
             console.error("Error clearing cart:", error);
+            toast.error("Something went wrong while clearing the cart.");
+        } finally {
+            setLoadingCart(false);
         }
-        setLoadingCart(false);
-    }
+    };
+
 
     useEffect(() => {
         ; (async () => {
