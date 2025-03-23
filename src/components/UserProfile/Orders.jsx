@@ -107,13 +107,11 @@ const Orders = () => {
                 await downloadInvoice(invoiceDetails._id, invoiceDetails.invoiceNumber);
             } else {
                 console.error('Invoice details not found or incomplete');
-
-                alert('Unable to find invoice for this order');
+                toast.error('Unable to find invoice for this order');
             }
         } catch (error) {
             console.error('Error downloading invoice:', error);
-
-            alert('Failed to download invoice. Please try again later.');
+            toast.error('Failed to download invoice. Please try again later.');
         }
     };
 
