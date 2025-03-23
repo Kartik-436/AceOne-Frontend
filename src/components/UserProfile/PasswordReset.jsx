@@ -232,7 +232,7 @@ const PasswordReset = () => {
 
                                         {!emailSubmitted && (
                                             <motion.div
-                                                className='flex flex-col gap-2 items-start justify-center'
+                                                className='flex flex-col overflow-hidden gap-2 items-start justify-center'
                                                 initial={{ height: 0, opacity: 0 }}
                                                 animate={{ height: "auto", opacity: 1 }}
                                                 transition={{ type: "spring", stiffness: 100, duration: 0.3 }}
@@ -243,7 +243,7 @@ const PasswordReset = () => {
                                                     Please Enter your registered email to change your password !
                                                 </motion.h1>
                                                 <motion.input
-                                                    className='email-with-icon inline-block px-6 py-4 text-lg bg-[#021]/10 rounded-full font-semibold font-[nunito] outline-2 min-w-[30vw] '
+                                                    className='email-with-icon inline-block px-6 py-4 text-lg bg-[#021]/10 rounded-full font-semibold font-[nunito] outline-2 md:min-w-[30vw] '
                                                     type="email"
                                                     placeholder='Email'
                                                     name='email'
@@ -320,7 +320,7 @@ const PasswordReset = () => {
                                         type='submit'
                                         disabled={isLoading}
                                         id="NavBarButtons"
-                                        className="px-[100%] flex items-center justify-center py-2.5 bg-[#ffbb00] text-black rounded-2xl border-2 cursor-pointer active:scale-95 tracking-wide font-medium font-[poppins]"
+                                        className="md:px-[100%] px-5 flex items-center justify-center py-2.5 bg-[#ffbb00] text-black rounded-2xl border-2 cursor-pointer active:scale-95 tracking-wide font-medium font-[poppins]"
                                         variants={buttonVariants}
                                         whileHover={{ scale: 1.05 }}
                                         whileTap="tap"
