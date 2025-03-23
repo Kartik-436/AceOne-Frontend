@@ -13,6 +13,10 @@ const loadRazorpayScript = () => {
         const script = document.createElement('script');
         script.src = 'https://checkout.razorpay.com/v1/checkout.js';
         script.onload = () => {
+            console.log("Razorpay script loaded successfully");
+            if (typeof window.Razorpay === 'undefined') {
+                console.error("Window.Razorpay is undefined even after script load");
+            }
             resolve(true);
         };
         script.onerror = () => {
@@ -61,6 +65,10 @@ const CheckoutButton = ({ isLoggedIn, user, deliveryFee, refreshCart, refreshUse
 
     const initializeRazorpayPayment = async (orderData) => {
         const scriptLoaded = await loadRazorpayScript();
+
+        console.log("Script loaded:", scriptLoaded);
+        console.log("Key being used:", import.meta.env.VITE_RAZORPAY_KEY_ID);
+        console.log("Payment data:", orderData);
 
         if (!scriptLoaded) {
             toast.error("Failed to load payment gateway. Please try again later.");
@@ -125,6 +133,8 @@ const CheckoutButton = ({ isLoggedIn, user, deliveryFee, refreshCart, refreshUse
         };
 
         try {
+            console.log("About to initialize Razorpay with options:", options);
+
             const razorpayInstance = new window.Razorpay(options);
             razorpayInstance.open();
         } catch (error) {
