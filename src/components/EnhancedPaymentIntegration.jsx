@@ -50,13 +50,11 @@ const CheckoutButton = ({ isLoggedIn, user, deliveryFee, refreshCart, refreshUse
             if (!window.Razorpay) {
                 throw new Error("Razorpay not loaded. Please refresh the page and try again.");
             }
-            
+
             // Validate payment data
             if (!orderData?.payment?.razorpayOrderId) {
                 throw new Error("Invalid payment data received from server");
             }
-
-            console.log("Initializing Razorpay with order:", orderData.payment.razorpayOrderId);
 
             const options = {
                 key: import.meta.env.VITE_RAZORPAY_KEY_ID,
@@ -113,8 +111,6 @@ const CheckoutButton = ({ isLoggedIn, user, deliveryFee, refreshCart, refreshUse
                 }
             };
 
-            console.log("Razorpay options:", options);
-
             // Create and open Razorpay instance
             const razorpayInstance = new window.Razorpay(options);
             razorpayInstance.on('payment.failed', function (response) {
@@ -136,7 +132,6 @@ const CheckoutButton = ({ isLoggedIn, user, deliveryFee, refreshCart, refreshUse
     };
 
     const handlePaymentModeSelection = async (paymentMode) => {
-        console.log("Payment mode selected:", paymentMode);
         setIsProcessing(true);
 
         try {
@@ -149,8 +144,6 @@ const CheckoutButton = ({ isLoggedIn, user, deliveryFee, refreshCart, refreshUse
 
             // Place the order
             const result = await placeOrder(orderData);
-            console.log("Order placement result:", result);
-
             if (result.success) {
                 if (paymentMode === "Cash on Delivery") {
                     await refreshCart();
@@ -160,9 +153,7 @@ const CheckoutButton = ({ isLoggedIn, user, deliveryFee, refreshCart, refreshUse
                     setIsProcessing(false);
                 } else if (paymentMode === "Online") {
                     if (result.payment?.razorpayOrderId) {
-                        console.log("Proceeding to payment gateway");
                         // Initialize Razorpay payment
-                        console.log("Payment data keys:", Object.keys(result.payment));
                         initializeRazorpayPayment(result); // Pass the whole result object
                     } else {
                         console.error("Missing payment data in response:", result);
