@@ -138,7 +138,7 @@ const Orders = () => {
                                         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                                             <div>
                                                 <div className="flex items-center gap-3">
-                                                    <span className="font-bold text-sm text-gray-600">Order #{order._id.substring(order._id.length - 8)}</span>
+                                                    <span className="font-bold text-sm text-gray-600">Order #{order._id}</span>
                                                     <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(order.orderStatus)}`}>
                                                         {order.orderStatus || 'Processing'}
                                                     </span>
