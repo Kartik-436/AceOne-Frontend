@@ -7,25 +7,6 @@ import { toast } from 'react-toastify';
 import { placeOrder, verifyPayment } from '../utils/UserService';
 import useDelayedNavigation from '../utils/useDelayedNavigation';
 
-// Load Razorpay script dynamically
-const loadRazorpayScript = () => {
-    return new Promise((resolve) => {
-        const script = document.createElement('script');
-        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-        script.onload = () => {
-            console.log("Razorpay script loaded successfully");
-            if (typeof window.Razorpay === 'undefined') {
-                console.error("Window.Razorpay is undefined even after script load");
-            }
-            resolve(true);
-        };
-        script.onerror = () => {
-            resolve(false);
-        };
-        document.body.appendChild(script);
-    });
-};
-
 const CheckoutButton = ({ isLoggedIn, user, deliveryFee, refreshCart, refreshUser, cart }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
@@ -63,103 +44,112 @@ const CheckoutButton = ({ isLoggedIn, user, deliveryFee, refreshCart, refreshUse
         }
     };
 
-    const initializeRazorpayPayment = async (orderData) => {
-        const scriptLoaded = await loadRazorpayScript();
-
-        console.log("Script loaded:", scriptLoaded);
-        console.log("Key being used:", import.meta.env.VITE_RAZORPAY_KEY_ID);
-        console.log("Payment data:", orderData);
-
-        if (!scriptLoaded) {
-            toast.error("Failed to load payment gateway. Please try again later.");
-            setIsProcessing(false);
-            return;
-        }
-
-        const options = {
-            key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-            amount: orderData.payment.amount,
-            currency: orderData.payment.currency,
-            name: "Your Store Name",
-            description: `Payment for order #${orderData.order._id}`,
-            order_id: orderData.payment.razorpayOrderId,
-            handler: async function (response) {
-                try {
-                    setIsProcessing(true);
-
-                    // Send payment verification to backend
-                    const verificationData = {
-                        razorpay_order_id: response.razorpay_order_id,
-                        razorpay_payment_id: response.razorpay_payment_id,
-                        razorpay_signature: response.razorpay_signature,
-                        orderId: orderData.order._id
-                    };
-
-                    const verificationResult = await verifyPayment(verificationData);
-
-                    if (verificationResult.success) {
-                        toast.success("Payment completed successfully!");
-                        await refreshCart();
-                        await refreshUser();
-                    } else {
-                        toast.error(verificationResult.message || "Payment verification failed");
-                    }
-                } catch (error) {
-                    console.error("Payment verification error:", error);
-                    toast.error("Payment was processed but verification failed");
-                } finally {
-                    setIsProcessing(false);
-                    setIsModalOpen(false);
-                }
-            },
-            prefill: {
-                name: user?.name || "",
-                email: user?.email || "",
-                contact: user?.phone || ""
-            },
-            notes: {
-                address: user?.address || "",
-                userId: user?.ID || ""
-            },
-            theme: {
-                color: "#ffbb00"
-            },
-            modal: {
-                ondismiss: function () {
-                    setIsProcessing(false);
-                    toast.info("Payment cancelled. Your order is saved but not confirmed.");
-                }
-            }
-        };
-
+    const initializeRazorpayPayment = (orderData) => {
         try {
-            console.log("About to initialize Razorpay with options:", options);
+            // Check if Razorpay is available (it should be if loaded in index.html)
+            if (!window.Razorpay) {
+                throw new Error("Razorpay not loaded. Please refresh the page and try again.");
+            }
 
+            // Validate payment data
+            if (!orderData?.payment?.razorpayOrderId) {
+                throw new Error("Invalid payment data received from server");
+            }
+
+            console.log("Initializing Razorpay with order:", orderData.payment.razorpayOrderId);
+
+            const options = {
+                key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+                amount: orderData.payment.amount,
+                currency: orderData.payment.currency || "INR",
+                name: "Your Store Name",
+                description: `Payment for order #${orderData.order._id}`,
+                order_id: orderData.payment.razorpayOrderId,
+                handler: async function (response) {
+                    try {
+                        // Send payment verification to backend
+                        const verificationData = {
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature,
+                            orderId: orderData.order._id
+                        };
+
+                        const verificationResult = await verifyPayment(verificationData);
+
+                        if (verificationResult.success) {
+                            toast.success("Payment completed successfully!");
+                            await refreshCart();
+                            await refreshUser();
+                        } else {
+                            toast.error(verificationResult.message || "Payment verification failed");
+                        }
+                    } catch (error) {
+                        console.error("Payment verification error:", error);
+                        toast.error("Payment was processed but verification failed");
+                    } finally {
+                        setIsProcessing(false);
+                        setIsModalOpen(false);
+                    }
+                },
+                prefill: {
+                    name: user?.name || "",
+                    email: user?.email || "",
+                    contact: user?.phone || ""
+                },
+                notes: {
+                    address: user?.address || "",
+                    userId: user?.ID || ""
+                },
+                theme: {
+                    color: "#ffbb00"
+                },
+                modal: {
+                    ondismiss: function () {
+                        setIsProcessing(false);
+                        toast.info("Payment cancelled. Your order is saved but not confirmed.");
+                        setIsModalOpen(false);
+                    }
+                }
+            };
+
+            console.log("Razorpay options:", options);
+
+            // Create and open Razorpay instance
             const razorpayInstance = new window.Razorpay(options);
+            razorpayInstance.on('payment.failed', function (response) {
+                console.error("Payment failed:", response.error);
+                toast.error(`Payment failed: ${response.error.description}`);
+                setIsProcessing(false);
+                setIsModalOpen(false);
+            });
+
+            // Open the payment modal
             razorpayInstance.open();
+
         } catch (error) {
             console.error("Razorpay initialization error:", error);
-            toast.error("Failed to initialize payment. Please try again.");
+            toast.error(`Failed to initialize payment: ${error.message}`);
             setIsProcessing(false);
+            setIsModalOpen(false);
         }
     };
 
     const handlePaymentModeSelection = async (paymentMode) => {
         console.log("Payment mode selected:", paymentMode);
-
         setIsProcessing(true);
 
         try {
-            // Prepare basic order data
-            console.log("Preparing order data...");
-
+            // Prepare order data
             const orderData = {
                 modeOfPayment: paymentMode,
                 deliveryFee,
                 deliveryAddress: user?.address
             };
 
+            // Place the order
             const result = await placeOrder(orderData);
+            console.log("Order placement result:", result);
 
             if (result.success) {
                 if (paymentMode === "Cash on Delivery") {
@@ -167,21 +157,29 @@ const CheckoutButton = ({ isLoggedIn, user, deliveryFee, refreshCart, refreshUse
                     await refreshUser();
                     toast.success(`Order placed successfully! You'll pay on delivery.`);
                     setIsModalOpen(false);
-                } else if (paymentMode === "Online" && result.data?.payment) {
-                    // Initialize Razorpay for online payment
-                    await initializeRazorpayPayment(result.data);
-                    // Don't close modal yet - will close after payment completes or is cancelled
+                    setIsProcessing(false);
+                } else if (paymentMode === "Online") {
+                    if (result.data?.payment?.razorpayOrderId) {
+                        console.log("Proceeding to payment gateway");
+                        // Initialize Razorpay payment
+                        initializeRazorpayPayment(result.data);
+                        // Don't set isProcessing to false here - will be handled in callback
+                    } else {
+                        console.error("Missing payment data in response:", result.data);
+                        toast.error("Payment data missing. Please try again.");
+                        setIsModalOpen(false);
+                        setIsProcessing(false);
+                    }
                 }
             } else {
                 toast.error(result.message || "Failed to place order.");
                 setIsModalOpen(false);
+                setIsProcessing(false);
             }
         } catch (error) {
-            console.error("Order placement error:", error);
-            toast.error("An error occurred while placing your order.");
+            console.error("Order process error:", error);
+            toast.error(`An error occurred: ${error.message}`);
             setIsModalOpen(false);
-        } finally {
-            // Ensure processing state is reset even on error
             setIsProcessing(false);
         }
     };
@@ -197,7 +195,7 @@ const CheckoutButton = ({ isLoggedIn, user, deliveryFee, refreshCart, refreshUse
                 {isProcessing ? "Processing..." : "Checkout"}
             </button>
 
-            {/* Simplified Payment Modal */}
+            {/* Payment Modal */}
             <PaymentModeModal
                 isOpen={isModalOpen}
                 onClose={() => !isProcessing && setIsModalOpen(false)}
@@ -209,7 +207,7 @@ const CheckoutButton = ({ isLoggedIn, user, deliveryFee, refreshCart, refreshUse
     );
 };
 
-// Simplified Payment Modal that only asks for payment mode
+// Payment Modal Component
 const PaymentModeModal = ({ isOpen, onClose, onSelectPaymentMode, isProcessing, total }) => {
     return (
         <AnimatePresence>
