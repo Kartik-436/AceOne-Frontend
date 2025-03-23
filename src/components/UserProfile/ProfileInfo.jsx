@@ -187,7 +187,7 @@ const ProfileInfo = () => {
                         </motion.div>
 
                         {/* Profile Details Section - stack items vertically on mobile */}
-                        <motion.div className="w-full">
+                        <motion.div className="w-full max-h-full overflow-y-scroll noScrollbar">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-4">
                                 <div className="bg-gray-50 p-3 rounded-lg">
                                     <h3 className="text-sm text-gray-500">Full Name</h3>
