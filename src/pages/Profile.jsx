@@ -131,7 +131,7 @@ const Profile = () => {
                     <div className="container h-full mx-auto px-4 py-8">
                         <div className="flex h-full gap-0 md:gap-6">
                             {/* Sidebar */}
-                            <div className="w-full min-h-full md:w-1/4">
+                            <div className="min-h-full md:w-1/4">
                                 <Sidebar
                                     activeComponent={activeComponent}
                                     setActiveComponent={setActiveComponent}
