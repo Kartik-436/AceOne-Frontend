@@ -145,10 +145,14 @@ const CheckoutButton = ({ isLoggedIn, user, deliveryFee, refreshCart, refreshUse
     };
 
     const handlePaymentModeSelection = async (paymentMode) => {
+        console.log("Payment mode selected:", paymentMode);
+
         setIsProcessing(true);
 
         try {
             // Prepare basic order data
+            console.log("Preparing order data...");
+
             const orderData = {
                 modeOfPayment: paymentMode,
                 deliveryFee,
@@ -236,7 +240,10 @@ const PaymentModeModal = ({ isOpen, onClose, onSelectPaymentMode, isProcessing, 
                         <div className="space-y-4">
                             <button
                                 className="w-full py-3 rounded-xl border-[1px] transition-all bg-[#1f1f1f] text-white border-gray-500 hover:border-[#ffbb00] hover:bg-gray-800 flex items-center justify-center AddToCartInStore"
-                                onClick={() => onSelectPaymentMode("Online")}
+                                onClick={() => {
+                                    alert('Online payment button clicked');
+                                    onSelectPaymentMode("Online")
+                                }}
                                 disabled={isProcessing}
                             >
                                 <span className="mr-2">💳</span> Pay Online
