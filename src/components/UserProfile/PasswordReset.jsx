@@ -243,7 +243,7 @@ const PasswordReset = () => {
                                                     Please Enter your registered email to change your password !
                                                 </motion.h1>
                                                 <motion.input
-                                                    className='email-with-icon inline-block px-2 md:px-6 py-2 md:py-4 text-lg bg-[#021]/10 rounded-full font-semibold font-[nunito] outline-2 md:min-w-[30vw] w-full'
+                                                    className='email-with-icon inline-block px-2 md:px-6 py-2 md:py-4 md:text-lg bg-[#021]/10 rounded-full font-semibold font-[nunito] outline-2 md:min-w-[30vw] w-full'
                                                     type="email"
                                                     placeholder='Email'
                                                     name='email'
