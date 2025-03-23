@@ -112,7 +112,7 @@ const Orders = () => {
                             initial={{ opacity: 0, y: 100 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2, delayChildren: 0.5, type: "spring", stiffness: 200 }}
-                            className="flex flex-col items-center justify-center h-96 rounded-3xl p-8"
+                            className="flex flex-col items-center justify-center h-96 rounded-3xl p-8 px-4 sm:px-8"
                         >
                             <motion.div
                                 initial={{ scale: 0 }}
@@ -122,7 +122,7 @@ const Orders = () => {
                             >
                                 <Package size={48} className="text-[#ffbb00]" />
                             </motion.div>
-                            <h2 className="text-2xl font-bold text-[#1f1f1f] mb-2">No Orders Yet.</h2>
+                            <h2 className="text-2xl font-bold text-[#1f1f1f] mb-2 text-center">No Orders Yet.</h2>
                             <p className="text-[#1f1f1f]/70 text-center max-w-md mb-6">
                                 Items you love can be Ordered within a minute. Start exploring and order some favorites!
                             </p>
@@ -142,9 +142,9 @@ const Orders = () => {
                                         onClick={() => setSelectedOrder(selectedOrder === order._id ? null : order._id)}
                                     >
                                         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                                            <div>
-                                                <div className="flex items-center gap-3">
-                                                    <span className="font-bold text-sm text-gray-600">Order #{order._id}</span>
+                                            <div className="w-full sm:w-auto">
+                                                <div className="flex flex-wrap items-center gap-3">
+                                                    <span className="font-bold text-sm text-gray-600 break-all">Order #{order._id}</span>
                                                     <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(order.orderStatus)}`}>
                                                         {order.orderStatus || 'Processing'}
                                                     </span>
@@ -155,7 +155,7 @@ const Orders = () => {
                                                 </p>
                                             </div>
 
-                                            <div className="flex items-center gap-4 sm:gap-6 w-full sm:w-auto">
+                                            <div className="flex items-center gap-4 sm:gap-6 w-full sm:w-auto justify-between sm:justify-end">
                                                 <div>
                                                     <p className="text-xs text-gray-600">Items</p>
                                                     <p className="font-medium">{(order.items || []).length}</p>
@@ -168,7 +168,7 @@ const Orders = () => {
 
                                                 <ChevronRight
                                                     size={20}
-                                                    className={`ml-auto sm:ml-6 transform transition-transform ${selectedOrder === order._id ? 'rotate-90' : ''}`}
+                                                    className={`transform transition-transform ${selectedOrder === order._id ? 'rotate-90' : ''}`}
                                                 />
                                             </div>
                                         </div>
@@ -179,25 +179,25 @@ const Orders = () => {
                                             <div className="bg-white rounded-lg p-4 border border-gray-100">
                                                 <div className="mb-4">
                                                     <h3 className="font-semibold text-gray-800 mb-2">Order Details</h3>
-                                                    <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-                                                        <div>
+                                                    <div className="grid grid-cols-1 xs:grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                                                        <div className="mb-2 xs:mb-0">
                                                             <p className="text-gray-600">Order ID:</p>
-                                                            <p className="font-medium">{order._id}</p>
+                                                            <p className="font-medium break-all">{order._id}</p>
                                                         </div>
-                                                        <div>
+                                                        <div className="mb-2 xs:mb-0">
                                                             <p className="text-gray-600">Payment Method:</p>
                                                             <p className="font-medium flex items-center">
-                                                                <CreditCard size={14} className="mr-1" />
-                                                                {order.modeOfPayment || 'N/A'}
+                                                                <CreditCard size={14} className="mr-1 flex-shrink-0" />
+                                                                <span className="truncate">{order.modeOfPayment || 'N/A'}</span>
                                                             </p>
                                                         </div>
-                                                        <div>
+                                                        <div className="mb-2 xs:mb-0">
                                                             <p className="text-gray-600">Status:</p>
                                                             <p className={`font-medium ${order.orderStatus?.toLowerCase() === 'cancelled' ? 'text-red-600' : ''}`}>
                                                                 {order.orderStatus || 'Processing'}
                                                             </p>
                                                         </div>
-                                                        <div>
+                                                        <div className="mb-2 xs:mb-0">
                                                             <p className="text-gray-600">Delivery Fee:</p>
                                                             <p className="font-medium">₹{order.deliveryFee || 0}</p>
                                                         </div>
@@ -208,8 +208,8 @@ const Orders = () => {
                                                     <div className="mb-4">
                                                         <h3 className="font-semibold text-gray-800 mb-2">Shipping Address</h3>
                                                         <div className="flex items-start gap-2 text-sm">
-                                                            <Truck size={16} className="text-gray-500 mt-0.5" />
-                                                            <p className="text-gray-700">
+                                                            <Truck size={16} className="text-gray-500 mt-0.5 flex-shrink-0" />
+                                                            <p className="text-gray-700 break-words">
                                                                 {order.address.street || ''},
                                                                 {order.address.city || ''},
                                                                 {order.address.state || ''}
@@ -223,20 +223,20 @@ const Orders = () => {
                                                     <h3 className="font-semibold text-gray-800 mb-2">Items</h3>
                                                     <div className="space-y-3 max-h-60 overflow-y-auto NoScrollbar">
                                                         {(order.items || []).map((item, index) => (
-                                                            <div key={index} className="flex items-center gap-3 bg-gray-50 p-2 rounded-lg">
-                                                                <div className="w-12 h-12 bg-gray-200 rounded-md flex items-center justify-center overflow-hidden">
+                                                            <div key={index} className="flex items-center gap-3 bg-gray-50 p-2 rounded-lg flex-wrap sm:flex-nowrap">
+                                                                <div className="w-12 h-12 bg-gray-200 rounded-md flex items-center justify-center overflow-hidden flex-shrink-0">
                                                                     {item.product?.image ? (
                                                                         <img src={item.product.image} alt={item.product.name} className="w-full h-full object-cover" />
                                                                     ) : (
                                                                         <Package size={20} />
                                                                     )}
                                                                 </div>
-                                                                <div className="flex-1">
-                                                                    <p className="font-medium text-sm">{item.product?.name || 'Product Name'}</p>
-                                                                    <div className="flex items-center text-xs text-gray-600">
+                                                                <div className="flex-1 min-w-0">
+                                                                    <p className="font-medium text-sm truncate">{item.product?.name || 'Product Name'}</p>
+                                                                    <div className="flex flex-wrap items-center text-xs text-gray-600 gap-1">
                                                                         <span>Qty: {item.quantity} ×</span>
                                                                         {item.product?.discount > 0 ? (
-                                                                            <span className="flex items-center ml-1">
+                                                                            <span className="flex flex-wrap items-center">
                                                                                 <span className="line-through text-gray-400 mr-1">₹{item.product?.price || 0}</span>
                                                                                 <span className="text-green-600 font-medium">₹{item.product?.discountPrice.toFixed(2) || 0}</span>
                                                                                 <span className="ml-1 bg-green-100 text-green-700 px-1 rounded text-xxs">
@@ -244,11 +244,11 @@ const Orders = () => {
                                                                                 </span>
                                                                             </span>
                                                                         ) : (
-                                                                            <span className="ml-1">₹{item.product?.price || 0}</span>
+                                                                            <span>₹{item.product?.price || 0}</span>
                                                                         )}
                                                                     </div>
                                                                 </div>
-                                                                <div className="text-right">
+                                                                <div className="text-right ml-auto">
                                                                     {item.product?.discount > 0 ? (
                                                                         <>
                                                                             <p className="font-medium">
