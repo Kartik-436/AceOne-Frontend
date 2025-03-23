@@ -252,7 +252,7 @@ const PaymentModeModal = ({ isOpen, onClose, onSelectPaymentMode, isProcessing, 
 
                         {/* Processing indicator */}
                         {isProcessing && (
-                            <div className="absolute inset-0 bg-black/50 rounded-2xl flex items-center z-50 justify-center">
+                            <div className="absolute inset-0 bg-black/50 backdrop-blur-md rounded-2xl flex items-center z-50 justify-center">
                                 <div className="text-center">
                                     <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#ffbb00] mx-auto mb-4"></div>
                                     <p className="text-white">Processing your request...</p>
