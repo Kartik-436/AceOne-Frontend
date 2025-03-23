@@ -97,7 +97,7 @@ const Sidebar = ({ activeComponent, setActiveComponent, onLogout }) => {
                 fixed md:static inset-y-0 left-0 
                 w-64 md:w-auto z-40
                 transform transition-transform duration-500 ease-in-out
-                ${isMobileMenuOpen ? 'translate-x-0 block' : '-translate-x-full md:translate-x-0 hidden'}
+                ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
             `}>
                 <div className="bg-white h-full rounded-lg shadow-md p-6 relative overflow-y-auto">
                     {/* Close Button (Mobile Only) */}
