@@ -111,7 +111,7 @@ const Sidebar = ({ activeComponent, setActiveComponent, onLogout }) => {
 
                     <div
                         onClick={async () => { await refreshUser() }}
-                        className='absolute top-3 right-12 md:right-5 cursor-pointer'
+                        className={`absolute top-3 right-12 md:right-5 cursor-pointer ${isMobileMenuOpen ? "hidden" : "block"}`}
                     >
                         <RefreshCcw size={24} />
                     </div>
