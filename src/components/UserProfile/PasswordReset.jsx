@@ -170,7 +170,7 @@ const PasswordReset = () => {
                     transition={{ duration: 0.5 }}
                 >
                     <motion.div
-                        className="bg-white rounded-2xl min-h-[47vh] w-full md:w-[40vw] p-5 py-10 flex flex-col items-center justify-between"
+                        className="bg-white rounded-2xl md:min-h-[47vh] w-full md:w-[40vw] p-5 py-10 flex flex-col items-center justify-between"
                         initial={{ y: 50, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         transition={{ type: "spring", stiffness: 120, damping: 20 }}
@@ -180,7 +180,7 @@ const PasswordReset = () => {
                             animate={{ scale: 1, opacity: 1 }}
                             transition={{ delay: 0.2, type: "spring", stiffness: 150 }}
                         >
-                            <h1 className='w-full text-center text-5xl md:text-6xl md:text-nowrap font-[poppins] font-medium'>Reset Your Password !</h1>
+                            <h1 className='w-full text-center text-4xl md:text-6xl md:text-nowrap font-[poppins] font-medium'>Reset Your Password !</h1>
                         </motion.div>
 
                         <motion.form
@@ -313,7 +313,7 @@ const PasswordReset = () => {
                                 )}
 
                                 <motion.div
-                                    className={`w-full flex items-center justify-center px-50`}
+                                    className={`w-full flex items-center justify-center md:px-50`}
                                     variants={itemVariants}
                                 >
                                     <motion.button
