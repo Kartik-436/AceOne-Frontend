@@ -101,7 +101,7 @@ const ProfileInfo = () => {
         return (
             <>
                 <Transition />
-                <div className='max-h-full overflow-y-scroll hideScrollBar'>
+                <div className='max-h-screen overflow-y-scroll hideScrollBar'>
                     {/* Make header responsive with flex-col on small screens */}
                     <div className="flex flex-col sm:flex-row justify-between items-center mb-8 sm:mb-16 gap-4 sm:gap-0">
                         <h2 className="text-xl sm:text-2xl font-semibold uppercase font-[poppins] text-center sm:text-left">Profile Information</h2>
