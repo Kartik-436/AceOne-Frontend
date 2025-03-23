@@ -180,7 +180,7 @@ const PasswordReset = () => {
                             animate={{ scale: 1, opacity: 1 }}
                             transition={{ delay: 0.2, type: "spring", stiffness: 150 }}
                         >
-                            <h1 className='w-full text-center text-3xl md:text-6xl md:text-nowrap font-[poppins] font-medium'>Reset Your Password !</h1>
+                            <h1 className='w-full text-center text-5xl md:text-6xl md:text-nowrap font-[poppins] font-medium'>Reset Your Password !</h1>
                         </motion.div>
 
                         <motion.form
@@ -191,7 +191,7 @@ const PasswordReset = () => {
                             animate="visible"
                         >
                             <motion.div
-                                className='flex flex-col items-center justify-around gap-6.5 w-full'
+                                className='flex flex-col items-center h-full justify-around gap-6.5 w-full'
                                 variants={containerVariants}
                             >
                                 {!isTokenVerified && (
@@ -232,18 +232,18 @@ const PasswordReset = () => {
 
                                         {!emailSubmitted && (
                                             <motion.div
-                                                className='flex flex-col overflow-hidden gap-2 items-start justify-center'
+                                                className='flex flex-col w-full overflow-hidden gap-2 items-start justify-center'
                                                 initial={{ height: 0, opacity: 0 }}
                                                 animate={{ height: "auto", opacity: 1 }}
                                                 transition={{ type: "spring", stiffness: 100, duration: 0.3 }}
                                             >
                                                 <motion.h1
-                                                    className='text-sm font-light font-[poppins] tracking-tight'
+                                                    className='text-sm font-light w-full font-[poppins] tracking-tight'
                                                 >
                                                     Please Enter your registered email to change your password !
                                                 </motion.h1>
                                                 <motion.input
-                                                    className='email-with-icon inline-block px-6 py-4 text-lg bg-[#021]/10 rounded-full font-semibold font-[nunito] outline-2 md:min-w-[30vw] '
+                                                    className='email-with-icon inline-block px-3 md:px-6 py-2 md:py-4 text-lg bg-[#021]/10 rounded-full font-semibold font-[nunito] outline-2 md:min-w-[30vw] w-full'
                                                     type="email"
                                                     placeholder='Email'
                                                     name='email'
@@ -320,7 +320,7 @@ const PasswordReset = () => {
                                         type='submit'
                                         disabled={isLoading}
                                         id="NavBarButtons"
-                                        className="md:px-[100%] px-5 flex items-center justify-center py-2.5 bg-[#ffbb00] text-black rounded-2xl border-2 cursor-pointer active:scale-95 tracking-wide font-medium font-[poppins]"
+                                        className="md:px-[100%] w-full flex items-center justify-center py-2.5 bg-[#ffbb00] text-black rounded-2xl border-2 cursor-pointer active:scale-95 tracking-wide font-medium font-[poppins]"
                                         variants={buttonVariants}
                                         whileHover={{ scale: 1.05 }}
                                         whileTap="tap"
