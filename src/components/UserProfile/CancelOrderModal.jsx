@@ -2,7 +2,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X } from 'lucide-react';
+import { Trash, X } from 'lucide-react';
 
 const CancelOrderModal = ({ isOpen, onClose, onConfirm, orderId, isLoading }) => {
     return (
@@ -19,7 +19,7 @@ const CancelOrderModal = ({ isOpen, onClose, onConfirm, orderId, isLoading }) =>
                     >
                         <div className="flex items-center mb-4">
                             <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mr-3">
-                                <X size={18} className="text-red-600" />
+                                <Trash size={18} className="text-red-600" />
                             </div>
                             <h2 className="text-lg font-semibold">Cancel Order</h2>
                         </div>
