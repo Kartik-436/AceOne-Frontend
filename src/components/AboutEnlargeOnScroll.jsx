@@ -104,8 +104,8 @@ const AboutEnlargeOnScroll = () => {
                                                 className='font-semibold font-[poppins] flex items-center justify-center gap-2 overflow-hidden'
                                             >
                                                 <motion.div
-                                                    initial={{ rotate: 640 }}
-                                                    animate={HeadView ? { rotate: 0 } : {}}
+                                                    initial={window.innerWidth < 768 ? { rotate: 640 } : ""}
+                                                    animate={window.innerWidth < 768 ? (HeadView ? { rotate: 0 } : {}) : ""}
                                                     transition={{
                                                         duration: 2.2,
                                                         ease: "backOut",
@@ -115,8 +115,8 @@ const AboutEnlargeOnScroll = () => {
                                                     <PlusIcon size={18} />
                                                 </motion.div>
                                                 <motion.span
-                                                    initial={{ y: 100 }}
-                                                    animate={HeadView ? { y: 0 } : {}}
+                                                    initial={window.innerWidth < 768 ? { y: 100 } : ""}
+                                                    animate={window.innerWidth < 768 ? (HeadView ? { y: 0 } : {}) : ""}
                                                     transition={{
                                                         duration: 1.6,
                                                         ease: "backOut",
