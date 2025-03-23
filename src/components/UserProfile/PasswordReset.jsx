@@ -170,7 +170,7 @@ const PasswordReset = () => {
                     transition={{ duration: 0.5 }}
                 >
                     <motion.div
-                        className="bg-white rounded-2xl min-h-[47vh] w-[40vw] p-5 py-10 flex flex-col items-center justify-between md:w-[40vw] sm:w-[85vw] xs:w-[95vw] xs:p-4 xs:py-8 sm:p-4 sm:py-8"
+                        className="bg-white rounded-2xl min-h-[47vh] w-[40vw] p-5 py-10 flex flex-col items-center justify-between"
                         initial={{ y: 50, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         transition={{ type: "spring", stiffness: 120, damping: 20 }}
@@ -179,9 +179,8 @@ const PasswordReset = () => {
                             initial={{ scale: 0.8, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             transition={{ delay: 0.2, type: "spring", stiffness: 150 }}
-                            className="w-full"
                         >
-                            <h1 className='w-full text-center text-6xl text-nowrap font-[poppins] font-medium md:text-6xl sm:text-4xl xs:text-3xl'>Reset Your Password !</h1>
+                            <h1 className='w-full text-center text-6xl text-nowrap font-[poppins] font-medium'>Reset Your Password !</h1>
                         </motion.div>
 
                         <motion.form
@@ -197,22 +196,22 @@ const PasswordReset = () => {
                             >
                                 {!isTokenVerified && (
                                     <motion.div
-                                        className='flex flex-col items-center justify-around w-full'
+                                        className='flex flex-col items-center justify-around'
                                         variants={itemVariants}
                                     >
                                         {emailSubmitted && (
                                             <motion.div
-                                                className='flex flex-col gap-2 items-center w-full'
+                                                className='flex flex-col gap-2 items-center'
                                                 initial={{ height: 0, opacity: 0 }}
                                                 animate={{ height: "auto", opacity: 1 }}
                                                 transition={{ type: "spring", stiffness: 100, duration: 0.3 }}
                                             >
                                                 <motion.h1
-                                                    className='text-sm font-light font-[poppins] tracking-tight text-center px-2'
+                                                    className='text-sm font-light font-[poppins] tracking-tight'
                                                 >
                                                     Please Enter the OTP you recieved on your entered Mail !
                                                 </motion.h1>
-                                                <div className="flex justify-center w-full overflow-x-auto py-2">
+                                                <div>
                                                     <OTPInput onChangeOTP={(otp) => setOTP(otp)} />
                                                 </div>
                                                 <motion.div
@@ -233,30 +232,28 @@ const PasswordReset = () => {
 
                                         {!emailSubmitted && (
                                             <motion.div
-                                                className='flex flex-col gap-2 items-start justify-center w-full'
+                                                className='flex flex-col gap-2 items-start justify-center'
                                                 initial={{ height: 0, opacity: 0 }}
                                                 animate={{ height: "auto", opacity: 1 }}
                                                 transition={{ type: "spring", stiffness: 100, duration: 0.3 }}
                                             >
                                                 <motion.h1
-                                                    className='text-sm font-light font-[poppins] tracking-tight px-2 w-full text-center sm:text-left'
+                                                    className='text-sm font-light font-[poppins] tracking-tight'
                                                 >
                                                     Please Enter your registered email to change your password !
                                                 </motion.h1>
-                                                <motion.div className="w-full flex justify-center">
-                                                    <motion.input
-                                                        className='email-with-icon inline-block px-6 py-4 text-lg bg-[#021]/10 rounded-full font-semibold font-[nunito] outline-2 min-w-[30vw] w-full sm:px-4 sm:py-3 xs:px-4 xs:py-3'
-                                                        type="email"
-                                                        placeholder='Email'
-                                                        name='email'
-                                                        required
-                                                        autoComplete="off"
-                                                        value={userEmail}
-                                                        onChange={(e) => { setUserEmail(e.target.value) }}
-                                                        variants={itemVariants}
-                                                        whileFocus={{ scale: 1.02, boxShadow: "0 0 0 2px rgba(0,0,0,0.1)" }}
-                                                    />
-                                                </motion.div>
+                                                <motion.input
+                                                    className='email-with-icon inline-block px-6 py-4 text-lg bg-[#021]/10 rounded-full font-semibold font-[nunito] outline-2 min-w-[30vw] '
+                                                    type="email"
+                                                    placeholder='Email'
+                                                    name='email'
+                                                    required
+                                                    autoComplete="off"
+                                                    value={userEmail}
+                                                    onChange={(e) => { setUserEmail(e.target.value) }}
+                                                    variants={itemVariants}
+                                                    whileFocus={{ scale: 1.02, boxShadow: "0 0 0 2px rgba(0,0,0,0.1)" }}
+                                                />
                                             </motion.div>
                                         )}
                                     </motion.div>
@@ -264,22 +261,22 @@ const PasswordReset = () => {
 
                                 {isTokenVerified && (
                                     <motion.div
-                                        className='flex flex-col gap-2 items-center w-full'
+                                        className='flex flex-col gap-2 items-center'
                                         initial={{ height: 0, opacity: 0 }}
                                         animate={{ height: "auto", opacity: 1 }}
                                         transition={{ type: "spring", stiffness: 100, duration: 0.3 }}
                                     >
                                         <motion.h1
-                                            className='text-sm font-light font-[poppins] tracking-tight text-center'
+                                            className='text-sm font-light font-[poppins] tracking-tight'
                                         >
                                             Please set the new password !
                                         </motion.h1>
                                         <motion.div
-                                            className='w-full relative flex justify-center'
+                                            className='w-full relative'
                                         >
                                             <motion.input
                                                 id='InputLoginPassword'
-                                                className='password-with-icon inline-block px-6 py-4 text-lg bg-[#F0EDFF] rounded-full font-semibold font-[nunito] outline-none min-w-[30vw] w-full sm:px-4 sm:py-3 xs:px-4 xs:py-3'
+                                                className='password-with-icon inline-block px-6 py-4 text-lg bg-[#F0EDFF] rounded-full font-semibold font-[nunito] outline-none min-w-[30vw]'
                                                 type={showPassword ? "text" : "password"}
                                                 placeholder='Password'
                                                 name='password'
@@ -293,7 +290,7 @@ const PasswordReset = () => {
                                             />
                                             <motion.button
                                                 type="button"
-                                                className="absolute inset-y-0 right-6 flex items-center text-gray-600 cursor-pointer sm:right-4 xs:right-4"
+                                                className="absolute inset-y-0 right-6 flex items-center text-gray-600 cursor-pointer"
                                                 onClick={() => setShowPassword(!showPassword)}
                                                 whileHover={{ scale: 1.1 }}
                                                 whileTap={{ scale: 0.9 }}
@@ -303,7 +300,7 @@ const PasswordReset = () => {
                                         </motion.div>
 
                                         {password && (
-                                            <div className='w-full px-2'>
+                                            <div className='w-full'>
                                                 <div className='h-1 bg-gray-200 rounded-full overflow-hidden'>
                                                     <div className={`h-full transition-all duration-300 ${strengthClasses[strength]}`}></div>
                                                 </div>
@@ -316,14 +313,14 @@ const PasswordReset = () => {
                                 )}
 
                                 <motion.div
-                                    className={`w-full flex items-center justify-center px-2`}
+                                    className={`w-full flex items-center justify-center px-50`}
                                     variants={itemVariants}
                                 >
                                     <motion.button
                                         type='submit'
                                         disabled={isLoading}
                                         id="NavBarButtons"
-                                        className="w-full max-w-[30vw] py-2.5 bg-[#ffbb00] text-black rounded-2xl border-2 cursor-pointer active:scale-95 tracking-wide font-medium font-[poppins] sm:max-w-full xs:max-w-full"
+                                        className="px-[100%] flex items-center justify-center py-2.5 bg-[#ffbb00] text-black rounded-2xl border-2 cursor-pointer active:scale-95 tracking-wide font-medium font-[poppins]"
                                         variants={buttonVariants}
                                         whileHover={{ scale: 1.05 }}
                                         whileTap="tap"
@@ -367,7 +364,7 @@ const OTPInput = ({ length = 6, onChangeOTP }) => {
     };
 
     return (
-        <div className="flex space-x-2 flex-wrap justify-center">
+        <div className="flex space-x-2">
             {otp.map((digit, index) => (
                 <input
                     key={index}
@@ -377,7 +374,7 @@ const OTPInput = ({ length = 6, onChangeOTP }) => {
                     value={digit}
                     onChange={(e) => handleChange(e, index)}
                     onKeyDown={(e) => handleKeyDown(e, index)}
-                    className="w-12 h-12 text-center text-xl font-semibold border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 sm:w-10 sm:h-10 xs:w-8 xs:h-8 xs:text-lg"
+                    className="w-12 h-12 text-center text-xl font-semibold border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
             ))}
         </div>
