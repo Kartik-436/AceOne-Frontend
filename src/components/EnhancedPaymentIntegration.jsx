@@ -62,7 +62,7 @@ const CheckoutButton = ({ isLoggedIn, user, deliveryFee, refreshCart, refreshUse
                 key: import.meta.env.VITE_RAZORPAY_KEY_ID,
                 amount: orderData.payment.amount,
                 currency: orderData.payment.currency || "INR",
-                name: "Your Store Name",
+                name: "AceOne",
                 description: `Payment for order #${orderData.order._id}`,
                 order_id: orderData.payment.razorpayOrderId,
                 handler: async function (response) {
@@ -159,13 +159,12 @@ const CheckoutButton = ({ isLoggedIn, user, deliveryFee, refreshCart, refreshUse
                     setIsModalOpen(false);
                     setIsProcessing(false);
                 } else if (paymentMode === "Online") {
-                    if (result.data?.payment?.razorpayOrderId) {
+                    if (result.payment?.razorpayOrderId) {
                         console.log("Proceeding to payment gateway");
                         // Initialize Razorpay payment
-                        initializeRazorpayPayment(result.data);
-                        // Don't set isProcessing to false here - will be handled in callback
+                        initializeRazorpayPayment(result); // Pass the whole result object
                     } else {
-                        console.error("Missing payment data in response:", result.data);
+                        console.error("Missing payment data in response:", result);
                         toast.error("Payment data missing. Please try again.");
                         setIsModalOpen(false);
                         setIsProcessing(false);
