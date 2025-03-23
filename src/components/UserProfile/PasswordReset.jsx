@@ -191,7 +191,7 @@ const PasswordReset = () => {
                             animate="visible"
                         >
                             <motion.div
-                                className='flex flex-col items-center h-full justify-around gap-6.5 w-full'
+                                className='flex flex-col items-center h-full justify-around gap-12 md:gap-6.5 w-full'
                                 variants={containerVariants}
                             >
                                 {!isTokenVerified && (
@@ -320,7 +320,7 @@ const PasswordReset = () => {
                                         type='submit'
                                         disabled={isLoading}
                                         id="NavBarButtons"
-                                        className="md:px-[100%] w-full flex items-center justify-center py-2.5 bg-[#ffbb00] text-black rounded-2xl border-2 cursor-pointer active:scale-95 tracking-wide font-medium font-[poppins]"
+                                        className="md:px-[100%] px-4 flex items-center justify-center py-2.5 bg-[#ffbb00] text-black rounded-2xl border-2 cursor-pointer active:scale-95 tracking-wide font-medium font-[poppins]"
                                         variants={buttonVariants}
                                         whileHover={{ scale: 1.05 }}
                                         whileTap="tap"
