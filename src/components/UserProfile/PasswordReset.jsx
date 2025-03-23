@@ -161,7 +161,7 @@ const PasswordReset = () => {
                 </div>
             )}
 
-            <div className={`h-full z-50 w-full overflow-hidden ${isLoading ? "blur-xs pointer-events-none select-none cursor-not-allowed" : "blur-none pointer-events-auto"}`}>
+            <div className={`h-full z-50 w-full ${isLoading ? "blur-xs pointer-events-none select-none cursor-not-allowed" : "blur-none pointer-events-auto"}`}>
 
                 <motion.div
                     className='w-full h-full items-center justify-center flex'
