@@ -232,7 +232,7 @@ const PasswordReset = () => {
 
                                         {!emailSubmitted && (
                                             <motion.div
-                                                className='flex flex-col w-full overflow-hidden gap-8 md:gap-2 items-start justify-center'
+                                                className='flex flex-col w-full md:overflow-hidden gap-8 md:gap-2 items-start justify-center'
                                                 initial={{ height: 0, opacity: 0 }}
                                                 animate={{ height: "auto", opacity: 1 }}
                                                 transition={{ type: "spring", stiffness: 100, duration: 0.3 }}
@@ -243,7 +243,7 @@ const PasswordReset = () => {
                                                     Please Enter your registered email to change your password !
                                                 </motion.h1>
                                                 <motion.input
-                                                    className='email-with-icon inline-block px-2 md:px-6 py-2 md:py-4 md:text-lg bg-[#021]/10 rounded-full font-semibold font-[nunito] outline-2 md:min-w-[30vw] w-full'
+                                                    className='email-with-icon inline-block px-2 md:px-6 py-2 md:py-4 md:text-lg bg-[#021]/10 rounded-full font-semibold font-[nunito] outline-2 md:min-w-[30vw]'
                                                     type="email"
                                                     placeholder='Email'
                                                     name='email'
