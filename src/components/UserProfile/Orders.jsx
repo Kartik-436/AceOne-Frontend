@@ -99,7 +99,7 @@ const Orders = () => {
     return (
         <>
             <Transition animate={animate} />
-            <div className="h-full flex flex-col">
+            <div className="h-full min-w-full flex flex-col">
                 <h2 className="text-2xl font-bold mb-6">My Orders</h2>
 
                 <div className="flex-1 overflow-y-auto noScrollbar max-h-full">
