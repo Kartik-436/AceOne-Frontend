@@ -1,16 +1,45 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { X, CreditCard, Smartphone, CheckCircle, AlertCircle } from 'lucide-react';
+import { X } from 'lucide-react';
 import { toast } from 'react-toastify';
-import { placeOrder } from '../utils/UserService';
+import { placeOrder, verifyPayment } from '../utils/UserService';
 import useDelayedNavigation from '../utils/useDelayedNavigation';
+
+// Load Razorpay script dynamically
+const loadRazorpayScript = () => {
+    return new Promise((resolve) => {
+        const script = document.createElement('script');
+        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+        script.onload = () => {
+            resolve(true);
+        };
+        script.onerror = () => {
+            resolve(false);
+        };
+        document.body.appendChild(script);
+    });
+};
 
 const CheckoutButton = ({ isLoggedIn, user, deliveryFee, refreshCart, refreshUser, cart }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
-    const { animate, handleDelayNavigation } = useDelayedNavigation();
+    const { handleDelayNavigation } = useDelayedNavigation();
+
+    // Calculate actual total amount
+    const calculateTotalAmount = () => {
+        if (!cart || cart.length === 0) return deliveryFee;
+
+        let total = cart.reduce((sum, item) => {
+            const price = item.productId.discount === 0
+                ? item.productId.price
+                : item.productId.discountPrice;
+            return sum + (price * item.quantity);
+        }, 0);
+
+        return total + deliveryFee;
+    };
 
     const handleCheckoutClick = () => {
         // Check if cart is empty
@@ -30,58 +59,113 @@ const CheckoutButton = ({ isLoggedIn, user, deliveryFee, refreshCart, refreshUse
         }
     };
 
-    const handlePaymentSubmit = async (paymentData) => {
+    const initializeRazorpayPayment = async (orderData) => {
+        const scriptLoaded = await loadRazorpayScript();
+
+        if (!scriptLoaded) {
+            toast.error("Failed to load payment gateway. Please try again later.");
+            setIsProcessing(false);
+            return;
+        }
+
+        const options = {
+            key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+            amount: orderData.payment.amount,
+            currency: orderData.payment.currency,
+            name: "Your Store Name",
+            description: `Payment for order #${orderData.order._id}`,
+            order_id: orderData.payment.razorpayOrderId,
+            handler: async function (response) {
+                try {
+                    setIsProcessing(true);
+
+                    // Send payment verification to backend
+                    const verificationData = {
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_signature: response.razorpay_signature,
+                        orderId: orderData.order._id
+                    };
+
+                    const verificationResult = await verifyPayment(verificationData);
+
+                    if (verificationResult.success) {
+                        toast.success("Payment completed successfully!");
+                        await refreshCart();
+                        await refreshUser();
+                    } else {
+                        toast.error(verificationResult.message || "Payment verification failed");
+                    }
+                } catch (error) {
+                    console.error("Payment verification error:", error);
+                    toast.error("Payment was processed but verification failed");
+                } finally {
+                    setIsProcessing(false);
+                    setIsModalOpen(false);
+                }
+            },
+            prefill: {
+                name: user?.name || "",
+                email: user?.email || "",
+                contact: user?.phone || ""
+            },
+            notes: {
+                address: user?.address || "",
+                userId: user?.ID || ""
+            },
+            theme: {
+                color: "#ffbb00"
+            },
+            modal: {
+                ondismiss: function () {
+                    setIsProcessing(false);
+                    toast.info("Payment cancelled. Your order is saved but not confirmed.");
+                }
+            }
+        };
+
+        try {
+            const razorpayInstance = new window.Razorpay(options);
+            razorpayInstance.open();
+        } catch (error) {
+            console.error("Razorpay initialization error:", error);
+            toast.error("Failed to initialize payment. Please try again.");
+            setIsProcessing(false);
+        }
+    };
+
+    const handlePaymentModeSelection = async (paymentMode) => {
         setIsProcessing(true);
 
         try {
-            // Prepare order data based on payment method
+            // Prepare basic order data
             const orderData = {
-                modeOfPayment: paymentData.paymentMode,
+                modeOfPayment: paymentMode,
                 deliveryFee,
                 deliveryAddress: user?.address
             };
 
-            // Add payment method details for online payments
-            if (paymentData.paymentMode === "Online") {
-                orderData.paymentMethod = paymentData.paymentMethod;
-
-                if (paymentData.paymentMethod === "card") {
-                    orderData.cardDetails = {
-                        cardNumber: paymentData.cardNumber,
-                        expiryMonth: paymentData.expiryMonth,
-                        expiryYear: paymentData.expiryYear,
-                        cvv: paymentData.cvv,
-                        nameOnCard: paymentData.nameOnCard
-                    };
-                } else if (paymentData.paymentMethod === "upi") {
-                    orderData.upiDetails = {
-                        vpa: paymentData.vpa,
-                        payeeName: user?.name
-                    };
-                }
-            }
-
             const result = await placeOrder(orderData);
 
             if (result.success) {
-                await refreshCart();
-                await refreshUser();
-                toast.success(`Order placed successfully!`);
-
-                // If order is placed but payment is still processing
-                if (result.data && result.data.orderStatus === "Pending" &&
-                    result.data.paymentDetails && result.data.paymentDetails.paymentStatus === "processing") {
-                    toast.info("Payment is being processed. You'll receive confirmation shortly.");
+                if (paymentMode === "Cash on Delivery") {
+                    await refreshCart();
+                    await refreshUser();
+                    toast.success(`Order placed successfully! You'll pay on delivery.`);
+                    setIsModalOpen(false);
+                } else if (paymentMode === "Online" && result.data?.payment) {
+                    // Initialize Razorpay for online payment
+                    await initializeRazorpayPayment(result.data);
+                    // Don't close modal yet - will close after payment completes or is cancelled
                 }
             } else {
                 toast.error(result.message || "Failed to place order.");
+                setIsProcessing(false);
             }
         } catch (error) {
             console.error("Order placement error:", error);
             toast.error("An error occurred while placing your order.");
-        } finally {
             setIsProcessing(false);
-            setIsModalOpen(false);
         }
     };
 
@@ -96,121 +180,20 @@ const CheckoutButton = ({ isLoggedIn, user, deliveryFee, refreshCart, refreshUse
                 {isProcessing ? "Processing..." : "Checkout"}
             </button>
 
-            {/* Enhanced Payment Modal */}
-            <EnhancedPaymentModal
+            {/* Simplified Payment Modal */}
+            <PaymentModeModal
                 isOpen={isModalOpen}
                 onClose={() => !isProcessing && setIsModalOpen(false)}
-                onSubmit={handlePaymentSubmit}
+                onSelectPaymentMode={handlePaymentModeSelection}
                 isProcessing={isProcessing}
-                user={user}
-                total={deliveryFee}  // This should be the actual total with cart items
+                total={calculateTotalAmount()}
             />
         </>
     );
 };
 
-// Enhanced Payment Modal with support for different payment methods
-const EnhancedPaymentModal = ({ isOpen, onClose, onSubmit, isProcessing, user, total }) => {
-    const [paymentMode, setPaymentMode] = useState("");
-    const [paymentMethod, setPaymentMethod] = useState("");
-    const [cardNumber, setCardNumber] = useState("");
-    const [expiryMonth, setExpiryMonth] = useState("");
-    const [expiryYear, setExpiryYear] = useState("");
-    const [cvv, setCvv] = useState("");
-    const [nameOnCard, setNameOnCard] = useState("");
-    const [vpa, setVpa] = useState("");
-    const [currentStep, setCurrentStep] = useState(1);
-    const [formErrors, setFormErrors] = useState({});
-
-    useEffect(() => {
-        // Reset form when modal opens
-        if (isOpen) {
-            setPaymentMode("");
-            setPaymentMethod("");
-            setCardNumber("");
-            setExpiryMonth("");
-            setExpiryYear("");
-            setCvv("");
-            setNameOnCard("");
-            setVpa("");
-            setCurrentStep(1);
-            setFormErrors({});
-        }
-    }, [isOpen]);
-
-    const validateStep1 = () => {
-        if (!paymentMode) {
-            setFormErrors({ paymentMode: "Please select a payment mode" });
-            return false;
-        }
-        return true;
-    };
-
-    const validateStep2 = () => {
-        const errors = {};
-
-        if (paymentMode === "Online" && !paymentMethod) {
-            errors.paymentMethod = "Please select a payment method";
-        }
-
-        if (paymentMethod === "card") {
-            if (!cardNumber || cardNumber.length < 14 || cardNumber.length > 16) {
-                errors.cardNumber = "Please enter a valid card number";
-            }
-            if (!expiryMonth || !expiryYear) {
-                errors.expiry = "Please enter a valid expiry date";
-            }
-            if (!cvv || cvv.length !== 3) {
-                errors.cvv = "Please enter a valid CVV";
-            }
-            if (!nameOnCard) {
-                errors.nameOnCard = "Please enter the name on your card";
-            }
-        }
-
-        if (paymentMethod === "upi") {
-            if (!vpa || !vpa.includes('@')) {
-                errors.vpa = "Please enter a valid UPI ID";
-            }
-        }
-
-        setFormErrors(errors);
-        return Object.keys(errors).length === 0;
-    };
-
-    const handleNextStep = () => {
-        if (currentStep === 1 && validateStep1()) {
-            setCurrentStep(2);
-        }
-    };
-
-    const handlePrevStep = () => {
-        setCurrentStep(1);
-    };
-
-    const handleSubmit = () => {
-        if (paymentMode === "Cash on Delivery" || validateStep2()) {
-            const paymentData = {
-                paymentMode,
-                ...(paymentMode === "Online" && {
-                    paymentMethod,
-                    ...(paymentMethod === "card" && {
-                        cardNumber,
-                        expiryMonth,
-                        expiryYear,
-                        cvv,
-                        nameOnCard
-                    }),
-                    ...(paymentMethod === "upi" && {
-                        vpa
-                    })
-                })
-            };
-
-            onSubmit(paymentData);
-        }
-    };
-
+// Simplified Payment Modal that only asks for payment mode
+const PaymentModeModal = ({ isOpen, onClose, onSelectPaymentMode, isProcessing, total }) => {
     return (
         <AnimatePresence>
             {isOpen && (
@@ -236,278 +219,31 @@ const EnhancedPaymentModal = ({ isOpen, onClose, onSubmit, isProcessing, user, t
                             <X size={28} />
                         </button>
 
-                        {/* Step indicator */}
-                        <div className="flex justify-center mb-5">
-                            <div className="flex items-center">
-                                <div className={`h-8 w-8 rounded-full flex items-center justify-center border-2 ${currentStep === 1 ? 'bg-[#ffbb00] text-black border-[#ffbb00]' : 'border-white text-white'}`}>
-                                    1
-                                </div>
-                                <div className={`w-10 h-1 ${currentStep === 2 ? 'bg-[#ffbb00]' : 'bg-gray-600'}`}></div>
-                                <div className={`h-8 w-8 rounded-full flex items-center justify-center border-2 ${currentStep === 2 ? 'bg-[#ffbb00] text-black border-[#ffbb00]' : 'border-white text-white'}`}>
-                                    2
-                                </div>
-                            </div>
+                        <h2 className="text-2xl font-semibold text-center mb-6 text-[#fff]">
+                            Select Payment Mode
+                        </h2>
+
+                        <div className="space-y-4">
+                            <button
+                                className="w-full py-3 rounded-xl border-[1px] transition-all bg-[#1f1f1f] text-white border-gray-500 hover:border-[#ffbb00] hover:bg-gray-800 flex items-center justify-center"
+                                onClick={() => onSelectPaymentMode("Online")}
+                                disabled={isProcessing}
+                            >
+                                <span className="mr-2">💳</span> Pay Online
+                                <span className="ml-2 text-sm text-gray-400">(via Razorpay)</span>
+                            </button>
+
+                            <button
+                                className="w-full py-3 rounded-xl border-[1px] transition-all bg-[#1f1f1f] text-white border-gray-500 hover:border-[#ffbb00] hover:bg-gray-800 flex items-center justify-center"
+                                onClick={() => onSelectPaymentMode("Cash on Delivery")}
+                                disabled={isProcessing}
+                            >
+                                <span className="mr-2">💵</span> Cash on Delivery
+                            </button>
                         </div>
 
-                        {/* Step 1: Select Payment Mode */}
-                        {currentStep === 1 && (
-                            <>
-                                <h2 className="text-2xl font-semibold text-center mb-4 text-[#fff]">
-                                    Select Payment Mode
-                                </h2>
-
-                                <div className="space-y-3">
-                                    <button
-                                        className={`w-full py-3 rounded-xl border-[1px] transition-all ${paymentMode === "Online"
-                                            ? "bg-[#ffbb00] text-black border-[#ffbb00]"
-                                            : "bg-[#1f1f1f] text-white border-gray-500 hover:border-[#ffbb00]"
-                                            } AddToCartInStore`}
-                                        onClick={() => setPaymentMode("Online")}
-                                        disabled={isProcessing}
-                                    >
-                                        Online Payment
-                                    </button>
-
-                                    <button
-                                        className={`w-full py-3 rounded-xl border-[1px] transition-all ${paymentMode === "Cash on Delivery"
-                                            ? "bg-[#ffbb00] text-black border-[#ffbb00]"
-                                            : "bg-[#1f1f1f] text-white border-gray-500 hover:border-[#ffbb00]"
-                                            } AddToCartInStore`}
-                                        onClick={() => setPaymentMode("Cash on Delivery")}
-                                        disabled={isProcessing}
-                                    >
-                                        Cash on Delivery
-                                    </button>
-                                </div>
-
-                                {formErrors.paymentMode && (
-                                    <p className="text-red-500 text-sm mt-2">{formErrors.paymentMode}</p>
-                                )}
-
-                                <div className="mt-8 flex justify-between">
-                                    <button
-                                        onClick={onClose}
-                                        disabled={isProcessing}
-                                        className={`px-5 py-2 text-white border border-gray-500 rounded-lg ${isProcessing ? 'opacity-50' : 'hover:border-[#ffbb00]'} cursor-pointer transition`}
-                                    >
-                                        Cancel
-                                    </button>
-
-                                    {paymentMode === "Cash on Delivery" ? (
-                                        <button
-                                            onClick={handleSubmit}
-                                            disabled={!paymentMode || isProcessing}
-                                            className={`px-5 py-2 rounded-lg transition ${paymentMode && !isProcessing
-                                                ? "bg-[#ffbb00] text-black hover:bg-[#e6a800] cursor-pointer"
-                                                : "bg-gray-500 text-gray-300 cursor-not-allowed"
-                                                }`}
-                                        >
-                                            {isProcessing ? "Processing..." : "Confirm"}
-                                        </button>
-                                    ) : (
-                                        <button
-                                            onClick={handleNextStep}
-                                            disabled={!paymentMode || isProcessing}
-                                            className={`px-5 py-2 rounded-lg transition ${paymentMode && !isProcessing
-                                                ? "bg-[#ffbb00] text-black hover:bg-[#e6a800] cursor-pointer"
-                                                : "bg-gray-500 text-gray-300 cursor-not-allowed"
-                                                }`}
-                                        >
-                                            Next
-                                        </button>
-                                    )}
-                                </div>
-                            </>
-                        )}
-
-                        {/* Step 2: Payment Details (for Online Payment) */}
-                        {currentStep === 2 && paymentMode === "Online" && (
-                            <>
-                                <h2 className="text-2xl font-semibold text-center mb-4 text-[#fff]">
-                                    Payment Details
-                                </h2>
-
-                                {/* Payment Method Selection */}
-                                <div className="space-y-3 mb-4">
-                                    <label className="block text-sm font-medium mb-1">Select Payment Method</label>
-                                    <div className="flex space-x-3">
-                                        <button
-                                            className={`flex-1 py-3 rounded-xl border-[1px] transition-all flex items-center justify-center gap-2 ${paymentMethod === "card"
-                                                ? "bg-[#ffbb00] text-black border-[#ffbb00]"
-                                                : "bg-[#1f1f1f] text-white border-gray-500 hover:border-[#ffbb00]"
-                                                }`}
-                                            onClick={() => setPaymentMethod("card")}
-                                            disabled={isProcessing}
-                                        >
-                                            <CreditCard size={18} />
-                                            Card
-                                        </button>
-
-                                        <button
-                                            className={`flex-1 py-3 rounded-xl border-[1px] transition-all flex items-center justify-center gap-2 ${paymentMethod === "upi"
-                                                ? "bg-[#ffbb00] text-black border-[#ffbb00]"
-                                                : "bg-[#1f1f1f] text-white border-gray-500 hover:border-[#ffbb00]"
-                                                }`}
-                                            onClick={() => setPaymentMethod("upi")}
-                                            disabled={isProcessing}
-                                        >
-                                            <Smartphone size={18} />
-                                            UPI
-                                        </button>
-                                    </div>
-
-                                    {formErrors.paymentMethod && (
-                                        <p className="text-red-500 text-sm mt-1">{formErrors.paymentMethod}</p>
-                                    )}
-                                </div>
-
-                                {/* Card Payment Form */}
-                                {paymentMethod === "card" && (
-                                    <div className="space-y-3">
-                                        <div>
-                                            <label className="block text-sm font-medium mb-1">Card Number</label>
-                                            <input
-                                                type="text"
-                                                placeholder="1234 5678 9012 3456"
-                                                value={cardNumber}
-                                                onChange={(e) => setCardNumber(e.target.value.replace(/\D/g, '').slice(0, 16))}
-                                                className="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white"
-                                                disabled={isProcessing}
-                                            />
-                                            {formErrors.cardNumber && (
-                                                <p className="text-red-500 text-sm mt-1">{formErrors.cardNumber}</p>
-                                            )}
-                                        </div>
-
-                                        <div className="flex space-x-3">
-                                            <div className="flex-1">
-                                                <label className="block text-sm font-medium mb-1">Expiry</label>
-                                                <div className="flex space-x-2">
-                                                    <select
-                                                        value={expiryMonth}
-                                                        onChange={(e) => setExpiryMonth(e.target.value)}
-                                                        className="w-1/2 p-2 rounded bg-gray-800 border border-gray-700 text-white"
-                                                        disabled={isProcessing}
-                                                    >
-                                                        <option value="">MM</option>
-                                                        {Array.from({ length: 12 }, (_, i) => {
-                                                            const month = i + 1;
-                                                            return (
-                                                                <option key={month} value={month}>
-                                                                    {month.toString().padStart(2, '0')}
-                                                                </option>
-                                                            );
-                                                        })}
-                                                    </select>
-                                                    <select
-                                                        value={expiryYear}
-                                                        onChange={(e) => setExpiryYear(e.target.value)}
-                                                        className="w-1/2 p-2 rounded bg-gray-800 border border-gray-700 text-white"
-                                                        disabled={isProcessing}
-                                                    >
-                                                        <option value="">YY</option>
-                                                        {Array.from({ length: 10 }, (_, i) => {
-                                                            const year = new Date().getFullYear() + i;
-                                                            return (
-                                                                <option key={year} value={year.toString().slice(-2)}>
-                                                                    {year.toString().slice(-2)}
-                                                                </option>
-                                                            );
-                                                        })}
-                                                    </select>
-                                                </div>
-                                                {formErrors.expiry && (
-                                                    <p className="text-red-500 text-sm mt-1">{formErrors.expiry}</p>
-                                                )}
-                                            </div>
-
-                                            <div className="w-1/3">
-                                                <label className="block text-sm font-medium mb-1">CVV</label>
-                                                <input
-                                                    type="text"
-                                                    placeholder="123"
-                                                    value={cvv}
-                                                    onChange={(e) => setCvv(e.target.value.replace(/\D/g, '').slice(0, 3))}
-                                                    className="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white"
-                                                    disabled={isProcessing}
-                                                />
-                                                {formErrors.cvv && (
-                                                    <p className="text-red-500 text-sm mt-1">{formErrors.cvv}</p>
-                                                )}
-                                            </div>
-                                        </div>
-
-                                        <div>
-                                            <label className="block text-sm font-medium mb-1">Name on Card</label>
-                                            <input
-                                                type="text"
-                                                placeholder="John Doe"
-                                                value={nameOnCard}
-                                                onChange={(e) => setNameOnCard(e.target.value)}
-                                                className="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white"
-                                                disabled={isProcessing}
-                                            />
-                                            {formErrors.nameOnCard && (
-                                                <p className="text-red-500 text-sm mt-1">{formErrors.nameOnCard}</p>
-                                            )}
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* UPI Payment Form */}
-                                {paymentMethod === "upi" && (
-                                    <div className="space-y-3">
-                                        <div>
-                                            <label className="block text-sm font-medium mb-1">UPI ID</label>
-                                            <input
-                                                type="text"
-                                                placeholder="name@upi"
-                                                value={vpa}
-                                                onChange={(e) => setVpa(e.target.value)}
-                                                className="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white"
-                                                disabled={isProcessing}
-                                            />
-                                            {formErrors.vpa && (
-                                                <p className="text-red-500 text-sm mt-1">{formErrors.vpa}</p>
-                                            )}
-                                        </div>
-
-                                        <div className="mt-2 p-3 bg-gray-800 rounded-lg flex items-start gap-3">
-                                            <div className="mt-1 text-yellow-400">
-                                                <AlertCircle size={16} />
-                                            </div>
-                                            <p className="text-sm text-gray-300">
-                                                You&apos;ll be prompted to complete the payment using your UPI app after confirmation.
-                                            </p>
-                                        </div>
-                                    </div>
-                                )}
-
-                                <div className="mt-6 flex justify-between">
-                                    <button
-                                        onClick={handlePrevStep}
-                                        disabled={isProcessing}
-                                        className={`px-5 py-2 text-white border border-gray-500 rounded-lg ${isProcessing ? 'opacity-50' : 'hover:border-[#ffbb00]'} cursor-pointer transition`}
-                                    >
-                                        Back
-                                    </button>
-
-                                    <button
-                                        onClick={handleSubmit}
-                                        disabled={!paymentMethod || isProcessing}
-                                        className={`px-5 py-2 rounded-lg transition ${paymentMethod && !isProcessing
-                                            ? "bg-[#ffbb00] text-black hover:bg-[#e6a800] cursor-pointer"
-                                            : "bg-gray-500 text-gray-300 cursor-not-allowed"
-                                            }`}
-                                    >
-                                        {isProcessing ? "Processing..." : "Pay Now"}
-                                    </button>
-                                </div>
-                            </>
-                        )}
-
                         {/* Display order total */}
-                        <div className="mt-4 pt-3 border-t border-gray-700">
+                        <div className="mt-6 pt-3 border-t border-gray-700">
                             <div className="flex justify-between items-center">
                                 <span className="text-gray-400">Total Amount:</span>
                                 <span className="text-xl font-semibold">₹{Math.round(total)}</span>
@@ -519,7 +255,7 @@ const EnhancedPaymentModal = ({ isOpen, onClose, onSubmit, isProcessing, user, t
                             <div className="absolute inset-0 bg-black/50 rounded-2xl flex items-center justify-center">
                                 <div className="text-center">
                                     <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#ffbb00] mx-auto mb-4"></div>
-                                    <p className="text-white">Processing your payment...</p>
+                                    <p className="text-white">Processing your request...</p>
                                 </div>
                             </div>
                         )}
@@ -530,4 +266,4 @@ const EnhancedPaymentModal = ({ isOpen, onClose, onSubmit, isProcessing, user, t
     );
 };
 
-export { CheckoutButton, EnhancedPaymentModal };
+export { CheckoutButton, PaymentModeModal };
