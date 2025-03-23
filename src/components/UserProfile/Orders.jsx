@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 // components/Orders.jsx
 import React, { useEffect, useState } from 'react';
-import { Package, ChevronRight, X, Calendar, CreditCard, Truck } from 'lucide-react';
+import { Package, ChevronRight, X, Calendar, CreditCard, Truck, Trash } from 'lucide-react';
 import { getUserOrders, cancelOrder } from '../../utils/UserService';
 import { motion } from 'motion/react';
 import useDelayedNavigation from '../../utils/useDelayedNavigation';
@@ -264,7 +264,7 @@ const Orders = () => {
                                                 <div className="mt-4 border-t border-gray-100 pt-3">
                                                     <div className="flex justify-between font-medium">
                                                         <span>Subtotal:</span>
-                                                        <span>₹{order.totalAmount ? (order.totalAmount - (order.deliveryFee || 0)) : 0}</span>
+                                                        <span>₹{order.totalAmount.toFixed(2) ? (order.totalAmount - (order.deliveryFee || 0)).toFixed(2) : 0}</span>
                                                     </div>
                                                     <div className="flex justify-between text-sm text-gray-600 mt-1">
                                                         <span>Delivery Fee:</span>
@@ -272,7 +272,7 @@ const Orders = () => {
                                                     </div>
                                                     <div className="flex justify-between font-bold text-lg mt-2">
                                                         <span>Total:</span>
-                                                        <span>₹{order.totalAmount || 0}</span>
+                                                        <span>₹{order.totalAmount.toFixed(2) || 0}</span>
                                                     </div>
                                                 </div>
 
@@ -284,7 +284,7 @@ const Orders = () => {
                                                                 onClick={() => openCancelModal(order._id)}
                                                                 className="w-full bg-red-600 text-white py-2 rounded-md hover:bg-red-700 transition-colors text-sm flex items-center justify-center"
                                                             >
-                                                                <X size={16} className="mr-1" />
+                                                                <Trash size={16} className="mr-1" />
                                                                 Cancel Order
                                                             </button>
                                                         </div>
