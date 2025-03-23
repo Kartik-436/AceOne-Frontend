@@ -34,13 +34,16 @@ const AboutEnlargeOnScroll = () => {
 
     const imgContainerRef = useRef(null);
     const [offset, setOffset] = useState(["start 130%", "60% 60%"]);
+    const [smallscreen, setsmallscreen] = useState(false);
 
     useEffect(() => {
         const handleResize = () => {
             if (window.innerWidth < 768) {
                 setOffset(["-180% end", "-80% end"]);
+                setsmallscreen(true);
             } else {
                 setOffset(["start 100%", "center 40%"]);
+                setsmallscreen(false);
             }
         };
 
@@ -104,8 +107,8 @@ const AboutEnlargeOnScroll = () => {
                                                 className='font-semibold font-[poppins] flex items-center justify-center gap-2 overflow-hidden'
                                             >
                                                 <motion.div
-                                                    initial={window.innerWidth < 768 ? { rotate: 640 } : ""}
-                                                    animate={window.innerWidth < 768 ? (HeadView ? { rotate: 0 } : {}) : ""}
+                                                    initial={smallscreen ? { rotate: 640 } : ""}
+                                                    animate={smallscreen ? (HeadView ? { rotate: 0 } : {}) : ""}
                                                     transition={{
                                                         duration: 2.2,
                                                         ease: "backOut",
@@ -115,8 +118,8 @@ const AboutEnlargeOnScroll = () => {
                                                     <PlusIcon size={18} />
                                                 </motion.div>
                                                 <motion.span
-                                                    initial={window.innerWidth < 768 ? { y: 100 } : ""}
-                                                    animate={window.innerWidth < 768 ? (HeadView ? { y: 0 } : {}) : ""}
+                                                    initial={smallscreen ? { y: 100 } : ""}
+                                                    animate={smallscreen ? (HeadView ? { y: 0 } : {}) : ""}
                                                     transition={{
                                                         duration: 1.6,
                                                         ease: "backOut",
