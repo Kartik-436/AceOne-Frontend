@@ -43,16 +43,21 @@ const Orders = () => {
         setOrderToCancel(null);
     };
 
-    const handleCancelOrder = async (orderId) => {
+    const handleCancelOrder = async (orderId, reason) => {
         setCancelingOrderId(orderId);
-        const response = await cancelOrder(orderId);
+        const response = await cancelOrder(orderId, reason);
 
         if (response.success) {
-            // Update the order status in the state
+            // Update the order status in the state with the cancellation reason
             setOrders(prevOrders =>
                 prevOrders.map(order =>
                     order._id === orderId
-                        ? { ...order, orderStatus: 'Cancelled', cancelledAt: new Date() }
+                        ? {
+                            ...order,
+                            orderStatus: 'Cancelled',
+                            cancelledAt: new Date(),
+                            cancellationReason: reason
+                        }
                         : order
                 )
             );

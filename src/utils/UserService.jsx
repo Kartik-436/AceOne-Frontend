@@ -97,7 +97,7 @@ export const verifyPayment = async (paymentData) => {
     }
 };
 
-export const cancelOrder = async (orderID, reason = "Cancelled by customer") => {
+export const cancelOrder = async (orderID, reason) => {
     try {
         const response = await axios.post(
             `https://aceone-backend-wcgq.onrender.com/user/order/cancel`,

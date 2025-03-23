@@ -1,10 +1,27 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Trash, X } from 'lucide-react';
 
 const CancelOrderModal = ({ isOpen, onClose, onConfirm, orderId, isLoading }) => {
+    const [selectedReason, setSelectedReason] = useState('');
+    const [otherReason, setOtherReason] = useState('');
+
+    const cancelReasons = [
+        "Changed my mind",
+        "Found a better price elsewhere",
+        "Ordered by mistake",
+        "Shipping takes too long",
+        "Payment issues",
+        "Other"
+    ];
+
+    const handleConfirm = () => {
+        const reason = selectedReason === 'Other' ? otherReason : selectedReason;
+        onConfirm(orderId, reason);
+    };
+
     return (
         <AnimatePresence>
             {isOpen && (
@@ -24,9 +41,47 @@ const CancelOrderModal = ({ isOpen, onClose, onConfirm, orderId, isLoading }) =>
                             <h2 className="text-lg font-semibold">Cancel Order</h2>
                         </div>
 
-                        <p className="text-gray-600">
+                        <p className="text-gray-600 mb-4">
                             Are you sure you want to cancel this order? This action cannot be undone.
                         </p>
+
+                        <div className="mb-4">
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Please select a reason for cancellation:
+                            </label>
+                            <div className="space-y-2">
+                                {cancelReasons.map((reason) => (
+                                    <div key={reason} className="flex items-center">
+                                        <input
+                                            type="radio"
+                                            id={reason}
+                                            name="cancelReason"
+                                            value={reason}
+                                            checked={selectedReason === reason}
+                                            onChange={() => setSelectedReason(reason)}
+                                            className="mr-2"
+                                        />
+                                        <label htmlFor={reason} className="text-gray-700">
+                                            {reason}
+                                        </label>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {selectedReason === 'Other' && (
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Please specify:
+                                </label>
+                                <textarea
+                                    value={otherReason}
+                                    onChange={(e) => setOtherReason(e.target.value)}
+                                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 h-20"
+                                    placeholder="Tell us why you're cancelling this order..."
+                                />
+                            </div>
+                        )}
 
                         <div className="mt-6 flex justify-end gap-3">
                             <button
@@ -37,8 +92,8 @@ const CancelOrderModal = ({ isOpen, onClose, onConfirm, orderId, isLoading }) =>
                                 Keep Order
                             </button>
                             <button
-                                onClick={() => onConfirm(orderId)}
-                                disabled={isLoading}
+                                onClick={handleConfirm}
+                                disabled={isLoading || (selectedReason === '' || (selectedReason === 'Other' && otherReason.trim() === ''))}
                                 className="px-4 py-2 bg-red-500 text-white rounded-lg cursor-pointer active:scale-95 hover:bg-red-600 transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {isLoading ? (
