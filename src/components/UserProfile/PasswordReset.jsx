@@ -232,7 +232,7 @@ const PasswordReset = () => {
 
                                         {!emailSubmitted && (
                                             <motion.div
-                                                className='flex flex-col w-full md:overflow-hidden gap-8 md:gap-2 items-start justify-center'
+                                                className='flex flex-col w-full gap-5 md:gap-2 items-start justify-center'
                                                 initial={{ height: 0, opacity: 0 }}
                                                 animate={{ height: "auto", opacity: 1 }}
                                                 transition={{ type: "spring", stiffness: 100, duration: 0.3 }}
