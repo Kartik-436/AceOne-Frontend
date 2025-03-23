@@ -102,7 +102,7 @@ const Orders = () => {
             <div className="h-full min-w-full flex flex-col">
                 <h2 className="text-2xl font-bold mb-6">My Orders</h2>
 
-                <div className="flex-1 overflow-y-auto noScrollbar max-h-full">
+                <div className="flex-1 min-w-full overflow-y-auto noScrollbar max-h-full">
                     {loading ? (
                         <div className="flex justify-center items-center h-64">
                             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#ffbb00]"></div>
