@@ -50,7 +50,7 @@ const CheckoutButton = ({ isLoggedIn, user, deliveryFee, refreshCart, refreshUse
             if (!window.Razorpay) {
                 throw new Error("Razorpay not loaded. Please refresh the page and try again.");
             }
-
+            
             // Validate payment data
             if (!orderData?.payment?.razorpayOrderId) {
                 throw new Error("Invalid payment data received from server");
@@ -162,6 +162,7 @@ const CheckoutButton = ({ isLoggedIn, user, deliveryFee, refreshCart, refreshUse
                     if (result.payment?.razorpayOrderId) {
                         console.log("Proceeding to payment gateway");
                         // Initialize Razorpay payment
+                        console.log("Payment data keys:", Object.keys(result.payment));
                         initializeRazorpayPayment(result); // Pass the whole result object
                     } else {
                         console.error("Missing payment data in response:", result);
