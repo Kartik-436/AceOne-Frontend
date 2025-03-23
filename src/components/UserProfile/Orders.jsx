@@ -7,6 +7,7 @@ import { motion } from 'motion/react';
 import useDelayedNavigation from '../../utils/useDelayedNavigation';
 import Transition from './../../Transition';
 import CancelOrderModal from './CancelOrderModal';
+import { toast } from 'react-toastify';
 
 const Orders = () => {
     const [orders, setOrders] = useState([]);
@@ -62,9 +63,9 @@ const Orders = () => {
                 )
             );
             setSelectedOrder(null);
-            alert(response.message || "Order cancelled successfully");
+            toast.success(response.message || "Order cancelled successfully");
         } else {
-            alert(response.message || 'Failed to cancel order');
+            toast.error(response.message || 'Failed to cancel order');
         }
         setCancelingOrderId(null);
         setShowCancelModal(false);

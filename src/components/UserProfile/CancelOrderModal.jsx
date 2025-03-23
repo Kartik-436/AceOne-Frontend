@@ -2,7 +2,7 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Trash, X } from 'lucide-react';
+import { Trash, X, ChevronDown } from 'lucide-react';
 
 const CancelOrderModal = ({ isOpen, onClose, onConfirm, orderId, isLoading }) => {
     const [selectedReason, setSelectedReason] = useState('');
@@ -49,23 +49,22 @@ const CancelOrderModal = ({ isOpen, onClose, onConfirm, orderId, isLoading }) =>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
                                 Please select a reason for cancellation:
                             </label>
-                            <div className="space-y-2">
-                                {cancelReasons.map((reason) => (
-                                    <div key={reason} className="flex items-center">
-                                        <input
-                                            type="radio"
-                                            id={reason}
-                                            name="cancelReason"
-                                            value={reason}
-                                            checked={selectedReason === reason}
-                                            onChange={() => setSelectedReason(reason)}
-                                            className="mr-2"
-                                        />
-                                        <label htmlFor={reason} className="text-gray-700">
+                            <div className="relative">
+                                <select
+                                    value={selectedReason}
+                                    onChange={(e) => setSelectedReason(e.target.value)}
+                                    className="w-full p-2 pr-10 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none"
+                                >
+                                    <option value="" disabled>Select a reason...</option>
+                                    {cancelReasons.map((reason) => (
+                                        <option key={reason} value={reason}>
                                             {reason}
-                                        </label>
-                                    </div>
-                                ))}
+                                        </option>
+                                    ))}
+                                </select>
+                                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                    <ChevronDown size={16} className="text-gray-500" />
+                                </div>
                             </div>
                         </div>
 
