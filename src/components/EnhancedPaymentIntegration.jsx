@@ -174,11 +174,14 @@ const CheckoutButton = ({ isLoggedIn, user, deliveryFee, refreshCart, refreshUse
                 }
             } else {
                 toast.error(result.message || "Failed to place order.");
-                setIsProcessing(false);
+                setIsModalOpen(false);
             }
         } catch (error) {
             console.error("Order placement error:", error);
             toast.error("An error occurred while placing your order.");
+            setIsModalOpen(false);
+        } finally {
+            // Ensure processing state is reset even on error
             setIsProcessing(false);
         }
     };
@@ -240,10 +243,7 @@ const PaymentModeModal = ({ isOpen, onClose, onSelectPaymentMode, isProcessing, 
                         <div className="space-y-4">
                             <button
                                 className="w-full py-3 rounded-xl border-[1px] transition-all bg-[#1f1f1f] text-white border-gray-500 hover:border-[#ffbb00] hover:bg-gray-800 flex items-center justify-center AddToCartInStore"
-                                onClick={() => {
-                                    alert('Online payment button clicked');
-                                    onSelectPaymentMode("Online")
-                                }}
+                                onClick={() => onSelectPaymentMode("Online")}
                                 disabled={isProcessing}
                             >
                                 <span className="mr-2">💳</span> Pay Online
