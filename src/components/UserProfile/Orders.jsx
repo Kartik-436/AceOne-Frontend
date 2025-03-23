@@ -1,13 +1,15 @@
 /* eslint-disable no-unused-vars */
-// components/Orders.jsx
+
+
 import React, { useEffect, useState } from 'react';
-import { Package, ChevronRight, X, Calendar, CreditCard, Truck, Trash } from 'lucide-react';
+import { Package, ChevronRight, X, Calendar, CreditCard, Truck, Trash, DownloadIcon } from 'lucide-react';
 import { getUserOrders, cancelOrder } from '../../utils/UserService';
 import { motion } from 'motion/react';
 import useDelayedNavigation from '../../utils/useDelayedNavigation';
 import Transition from './../../Transition';
 import CancelOrderModal from './CancelOrderModal';
 import { toast } from 'react-toastify';
+import { downloadInvoice, getInvoiceByOrderId } from '../../utils/invoiceService';
 
 const Orders = () => {
     const [orders, setOrders] = useState([]);
@@ -49,7 +51,7 @@ const Orders = () => {
         const response = await cancelOrder(orderId, reason);
 
         if (response.success) {
-            // Update the order status in the state with the cancellation reason
+
             setOrders(prevOrders =>
                 prevOrders.map(order =>
                     order._id === orderId
@@ -71,14 +73,14 @@ const Orders = () => {
         setShowCancelModal(false);
     };
 
-    // Helper function to format date
+
     const formatDate = (dateString) => {
         if (!dateString) return 'N/A';
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         return new Date(dateString).toLocaleDateString(undefined, options);
     };
 
-    // Get status color based on order status
+
     const getStatusColor = (status) => {
         switch (status?.toLowerCase()) {
             case 'pending':
@@ -93,6 +95,25 @@ const Orders = () => {
                 return 'bg-red-100 text-red-800';
             default:
                 return 'bg-gray-100 text-gray-800';
+        }
+    };
+
+    const handleDownloadInvoice = async (orderID) => {
+        try {
+
+            const invoiceDetails = await getInvoiceByOrderId(orderID);
+
+            if (invoiceDetails && invoiceDetails._id) {
+                await downloadInvoice(invoiceDetails._id, invoiceDetails.invoiceNumber);
+            } else {
+                console.error('Invoice details not found or incomplete');
+
+                alert('Unable to find invoice for this order');
+            }
+        } catch (error) {
+            console.error('Error downloading invoice:', error);
+
+            alert('Failed to download invoice. Please try again later.');
         }
     };
 
@@ -280,6 +301,17 @@ const Orders = () => {
                                                         <span>Total:</span>
                                                         <span>₹{order.totalAmount.toFixed(2) || 0}</span>
                                                     </div>
+                                                </div>
+
+                                                <div className="mt-4 border-t border-gray-100 pt-3">
+                                                    <button
+                                                        id='Shp-Now-Home-Start'
+                                                        onClick={() => handleDownloadInvoice(order._id)}
+                                                        className="w-full bg-white text-black py-2 rounded-md text-sm flex items-center justify-center"
+                                                    >
+                                                        <DownloadIcon size={16} className="mr-1" />
+                                                        Download Invoice
+                                                    </button>
                                                 </div>
 
                                                 {order.orderStatus?.toLowerCase() !== 'cancelled' &&
