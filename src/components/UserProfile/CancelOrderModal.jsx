@@ -94,7 +94,7 @@ const CancelOrderModal = ({ isOpen, onClose, onConfirm, orderId, isLoading }) =>
                                 onClick={handleConfirm}
                                 disabled={isLoading || (selectedReason === '' || (selectedReason === 'Other' && otherReason.trim() === ''))}
                                 id='Shp-Now-Home-Start'
-                                className="px-4 py-2 text-black rounded-lg cursor-pointer active:scale-95 bg-[#ffbb00] disabled:opacity-75 disabled:cursor-not-allowed text-nowrap"
+                                className="px-4 py-2 text-black rounded-lg cursor-pointer active:scale-95 bg-[#ffbb00] disabled:opacity-75 disabled:cursor-not-allowed flex items-center justify-center text-nowrap"
                             >
                                 {isLoading ? (
                                     <>
