@@ -5,7 +5,6 @@ export const getUserOrders = async () => {
         const response = await axios.get(`https://aceone-backend-wcgq.onrender.com/user/orders`, {
             withCredentials: true,
         });
-
         return response.data.success
             ? { success: true, orders: response.data.data }
             : {
@@ -29,12 +28,30 @@ export const placeOrder = async (orderData) => {
             };
         }
 
+        if (!["Online", "Cash on Delivery"].includes(orderData.modeOfPayment)) {
+            return {
+                success: false,
+                message: "Invalid payment mode. Choose 'Online' or 'Cash on Delivery'.",
+            };
+        }
+
+        if (orderData.deliveryFee === undefined || typeof orderData.deliveryFee !== "number" || orderData.deliveryFee < 0) {
+            return {
+                success: false,
+                message: "Invalid delivery fee.",
+            };
+        }
+
         const response = await axios.post(`https://aceone-backend-wcgq.onrender.com/user/order`, orderData, {
             withCredentials: true,
         });
 
         return response.data.success
-            ? { success: true, order: response.data.data }
+            ? {
+                success: true,
+                order: response.data.data.order,
+                payment: response.data.data.payment || null
+            }
             : {
                 success: false,
                 message: response.data.message || "Failed to place order.",
@@ -47,16 +64,54 @@ export const placeOrder = async (orderData) => {
     }
 };
 
-export const cancelOrder = async (orderId) => {
+export const verifyPayment = async (paymentData) => {
     try {
+        if (!paymentData.razorpay_order_id || !paymentData.razorpay_payment_id || !paymentData.razorpay_signature || !paymentData.orderId) {
+            return {
+                success: false,
+                message: "Missing payment verification parameters.",
+            };
+        }
+
         const response = await axios.post(
-            `https://aceone-backend-wcgq.onrender.com/user/order/cancel`,
-            { orderId },
+            `https://aceone-backend-wcgq.onrender.com/user/order/verify-payment`,
+            paymentData,
             { withCredentials: true }
         );
 
         return response.data.success
-            ? { success: true, message: "Order cancelled successfully." }
+            ? {
+                success: true,
+                order: response.data.data.order,
+                payment: response.data.data.payment
+            }
+            : {
+                success: false,
+                message: response.data.message || "Payment verification failed.",
+            };
+    } catch (err) {
+        return {
+            success: false,
+            message: err.response?.data?.message || "Something went wrong with payment verification.",
+        };
+    }
+};
+
+export const cancelOrder = async (orderID, reason = "Cancelled by customer") => {
+    try {
+        const response = await axios.post(
+            `https://aceone-backend-wcgq.onrender.com/user/order/cancel`,
+            { orderID, reason },
+            { withCredentials: true }
+        );
+
+        return response.data.success
+            ? {
+                success: true,
+                message: "Order cancelled successfully.",
+                order: response.data.data.order,
+                refund: response.data.data.refund || null
+            }
             : {
                 success: false,
                 message: response.data.message || "Failed to cancel order.",
