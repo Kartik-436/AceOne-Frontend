@@ -102,11 +102,12 @@ const ProfileInfo = () => {
             <>
                 <Transition />
                 <div className='overflow-hidden'>
-                    <div className="flex justify-between items-center mb-16">
-                        <h2 className="text-2xl font-semibold uppercase font-[poppins]">Profile Information</h2>
+                    {/* Make header responsive with flex-col on small screens */}
+                    <div className="flex flex-col sm:flex-row justify-between items-center mb-8 sm:mb-16 gap-4 sm:gap-0">
+                        <h2 className="text-xl sm:text-2xl font-semibold uppercase font-[poppins] text-center sm:text-left">Profile Information</h2>
                         <button
                             id='Shp-Now-Home-Start'
-                            className="px-6 py-2 bg-[#ffbb00] text-black rounded-full transition-colors"
+                            className="px-4 sm:px-6 py-2 bg-[#ffbb00] text-black rounded-full transition-colors w-full sm:w-auto"
                             onClick={() => setIsEditing(true)}
                         >
                             Edit Profile
@@ -126,16 +127,11 @@ const ProfileInfo = () => {
                         initial={{ opacity: 0, y: 100 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.35, delayChildren: 0.5, type: "spring", stiffness: 200 }}
-                        className="flex flex-col justify-between gap-10 px-20"
+                        className="flex flex-col justify-between gap-10 px-4 sm:px-20"
                     >
-                        {/* Profile Image Section */}
-                        <motion.div
-                            // initial={{ scale: 0 }}
-                            // animate={{ scale: 1 }}
-                            // transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
-                            className="flex flex-col items-center"
-                        >
-                            <div className="relative w-40 h-40 rounded-full overflow-hidden border-2 border-[#ffbb00] ml-10">
+                        {/* Profile Image Section - centered on all screens */}
+                        <motion.div className="flex flex-col items-center">
+                            <div className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden border-2 border-[#ffbb00] sm:ml-10">
                                 <img
                                     src={user?.picture || "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcreazilla-store.fra1.digitaloceanspaces.com%2Ficons%2F3202933%2Fuser-circle-icon-md.png&f=1&nofb=1&ipt=3c31159b2e0bac086a52351ed5919af4e6936e024f7c3baa351b44782de00eb1&ipo=images"}
                                     alt="Profile"
@@ -149,14 +145,14 @@ const ProfileInfo = () => {
                                 </div>
 
                                 {isModalOpen && (
-                                    <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50">
+                                    <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50 px-4">
                                         <motion.div
                                             initial={{ y: 100, opacity: 0 }}
                                             animate={{ y: 0, opacity: 1 }}
                                             exit={{ y: 100, opacity: 0 }}
-                                            className="bg-[#111] text-white px-8 py-6 rounded-2xl shadow-xl w-96 relative"
+                                            className="bg-[#111] text-white px-4 sm:px-8 py-6 rounded-2xl shadow-xl w-full max-w-xs sm:max-w-md sm:w-96 relative"
                                         >
-                                            <h2 className="text-xl font-semibold text-center mb-4">Update Profile Picture</h2>
+                                            <h2 className="text-lg sm:text-xl font-semibold text-center mb-4">Update Profile Picture</h2>
 
                                             {/* File Input */}
                                             <input
@@ -171,7 +167,7 @@ const ProfileInfo = () => {
                                             <div className="flex justify-between mt-4">
                                                 <button
                                                     onClick={() => setIsModalOpen(false)}
-                                                    className="px-5 py-2 bg-gray-600 rounded-lg hover:bg-gray-500 transition cursor-pointer"
+                                                    className="px-3 sm:px-5 py-2 bg-gray-600 rounded-lg hover:bg-gray-500 transition cursor-pointer"
                                                 >
                                                     Cancel
                                                 </button>
@@ -179,7 +175,7 @@ const ProfileInfo = () => {
                                                     onClick={handleUpload}
                                                     disabled={loading}
                                                     id='Save_Changes_Btn_Profile'
-                                                    className="px-5 py-2 bg-[#f5f5f5] text-black rounded-lg transition"
+                                                    className="px-3 sm:px-5 py-2 bg-[#f5f5f5] text-black rounded-lg transition"
                                                 >
                                                     {loading ? "Uploading..." : "Upload"}
                                                 </button>
@@ -190,36 +186,34 @@ const ProfileInfo = () => {
                             </div>
                         </motion.div>
 
-                        {/* Profile Details Section */}
-                        <motion.div
-                            className="ml-50"
-                        >
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
+                        {/* Profile Details Section - stack items vertically on mobile */}
+                        <motion.div className="w-full">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-4">
+                                <div className="bg-gray-50 p-3 rounded-lg">
                                     <h3 className="text-sm text-gray-500">Full Name</h3>
-                                    <p className="font-medium">{user?.fullName}</p>
+                                    <p className="font-medium break-words">{user?.fullName}</p>
                                 </div>
 
-                                <div>
+                                <div className="bg-gray-50 p-3 rounded-lg">
                                     <h3 className="text-sm text-gray-500">Email Address</h3>
-                                    <p className="font-medium">{user?.email}</p>
+                                    <p className="font-medium break-words">{user?.email}</p>
                                 </div>
 
-                                <div>
+                                <div className="bg-gray-50 p-3 rounded-lg">
                                     <h3 className="text-sm text-gray-500">Phone Number</h3>
-                                    <p className="font-medium">{user?.contact}</p>
+                                    <p className="font-medium break-words">{user?.contact}</p>
                                 </div>
 
-                                <div className="md:col-span-2">
-                                    <h3 className="text-sm text-gray-500">Address</h3>
-                                    <p className={`font-medium ${user?.address !== "" && user?.address !== undefined && user?.address !== null ? "" : "text-red-500"} `}>{user?.address || "Address is not added"}</p>
-                                </div>
-
-                                <div className='md:col-start-2 row-start-2'>
+                                <div className="bg-gray-50 p-3 rounded-lg md:col-start-2 md:row-start-2">
                                     <h3 className="text-sm text-gray-500">Date Of Birth</h3>
-                                    <p className="font-medium">{user?.dateOfBirth
+                                    <p className="font-medium break-words">{user?.dateOfBirth
                                         ? new Date(user?.dateOfBirth).toDateString()
                                         : "Date of Birth Not Available"}</p>
+                                </div>
+
+                                <div className="bg-gray-50 p-3 rounded-lg md:col-span-2">
+                                    <h3 className="text-sm text-gray-500">Address</h3>
+                                    <p className={`font-medium break-words ${user?.address !== "" && user?.address !== undefined && user?.address !== null ? "" : "text-red-500"} `}>{user?.address || "Address is not added"}</p>
                                 </div>
                             </div>
                         </motion.div>
@@ -248,15 +242,15 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
     };
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/20 backdrop-blur-sm z-20">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/20 backdrop-blur-sm z-20 px-4">
             <motion.div
                 initial={{ y: 500, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: 100, opacity: 0 }}
                 transition={{ delay: 0.3 }}
-                className="bg-[#111] text-white px-8 py-16 rounded-2xl shadow-xl max-w-lg w-full relative"
+                className="bg-[#111] text-white px-4 sm:px-8 py-6 sm:py-16 rounded-2xl shadow-xl max-w-lg w-full relative overflow-y-auto max-h-[90vh]"
             >
-                <h2 className="text-2xl font-semibold text-center mb-6 font-[poppins] uppercase">
+                <h2 className="text-xl sm:text-2xl font-semibold text-center mb-6 font-[poppins] uppercase">
                     Edit Profile
                 </h2>
 
@@ -268,7 +262,7 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
                         value={formData.fullName}
                         onChange={handleChange}
                         placeholder="Full Name"
-                        className="w-full bg-[#222] text-white px-6 py-4 rounded-lg focus:ring-2 focus:ring-[#ffbb00] outline-none"
+                        className="w-full bg-[#222] text-white px-4 sm:px-6 py-3 sm:py-4 rounded-lg focus:ring-2 focus:ring-[#ffbb00] outline-none"
                     />
                     <input
                         type="email"
@@ -277,7 +271,7 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
                         value={formData.email}
                         onChange={handleChange}
                         placeholder="Email Address"
-                        className="w-full bg-[#222] text-gray-300 px-6 py-4 rounded-lg focus:ring-2 focus:ring-[#ffbb00] outline-none"
+                        className="w-full bg-[#222] text-gray-300 px-4 sm:px-6 py-3 sm:py-4 rounded-lg focus:ring-2 focus:ring-[#ffbb00] outline-none"
                     />
                     <input
                         type="text"
@@ -285,7 +279,7 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
                         value={formData.contact}
                         onChange={handleChange}
                         placeholder="Phone Number"
-                        className="w-full bg-[#222] text-white px-6 py-4 rounded-lg focus:ring-2 focus:ring-[#ffbb00] outline-none"
+                        className="w-full bg-[#222] text-white px-4 sm:px-6 py-3 sm:py-4 rounded-lg focus:ring-2 focus:ring-[#ffbb00] outline-none"
                     />
                     <input
                         type="text"
@@ -293,29 +287,29 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
                         value={formData.address}
                         onChange={handleChange}
                         placeholder="Address"
-                        className="w-full bg-[#222] text-white px-6 py-4 rounded-lg focus:ring-2 focus:ring-[#ffbb00] outline-none"
+                        className="w-full bg-[#222] text-white px-4 sm:px-6 py-3 sm:py-4 rounded-lg focus:ring-2 focus:ring-[#ffbb00] outline-none"
                     />
                     <input
                         type="date"
                         name="dateOfBirth"
                         value={formData.dateOfBirth}
                         onChange={handleChange}
-                        className="w-full bg-[#222] text-white px-6 py-4 rounded-lg focus:ring-2 focus:ring-[#ffbb00] outline-none"
+                        className="w-full bg-[#222] text-white px-4 sm:px-6 py-3 sm:py-4 rounded-lg focus:ring-2 focus:ring-[#ffbb00] outline-none"
                     />
                 </div>
 
                 {/* Buttons */}
-                <div className="flex justify-between mt-6">
+                <div className="flex flex-col sm:flex-row justify-between gap-3 mt-6">
                     <button
                         onClick={onClose}
-                        className="px-6 py-3 bg-gray-600 rounded-lg hover:bg-gray-500 transition cursor-pointer"
+                        className="px-6 py-3 bg-gray-600 rounded-lg hover:bg-gray-500 transition cursor-pointer order-2 sm:order-1"
                     >
                         Cancel
                     </button>
                     <button
                         onClick={() => onSave(formData)}
                         id='Save_Changes_Btn_Profile'
-                        className="px-6 py-3 bg-[#e9e9e9] text-black rounded-lg transition"
+                        className="px-6 py-3 bg-[#e9e9e9] text-black rounded-lg transition order-1 sm:order-2"
                     >
                         Save Changes
                     </button>
