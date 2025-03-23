@@ -191,7 +191,7 @@ const PasswordReset = () => {
                             animate="visible"
                         >
                             <motion.div
-                                className='flex flex-col items-center h-full justify-around gap-12 md:gap-6.5 w-full'
+                                className='flex flex-col items-center h-full justify-around gap-5 md:gap-6.5 w-full'
                                 variants={containerVariants}
                             >
                                 {!isTokenVerified && (
