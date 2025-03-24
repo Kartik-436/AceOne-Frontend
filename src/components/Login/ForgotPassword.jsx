@@ -178,7 +178,7 @@ const ForgotPassword = () => {
                     transition={{ duration: 0.5 }}
                 >
                     <motion.div
-                        className="bg-white rounded-2xl md:min-h-[47vh] w-full md:w-[40vw] p-2 md:p-5 py-5 md:py-10 flex flex-col items-center justify-between"
+                        className="bg-white rounded-2xl md:min-h-[47vh] w-full p-2 md:p-5 py-5 md:py-10 flex flex-col items-center justify-between"
                         initial={{ y: 50, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         transition={{ type: "spring", stiffness: 120, damping: 20 }}
