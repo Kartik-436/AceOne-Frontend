@@ -215,7 +215,7 @@ const ForgotPassword = () => {
                                                 transition={{ type: "spring", stiffness: 100, duration: 0.3 }}
                                             >
                                                 <motion.h1
-                                                    className='text-sm font-light font-[poppins] tracking-tight'
+                                                    className='text-sm font-light text-center font-[poppins] tracking-tight'
                                                 >
                                                     Please Enter the OTP you recieved on your entered Mail !
                                                 </motion.h1>
@@ -240,13 +240,13 @@ const ForgotPassword = () => {
 
                                         {!emailSubmitted && (
                                             <motion.div
-                                                className='flex flex-col w-full gap-5 md:gap-2 items-start justify-center'
+                                                className='flex flex-col w-full gap-5 md:gap-2 items-center md:items-start justify-center'
                                                 initial={{ height: 0, opacity: 0 }}
                                                 animate={{ height: "auto", opacity: 1 }}
                                                 transition={{ type: "spring", stiffness: 100, duration: 0.3 }}
                                             >
                                                 <motion.h1
-                                                    className='text-sm font-light w-full font-[poppins] tracking-tight'
+                                                    className='text-sm font-light w-full font-[poppins] text-center tracking-tight'
                                                 >
                                                     Please Enter your registered email to change your password !
                                                 </motion.h1>
