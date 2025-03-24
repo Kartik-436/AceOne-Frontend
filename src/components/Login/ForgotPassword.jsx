@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import { resenVerificationOtp } from '../../utils/AuthService';
 import { EyeClosed, EyeIcon } from 'lucide-react';
 import BarLoader from '../Loaders/CustomLoader1';
+import { motion } from 'framer-motion';
 
 const ForgotPassword = () => {
     const { animate, handleDelayNavigation } = useDelayedNavigation();
@@ -112,6 +113,46 @@ const ForgotPassword = () => {
         setIsLoading(false);
     };
 
+
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                duration: 0.5,
+                staggerChildren: 0.2
+            }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { y: 100, opacity: 0 },
+        visible: {
+            y: 0,
+            opacity: 1,
+            transition: { type: "spring", stiffness: 100 }
+        }
+    };
+
+    const formVariants = {
+        hidden: { scale: 0.7, opacity: 0 },
+        visible: {
+            scale: 1,
+            opacity: 1,
+            transition: { type: "spring", stiffness: 100, delay: 0.3 }
+        }
+    };
+
+    const buttonVariants = {
+        hidden: { scale: 0.7, opacity: 0 },
+        visible: {
+            scale: 1,
+            opacity: 1,
+            transition: { type: "spring", stiffness: 200, delay: 0.5 }
+        },
+        tap: { scale: 0.95 }
+    };
+
     return (
         <>
             <Transition animate={animate} />
@@ -130,39 +171,87 @@ const ForgotPassword = () => {
                     </div>
                 </div>
 
-                <div className='w-screen h-screen items-center justify-center flex'>
-                    <div className="bg-white rounded-2xl min-h-[47vh] w-[40vw] p-5 py-10 flex flex-col items-center justify-between">
-                        <div>
-                            <h1 className='w-full text-center text-4xl font-[poppins] font-medium'>Forgot Password !</h1>
-                        </div>
-                        <form className='w-full' onSubmit={isTokenVerified ? ResetPass : emailSubmitted ? VerifyToken : ForgotPass}>
-                            <div className='flex flex-col items-center justify-around gap-6.5 w-full'>
+                <motion.div
+                    className='w-full h-full items-center justify-center flex'
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5 }}
+                >
+                    <motion.div
+                        className="bg-white rounded-2xl md:min-h-[47vh] w-full md:w-[40vw] p-2 md:p-5 py-5 md:py-10 flex flex-col items-center justify-between"
+                        initial={{ y: 50, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ type: "spring", stiffness: 120, damping: 20 }}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.8, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ delay: 0.2, type: "spring", stiffness: 150 }}
+                        >
+                            <h1 className='w-full text-center text-4xl md:text-6xl md:text-nowrap font-[poppins] font-medium'>Reset Your Password !</h1>
+                        </motion.div>
 
+                        <motion.form
+                            className='w-full'
+                            onSubmit={isTokenVerified ? ResetPass : emailSubmitted ? VerifyToken : ForgotPass}
+                            variants={formVariants}
+                            initial="hidden"
+                            animate="visible"
+                        >
+                            <motion.div
+                                className='flex flex-col items-center h-full justify-around gap-5 md:gap-6.5 w-full'
+                                variants={containerVariants}
+                            >
                                 {!isTokenVerified && (
-                                    <div className='flex flex-col items-center justify-around'>
+                                    <motion.div
+                                        className='flex flex-col items-center justify-around'
+                                        variants={itemVariants}
+                                    >
                                         {emailSubmitted && (
-                                            <div className='flex flex-col gap-2 items-center'>
-                                                <h1 className='text-sm font-light font-[poppins] tracking-tight'>
+                                            <motion.div
+                                                className='flex flex-col gap-2 items-center'
+                                                initial={{ height: 0, opacity: 0 }}
+                                                animate={{ height: "auto", opacity: 1 }}
+                                                transition={{ type: "spring", stiffness: 100, duration: 0.3 }}
+                                            >
+                                                <motion.h1
+                                                    className='text-sm font-light font-[poppins] tracking-tight'
+                                                >
                                                     Please Enter the OTP you recieved on your entered Mail !
-                                                </h1>
-                                                <OTPInput onChangeOTP={(otp) => setOTP(otp)} />
-                                                <div className='flex items-center justify-end w-full'>
-                                                    <h1
+                                                </motion.h1>
+                                                <div>
+                                                    <OTPInput onChangeOTP={(otp) => setOTP(otp)} />
+                                                </div>
+                                                <motion.div
+                                                    className='flex items-center justify-end w-full'
+                                                >
+                                                    <motion.h1
                                                         onClick={resendVerificationOtp}
+                                                        disabled={isLoading}
                                                         className='tracking-tight text-sm font-[roboto] capitalize px-6 cursor-pointer text-blue-400 hover:underline underline-offset-1'
+                                                        whileHover={{ scale: 1.05 }}
+                                                        whileTap={{ scale: 0.95 }}
                                                     >
                                                         Resend Verification code
-                                                    </h1>
-                                                </div>
-                                            </div>
+                                                    </motion.h1>
+                                                </motion.div>
+                                            </motion.div>
                                         )}
+
                                         {!emailSubmitted && (
-                                            <div className='flex flex-col gap-2 items-start justify-center'>
-                                                <h1 className='text-sm font-light font-[poppins] tracking-tight'>
+                                            <motion.div
+                                                className='flex flex-col w-full gap-5 md:gap-2 items-start justify-center'
+                                                initial={{ height: 0, opacity: 0 }}
+                                                animate={{ height: "auto", opacity: 1 }}
+                                                transition={{ type: "spring", stiffness: 100, duration: 0.3 }}
+                                            >
+                                                <motion.h1
+                                                    className='text-sm font-light w-full font-[poppins] tracking-tight'
+                                                >
                                                     Please Enter your registered email to change your password !
-                                                </h1>
-                                                <input
-                                                    className='email-with-icon inline-block px-6 py-4 text-lg bg-[#021]/10 rounded-full font-semibold font-[nunito] outline-2 min-w-[30vw] '
+                                                </motion.h1>
+                                                <motion.input
+                                                    className='email-with-icon inline-block px-2 md:px-6 py-4 md:py-4 md:text-lg bg-[#021]/10 rounded-full font-semibold font-[nunito] outline-2 md:min-w-[30vw]'
                                                     type="email"
                                                     placeholder='Email'
                                                     name='email'
@@ -170,19 +259,30 @@ const ForgotPassword = () => {
                                                     autoComplete="off"
                                                     value={userEmail}
                                                     onChange={(e) => { setUserEmail(e.target.value) }}
+                                                    variants={itemVariants}
+                                                    whileFocus={{ scale: 1.02, boxShadow: "0 0 0 2px rgba(0,0,0,0.1)" }}
                                                 />
-                                            </div>
+                                            </motion.div>
                                         )}
-                                    </div>
+                                    </motion.div>
                                 )}
 
                                 {isTokenVerified && (
-                                    <div className='flex flex-col gap-2 items-center'>
-                                        <h1 className='text-sm font-light font-[poppins] tracking-tight'>
+                                    <motion.div
+                                        className='flex flex-col gap-2 items-center'
+                                        initial={{ height: 0, opacity: 0 }}
+                                        animate={{ height: "auto", opacity: 1 }}
+                                        transition={{ type: "spring", stiffness: 100, duration: 0.3 }}
+                                    >
+                                        <motion.h1
+                                            className='text-sm font-light font-[poppins] tracking-tight'
+                                        >
                                             Please set the new password !
-                                        </h1>
-                                        <div className='w-full relative'>
-                                            <input
+                                        </motion.h1>
+                                        <motion.div
+                                            className='w-full relative'
+                                        >
+                                            <motion.input
                                                 id='InputLoginPassword'
                                                 className='password-with-icon inline-block px-6 py-4 text-lg bg-[#F0EDFF] rounded-full font-semibold font-[nunito] outline-none min-w-[30vw]'
                                                 type={showPassword ? "text" : "password"}
@@ -194,15 +294,19 @@ const ForgotPassword = () => {
                                                     evaluateStrength(e.target.value);
                                                 }}
                                                 required
+                                                whileFocus={{ scale: 1.02, boxShadow: "0 0 0 2px rgba(0,0,0,0.1)" }}
                                             />
-                                            <button
+                                            <motion.button
                                                 type="button"
                                                 className="absolute inset-y-0 right-6 flex items-center text-gray-600 cursor-pointer"
                                                 onClick={() => setShowPassword(!showPassword)}
+                                                whileHover={{ scale: 1.1 }}
+                                                whileTap={{ scale: 0.9 }}
                                             >
                                                 {showPassword ? <EyeClosed /> : <EyeIcon />}
-                                            </button>
-                                        </div>
+                                            </motion.button>
+                                        </motion.div>
+
                                         {password && (
                                             <div className='w-full'>
                                                 <div className='h-1 bg-gray-200 rounded-full overflow-hidden'>
@@ -213,21 +317,29 @@ const ForgotPassword = () => {
                                                 </p>
                                             </div>
                                         )}
-                                    </div>
+                                    </motion.div>
                                 )}
-                                <div className={`w-full flex items-center justify-center px-50`}>
-                                    <button
+
+                                <motion.div
+                                    className={`w-full flex items-center justify-center md:px-50`}
+                                    variants={itemVariants}
+                                >
+                                    <motion.button
                                         type='submit'
+                                        disabled={isLoading}
                                         id="NavBarButtons"
-                                        className="px-[100%] flex items-center justify-center py-2.5 bg-[#ffbb00] text-black rounded-2xl border-2 cursor-pointer active:scale-95 tracking-wide font-medium font-[poppins]"
+                                        className="md:px-[100%] w-full flex items-center justify-center py-2.5 bg-[#ffbb00] text-black rounded-2xl border-2 cursor-pointer active:scale-95 tracking-wide font-medium font-[poppins]"
+                                        variants={buttonVariants}
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap="tap"
                                     >
                                         SUBMIT
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+                                    </motion.button>
+                                </motion.div>
+                            </motion.div>
+                        </motion.form>
+                    </motion.div>
+                </motion.div>
             </div>
         </>
     )
