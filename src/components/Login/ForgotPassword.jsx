@@ -166,7 +166,7 @@ const ForgotPassword = () => {
 
                 <div>
                     <div className='w-screen h-screen overflow-hidden fixed flex items-center justify-between bg-[#59c0ec] z-[-1] user-select-none'>
-                        <img className='md:w-screen z-50 rotate-90' src="LS-Right.svg" alt="" />
+                        <img className='md:w-screen h-full z-50 rotate-90' src="LS-Right.svg" alt="" />
                         <div className='max-w-1/2 md:block hidden' ></div>
                     </div>
                 </div>
