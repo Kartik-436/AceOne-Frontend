@@ -188,7 +188,7 @@ const ForgotPassword = () => {
                             animate={{ scale: 1, opacity: 1 }}
                             transition={{ delay: 0.2, type: "spring", stiffness: 150 }}
                         >
-                            <h1 className='w-full text-center text-4xl md:text-6xl md:text-nowrap font-[poppins] font-medium'>Reset Your Password !</h1>
+                            <h1 className='w-full text-center text-4xl md:text-6xl md:text-nowrap font-[poppins] font-medium'>Forgot Password !</h1>
                         </motion.div>
 
                         <motion.form
