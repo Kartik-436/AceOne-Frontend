@@ -61,8 +61,8 @@ const AddToCartButton = ({ product, CProduct, onAddToCart }) => {
                                 <X size={28} />
                             </button>
 
-                            <h2 className="text-2xl font-semibold text-center mb-2 text-[#fff]">Select Size & Color for</h2>
-                            <h2 className="text-3xl font-bold text-center mb-5 text-[#ffbb00]">{CProduct.name}</h2>
+                            <h2 className="text-xl font-semibold text-center mb-2 text-[#fff]">Select Size & Color for</h2>
+                            <h2 className="text-2xl text-nowrap font-bold text-center mb-5 text-[#ffbb00]">{CProduct.name}</h2>
 
                             <div className="space-y-4">
                                 <div>
