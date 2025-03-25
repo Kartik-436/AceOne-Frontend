@@ -486,7 +486,7 @@ const Store = (props) => {
                                                                     <p className='text-xs mt-1 text-black opacity-80'>{product.category}</p>
                                                                 </div>
                                                             </div>
-                                                            <div className='flex items-center justify-center gap-2'>
+                                                            <div className='relative flex items-center justify-center gap-2'>
                                                                 <div className='flex items-center justify-center z-50'>
                                                                     <AddToCartButton product={product?._id} Name={product?.name} Color={product?.color} Size={product?.size} onAddToCart={handleAddToCart} />
                                                                 </div>
