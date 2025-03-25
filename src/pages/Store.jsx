@@ -487,7 +487,7 @@ const Store = (props) => {
                                                                 </div>
                                                             </div>
                                                             <div className='relative flex items-center justify-center gap-2'>
-                                                                <div className='flex items-center justify-center z-50'>
+                                                                <div className=''>
                                                                     <AddToCartButton product={product?._id} Name={product?.name} Color={product?.color} Size={product?.size} onAddToCart={handleAddToCart} />
                                                                 </div>
                                                                 <span
