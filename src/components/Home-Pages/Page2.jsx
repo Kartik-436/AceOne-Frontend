@@ -316,7 +316,7 @@ const Page2 = ({ bestSelling, Discounted }) => {
                             }
                         }}
                     >
-                        {displayedProducts.map((product, index) => productCard(product, index))}
+                        {displayedProducts?.map((product, index) => productCard(product, index))}
                     </motion.div>
                 </div>
             </div>
