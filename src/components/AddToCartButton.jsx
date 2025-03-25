@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { toast } from "react-toastify";
-import { getProductById } from "../utils/ProductService";
 
 const AddToCartButton = ({ product, CProduct, onAddToCart }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -13,8 +12,11 @@ const AddToCartButton = ({ product, CProduct, onAddToCart }) => {
     const [availableSizes, setavailableSizes] = useState(null);
     const [availableColors, setavailableColors] = useState(null);
 
-    setavailableColors(CProduct.color);
-    setavailableSizes(CProduct.size);
+    useEffect(() => {
+        setavailableColors(CProduct?.color);
+        setavailableSizes(CProduct?.size);
+    }, [])
+
 
     const handleAdd = () => {
         if (selectedSize && selectedColor) {
