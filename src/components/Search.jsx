@@ -144,7 +144,7 @@ const SearchProducts = () => {
                                         <div className="flex justify-between h-full">
                                             <p className="text-sm font-semibold max-w-[80%]">{product.name}</p>
                                         </div>
-                                        <div>
+                                        <div className="flex items-end justify-end">
                                             {product.discount > 0 ? (
                                                 <p className="text-sm text-black font-semibold">
                                                     ${discountPrice.toFixed(2)}{" "}
