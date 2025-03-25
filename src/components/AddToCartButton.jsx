@@ -66,16 +66,16 @@ const AddToCartButton = ({ product, Name, Color, Size, onAddToCart }) => {
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
-                        className="fixed -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 w-full h-full bg-black/60 flex items-center justify-center z-50"
+                        className="fixed inset-0 bg-black/60 flex items-center justify-center z-[9999] p-4"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                     >
                         <motion.div
-                            className="bg-[#1f1f1f] text-white p-6 scale-95 rounded-2xl md:w-[45vw] shadow-lg relative"
-                            initial={{ scale: 0.35, opacity: 0, y: 200 }}
-                            animate={{ scale: 1, opacity: 1, y: 0 }}
-                            exit={{ scale: 0.35, opacity: 0, y: 200 }}
+                            className="bg-[#1f1f1f] text-white p-6 rounded-2xl w-full max-w-md shadow-lg relative"
+                            initial={{ scale: 0.35, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.35, opacity: 0 }}
                             transition={{ duration: 0.4, ease: "easeInOut" }}
                         >
                             <button
@@ -122,7 +122,7 @@ const AddToCartButton = ({ product, Name, Color, Size, onAddToCart }) => {
                                 </div>
                             </div>
 
-                            <div className="mt-6 pt-3 border-t border-gray-700">
+                            <div className="mt-6 pt-3 border-t border-gray-700 flex justify-center">
                                 <button
                                     onClick={handleAdd}
                                     id="Shp-Now-Home-Start"
