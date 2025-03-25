@@ -22,7 +22,7 @@ const AddToCartButton = ({ product, CProduct, onAddToCart }) => {
 
     const handleAdd = () => {
         if (selectedSize && selectedColor) {
-            onAddToCart(product._id, selectedColor, selectedSize);
+            onAddToCart(product, selectedColor, selectedSize);
             setIsOpen(false);
         } else {
             toast.error("Please select size and color!");
