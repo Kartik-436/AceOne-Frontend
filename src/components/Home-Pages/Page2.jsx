@@ -29,8 +29,29 @@ const Page2 = ({ bestSelling, Discounted }) => {
 
         if (response.success) {
             window.location.reload();
+            toast.success("Item Added to your Cart !", {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+            setIsCartMenuOpen(true)
         } else {
             setError(response.message);
+            toast.error("Error adding item to your Cart !", {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            })
         }
     };
 
