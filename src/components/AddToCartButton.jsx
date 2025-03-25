@@ -9,8 +9,8 @@ const AddToCartButton = ({ product, CProduct, onAddToCart }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedSize, setSelectedSize] = useState(null);
     const [selectedColor, setSelectedColor] = useState(null);
-    const [availableSizes, setavailableSizes] = useState(null);
-    const [availableColors, setavailableColors] = useState(null);
+    const [availableSizes, setavailableSizes] = useState([]);
+    const [availableColors, setavailableColors] = useState([]);
 
     useEffect(() => {
         console.log(CProduct)
