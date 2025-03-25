@@ -133,9 +133,9 @@ const SearchProducts = () => {
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: 10 }}
                                     transition={{ duration: 0.3 }}
-                                    className="flex items-end justify-between p-3 border-b border-gray-300 hover:bg-gray-100 cursor-pointer rounded-lg"
+                                    className="flex items-center justify-between p-3 border-b border-gray-300 hover:bg-gray-100 cursor-pointer rounded-lg"
                                 >
-                                    <div className="flex items-start gap-4">
+                                    <div className="flex items-start gap-4 w-full">
                                         <img
                                             src={product.image || "https://via.placeholder.com/50"}
                                             alt={product.name}
@@ -144,7 +144,7 @@ const SearchProducts = () => {
                                         <div className="flex justify-between h-full">
                                             <p className="text-sm font-semibold max-w-[80%]">{product.name}</p>
                                         </div>
-                                        <div className="flex items-end justify-end">
+                                        <div className="flex items-start justify-end w-full">
                                             {product.discount > 0 ? (
                                                 <p className="text-sm text-black font-semibold">
                                                     ${discountPrice.toFixed(2)}{" "}
