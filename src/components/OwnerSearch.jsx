@@ -104,8 +104,8 @@ const OwnerSearch = () => {
                                             />
                                             <div className="flex flex-col justify-between h-full">
                                                 <div className="flex flex-col gap-1">
-                                                    <p className="text-sm font-semibold">{product.name} ({product.color})</p>
-                                                    <p className="text-sm font-semibold">{product.category} ({product.size})</p>
+                                                    <p className="text-sm font-semibold">{product.name}</p>
+                                                    <p className="text-sm font-semibold">{product.category}</p>
                                                 </div>
                                                 {product.discount > 0 ? (
                                                     <p className="text-sm text-black font-semibold">

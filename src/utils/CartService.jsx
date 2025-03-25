@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import axios from "axios";
 
 export const getUserCart = async () => {
@@ -15,9 +16,9 @@ export const getUserCart = async () => {
     }
 };
 
-export const addToCart = async (productID, quantity = 1) => {
+export const addToCart = async (productID, quantity = 1, selectedColor, selectedSize) => {
     try {
-        const response = await axios.post("https://aceone-backend-wcgq.onrender.com/user/cart/add", { productID, quantity }, { withCredentials: true });
+        const response = await axios.post("https://aceone-backend-wcgq.onrender.com/user/cart/add", { productID, quantity, selectedSize, selectedColor }, { withCredentials: true });
 
         if (response.data.success) {
             return { success: true, cart: response.data.data };

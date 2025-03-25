@@ -112,8 +112,8 @@ const OrdersList = () => {
                                                         />
                                                     </div>
                                                     <div className="flex flex-col items-start">
-                                                        <h1 className="text-black font-[poppins] font-medium">{item.product?.name}</h1>
-                                                        <h1 className="text-black font-[poppins] font-light">{item.product?.category} ({item.product?.size})</h1>
+                                                        <h1 className="text-black font-[poppins] font-medium">{item.product?.name} ({item.selectedColor})</h1>
+                                                        <h1 className="text-black font-[poppins] font-light">{item.product?.category} ({item.selectedSize})</h1>
                                                     </div>
                                                 </div>
 

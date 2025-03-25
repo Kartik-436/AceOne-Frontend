@@ -223,8 +223,8 @@ const Cart = () => {
                                                 <div className='flex flex-col items-start justify-center gap-2'>
                                                     <h1 className='text-lg font-[poppins] font-normal md:max-w-[5vw] text-wrap'>{product.productId.name}</h1>
                                                     <div>
-                                                        <h1 className='text-xs font-[poppins] font-medium text-wrap'>{product.productId.category} ({product.productId.size})</h1>
-                                                        <h1 className='text-xs font-[poppins] font-medium mt-[-0.3vh] text-wrap'>{product.productId.color}</h1>
+                                                        <h1 className='text-xs font-[poppins] font-medium text-wrap'>{product.productId.category} ({product.selectedSize})</h1>
+                                                        <h1 className='text-xs font-[poppins] font-medium mt-[-0.3vh] text-wrap'>{product.selectedColor}</h1>
                                                     </div>
                                                 </div>
                                                 {product.productId.discount ? (

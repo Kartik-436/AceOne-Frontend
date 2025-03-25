@@ -8,6 +8,7 @@ import { addToWishlist } from "../utils/UserService";
 import { toast } from "react-toastify";
 import { addToCart } from "../utils/CartService";
 import { useCart } from "../utils/CartContext";
+import AddToCartButton from "./AddToCartButton";
 
 const SearchProducts = () => {
     const [query, setQuery] = useState("");
@@ -40,11 +41,11 @@ const SearchProducts = () => {
 
     const { setIsCartMenuOpen } = useCart();
 
-    const handleAddToCart = async (product) => {
+    const handleAddToCart = async (productId, selectedColor, selectedSize) => {
         setIsCartMenuOpen(false);
         setLoading(true);
 
-        const response = await addToCart(product, 1);
+        const response = await addToCart(productId, 1, selectedColor, selectedSize);
 
         if (response.success) {
             window.location.reload();
@@ -154,13 +155,9 @@ const SearchProducts = () => {
                                         </div>
                                     </div>
                                     <div className="flex gap-2">
-                                        <button
-                                            id="Shp-Now-Home-Start"
-                                            className="px-3 py-1 text-sm bg-[#fff] text-black rounded-full transition-all text-nowrap"
-                                            onClick={() => handleAddToCart(product._id)}
-                                        >
-                                            Add to Cart
-                                        </button>
+                                        <div>
+                                            <AddToCartButton product={product?._id} onAddToCart={handleAddToCart} />
+                                        </div>
                                         <button
                                             id="Shp-Now-Home-Start"
                                             className="px-2 py-1.5 text-sm border border-gray-400 rounded-full hover:bg-gray-200 transition-all text-nowrap"

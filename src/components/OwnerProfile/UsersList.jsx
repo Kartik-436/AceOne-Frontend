@@ -133,7 +133,6 @@ const UsersList = () => {
                                                     (<div className='flex flex-col w-full max-h-[40vh] gap-5 overflow-y-scroll noScrollbar'>
                                                         {user.orders.map((order, index) => (
                                                             <div key={order._id} className="border-b-2 border-gray-400 py-4 px-2 space-y-2">
-                                                                {/* Loop through all items in the order */}
                                                                 {order.items.map((item, itemIndex) => (
                                                                     <div key={item.product?._id || itemIndex} className="flex items-start gap-2.5">
                                                                         {/* Product Image */}
@@ -151,7 +150,7 @@ const UsersList = () => {
                                                                                 <h1 className="text-black font-[poppins] font-medium">{item.product?.name} ({item.quantity})</h1>
                                                                             </div>
                                                                             <h1 className="text-black font-[poppins] font-light">
-                                                                                {item.product?.category} ({item.product?.size})
+                                                                                {item.product?.category} ({item.selectedSize})
                                                                             </h1>
                                                                         </div>
                                                                     </div>

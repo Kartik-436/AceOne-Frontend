@@ -25,6 +25,7 @@ import { StoreIcon } from 'lucide-react';
 import { addToWishlist } from './../utils/UserService';
 import { Heart } from 'lucide-react';
 import SortMenuStore from '../components/SortOptionsStore';
+import AddToCartButton from '../components/AddToCartButton';
 
 const Store = (props) => {
     const { animate, handleDelayNavigation } = useDelayedNavigation();
@@ -121,11 +122,11 @@ const Store = (props) => {
         setPriceRange([priceRange[0], newValue]);
     };
 
-    const handleAddToCart = async (productId) => {
+    const handleAddToCart = async (productId, selectedColor, selectedSize) => {
         setIsCartMenuOpen(false); // Close cart menu before request
         setStoreLoading(true); // Show loading indicator
 
-        const response = await addToCart(productId, 1);
+        const response = await addToCart(productId, 1, selectedColor, selectedSize);
 
         if (response.success) {
             window.location.reload();
@@ -470,7 +471,7 @@ const Store = (props) => {
                                                     </div>
 
                                                     <div className='md:p-5 p-3 bg-[#fff] text-black'>
-                                                        <h3 className='text-xl tracking-tight font-semibold mb-3.5'>{product.name} ( {product.color} )</h3>
+                                                        <h3 className='text-xl tracking-tight font-semibold mb-3.5'>{product.name}</h3>
                                                         <div className='flex justify-between items-center'>
                                                             <div>
                                                                 {product.discount ? (
@@ -482,17 +483,13 @@ const Store = (props) => {
                                                                     <span className='text-lg font-bold'>₹{product.price}</span>
                                                                 )}
                                                                 <div>
-                                                                    <p className='text-xs mt-1 text-black opacity-80'>{product.category}  ( {product.size} )</p>
+                                                                    <p className='text-xs mt-1 text-black opacity-80'>{product.category}</p>
                                                                 </div>
                                                             </div>
                                                             <div className='flex items-center justify-center gap-2'>
-                                                                <button
-                                                                    onClick={() => {
-                                                                        handleAddToCart(product._id);
-                                                                    }}
-                                                                    className='bg-[#1f1f1f] font-semibold text-white py-2 px-5 rounded-full text-sm AddToCartInStore border-[1.7px]'>
-                                                                    Add to Cart
-                                                                </button>
+                                                                <div>
+                                                                    <AddToCartButton product={product?._id} onAddToCart={handleAddToCart} />
+                                                                </div>
                                                                 <span
                                                                     onClick={async () => {
                                                                         if (isLoggedIn) {

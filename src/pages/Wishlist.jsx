@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import { addToCart } from "../utils/CartService";
 import { useCart } from "../utils/CartContext";
 import Transition from './../Transition';
+import AddToCartButton from "../components/AddToCartButton";
 
 const Wishlist = () => {
     const { animate, handleDelayNavigation } = useDelayedNavigation();
@@ -40,11 +41,11 @@ const Wishlist = () => {
         refreshWishlist();
     }, []);
 
-    const moveToCart = async (productId) => {
+    const moveToCart = async (productId, selectedColor, selectedSize) => {
         setIsCartMenuOpen(false);
         setWishlistLoading(true);
 
-        const response = await addToCart(productId, 1);
+        const response = await addToCart(productId, 1, selectedColor, selectedSize);
 
         if (response.success) {
             await handleRemoveFromWishlist(productId);
@@ -184,14 +185,9 @@ const Wishlist = () => {
                                                     <p className='text-xs mt-1 text-black opacity-80'>{product.product.category}</p>
                                                 </div>
                                                 <div className='flex items-center justify-center gap-2'>
-                                                    <button
-                                                        onClick={() => {
-                                                            moveToCart(product.product._id);
-                                                        }}
-                                                        id="Shp-Now-Home-Start"
-                                                        className='bg-[#fff] font-semibold text-black py-2 px-5 rounded-full text-sm'>
-                                                        Move to Cart
-                                                    </button>
+                                                    <div>
+                                                        <AddToCartButton product={product?._id} onAddToCart={moveToCart} />
+                                                    </div>
                                                     <span
                                                         onClick={() => {
                                                             handleRemoveFromWishlist(product.product._id)

@@ -1,28 +1,25 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react'
-import OwnerSearch from '../OwnerSearch'
 import Transition from '../../Transition'
 import useDelayedNavigation from '../../utils/useDelayedNavigation';
-import SortByMenu from './../SortOptions';
-import { addProduct, deleteProduct, getAllOrders, getAllProducts, getAllUsers, getOwnerProfile } from '../../utils/OwnerService';
-import BarLoader from './../Loaders/CustomLoader1';
-import { AnimatePresence, motion } from 'motion/react';
-import { LucidePackage2, ShoppingBasket, Trash2 } from 'lucide-react';
+import { addProduct, deleteProduct, getAllProducts } from '../../utils/OwnerService';
 import { toast } from 'react-toastify';
 
 const ProductsManager = () => {
-    const { animate, handleDelayNavigation } = useDelayedNavigation();
+    const { animate } = useDelayedNavigation();
     const [products, setProducts] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
-    const [imageFile, setImageFile] = useState(null);
-    const [imagePreview, setImagePreview] = useState(null);
+    const [mainImageFile, setMainImageFile] = useState(null);
+    const [additionalImageFiles, setAdditionalImageFiles] = useState([]);
+    const [mainImagePreview, setMainImagePreview] = useState(null);
     const [errors, setErrors] = useState({});
 
     const categories = ["kids", "mens", "womens"];
+    const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+    const [colorInput, setColorInput] = useState('');
 
     const refreshProducts = async () => {
         try {
@@ -33,70 +30,71 @@ const ProductsManager = () => {
                 setProducts(response.products);
             } else {
                 setError(response.message);
-                console.error("getting Products Error: ", response.message)
+                console.error("Getting Products Error: ", response.message)
             }
         } catch (error) {
-            console.error("getting Products Error: ", error)
+            console.error("Getting Products Error: ", error)
         }
         setLoading(false)
     }
 
-    const handleDeleteProduct = async (Pid) => {
-        try {
-            const response = await deleteProduct(Pid);
-            if (response.success) {
-                await refreshProducts();
-                toast.success("Product deleted successfully");
-            } else {
-                console.error("product deletion error: ", response.messages)
-                toast.error("Failed to delete product")
-            }
-        } catch (error) {
-            console.error("Delete error:", error.message);
-            toast.error("Failed to delete product");
-        }
-    };
-
     const [productData, setProductData] = useState({
         name: '',
+        description: '',
         price: '',
         discount: '',
-        size: '',
-        color: '',
+        sizes: [],
+        colors: [],
         category: '',
         stock: '',
+        brand: 'AceOne'
     });
-
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setProductData({
-            ...productData,
+        setProductData(prev => ({
+            ...prev,
             [name]: value
-        });
+        }));
     };
 
-    const handleImageChange = (e) => {
+    const handleMultiSelectChange = (e, field) => {
+        const selectedValues = Array.from(e.target.selectedOptions, option => option.value);
+        setProductData(prev => ({
+            ...prev,
+            [field]: selectedValues
+        }));
+    };
+
+    const handleMainImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            setImageFile(file);
+            setMainImageFile(file);
 
             const reader = new FileReader();
             reader.onloadend = () => {
-                setImagePreview(reader.result);
+                setMainImagePreview(reader.result);
             };
             reader.readAsDataURL(file);
         }
+    };
+
+    const handleAdditionalImagesChange = (e) => {
+        const files = Array.from(e.target.files);
+        setAdditionalImageFiles(files);
     };
 
     const validateForm = () => {
         const newErrors = {};
 
         if (!productData.name.trim()) newErrors.name = "Product name is required";
+        if (!productData.description.trim()) newErrors.description = "Product description is required";
         if (!productData.price) newErrors.price = "Price is required";
         if (!productData.category) newErrors.category = "Category is required";
+        if (productData.sizes.length === 0) newErrors.sizes = "At least one size is required";
+        if (productData.colors.length === 0) newErrors.colors = "At least one color is required";
         if (!productData.stock) newErrors.stock = "Stock quantity is required";
-        if (!imageFile) newErrors.image = "Product image is required";
+        if (!mainImageFile) newErrors.mainImage = "Product main image is required";
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -110,45 +108,62 @@ const ProductsManager = () => {
         setLoading(true);
 
         try {
-            // Create FormData to handle file upload
             const formData = new FormData();
 
-            // Append image file
-            if (imageFile) {
-                formData.append('image', imageFile);
+            // Append main image
+            if (mainImageFile) {
+                formData.append('image', mainImageFile);
             }
+
+            // Append additional images
+            additionalImageFiles.forEach((file, index) => {
+                formData.append('additionalImages', file);
+            });
 
             // Append other product data
             formData.append('name', productData.name);
+            formData.append('description', productData.description);
             formData.append('price', productData.price);
             formData.append('discount', productData.discount || 0);
-            formData.append('size', productData.size || '');
-            formData.append('color', productData.color || '');
+            formData.append('brand', productData.brand);
+
+            // Append sizes and colors as JSON strings
+            formData.append('size', JSON.stringify(productData.sizes));
+            formData.append('color', JSON.stringify(productData.colors));
+
             formData.append('category', productData.category);
             formData.append('stock', productData.stock);
 
             const response = await addProduct(formData);
-            console.log(response)
+
             if (response.success) {
-                toast.success(`${formData.name} Added Succesfully`)
+                toast.success(`${productData.name} Added Successfully`);
+
+                // Reset form
                 setProductData({
                     name: '',
+                    description: '',
                     price: '',
                     discount: '',
-                    size: '',
-                    color: '',
+                    sizes: [],
+                    colors: [],
                     category: '',
                     stock: '',
+                    brand: 'AceOne'
                 });
-                setImageFile(null);
-                setImagePreview(null);
+                setMainImageFile(null);
+                setAdditionalImageFiles([]);
+                setMainImagePreview(null);
+
+                // Refresh products list
+                await refreshProducts();
             } else {
-                toast.error(response.message || `Failed to add product !`)
+                toast.error(response.message || `Failed to add product!`);
                 console.error('Error adding product:', response.message);
             }
         } catch (error) {
             console.error('Error adding product:', error);
-            toast.success(error.message || `Failed to add product !`)
+            toast.error(error.message || `Failed to add product!`);
         } finally {
             setLoading(false);
         }
@@ -172,15 +187,15 @@ const ProductsManager = () => {
                         {/* Image Upload */}
                         <div className='mb-6'>
                             <label className='block text-sm font-medium mb-2'>
-                                Product Image <span className='text-red-500'>*</span>
+                                Main Product Image <span className='text-red-500'>*</span>
                             </label>
                             <div className='flex items-center space-x-4'>
                                 <div
                                     className='w-24 h-24 border-2 border-dashed border-[#ffbb00] flex items-center justify-center rounded-lg overflow-hidden'
-                                    style={{ background: imagePreview ? 'transparent' : '#2a2a2a' }}
+                                    style={{ background: mainImagePreview ? 'transparent' : '#2a2a2a' }}
                                 >
-                                    {imagePreview ? (
-                                        <img src={imagePreview} alt="Preview" className='w-full h-full object-cover' />
+                                    {mainImagePreview ? (
+                                        <img src={mainImagePreview} alt="Preview" className='w-full h-full object-cover' />
                                     ) : (
                                         <span className='text-[#ffbb00]'>Preview</span>
                                     )}
@@ -188,20 +203,40 @@ const ProductsManager = () => {
                                 <div className='flex-1'>
                                     <input
                                         type="file"
-                                        id="image"
+                                        id="mainImage"
                                         accept="image/*"
                                         className='hidden'
-                                        onChange={handleImageChange}
+                                        onChange={handleMainImageChange}
                                         required
                                     />
                                     <label
-                                        htmlFor="image"
+                                        htmlFor="mainImage"
                                         className='cursor-pointer border-2 border-gray-500 text-[#fff] py-2 px-4 rounded-lg inline-block AddToCartInStore'
                                     >
-                                        Choose Image
+                                        Choose Main Image
                                     </label>
-                                    {errors.image && <p className='text-red-500 text-xs mt-1'>{errors.image}</p>}
+                                    {errors.mainImage && <p className='text-red-500 text-xs mt-1'>{errors.mainImage}</p>}
                                 </div>
+                            </div>
+
+                            {/* Additional Images Upload */}
+                            <div className='mt-4'>
+                                <label className='block text-sm font-medium mb-2'>
+                                    Additional Images (Optional)
+                                </label>
+                                <input
+                                    type="file"
+                                    id="additionalImages"
+                                    accept="image/*"
+                                    multiple
+                                    className='w-full bg-[#2a2a2a] border border-[#3a3a3a] rounded-lg p-2'
+                                    onChange={handleAdditionalImagesChange}
+                                />
+                                {additionalImageFiles.length > 0 && (
+                                    <p className='text-xs text-gray-400 mt-1'>
+                                        {additionalImageFiles.length} additional image(s) selected
+                                    </p>
+                                )}
                             </div>
                         </div>
 
@@ -224,6 +259,23 @@ const ProductsManager = () => {
                                 {errors.name && <p className='text-red-500 text-xs mt-1'>{errors.name}</p>}
                             </div>
 
+                            {/* Description */}
+                            <div>
+                                <label className='block text-sm font-medium mb-1'>
+                                    Description <span className='text-red-500'>*</span>
+                                </label>
+                                <textarea
+                                    name="description"
+                                    value={productData.description}
+                                    onChange={handleChange}
+                                    className='w-full bg-[#2a2a2a] border border-[#3a3a3a] rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#ffbb00]'
+                                    placeholder="Enter product description"
+                                    rows="2"
+                                    required
+                                />
+                                {errors.description && <p className='text-red-500 text-xs mt-1'>{errors.description}</p>}
+                            </div>
+
                             {/* Category */}
                             <div>
                                 <label className='block text-sm font-medium mb-1'>
@@ -242,6 +294,77 @@ const ProductsManager = () => {
                                     ))}
                                 </select>
                                 {errors.category && <p className='text-red-500 text-xs mt-1'>{errors.category}</p>}
+                            </div>
+
+                            {/* Sizes */}
+                            <div>
+                                <label className='block text-sm font-medium mb-1'>
+                                    Sizes <span className='text-red-500'>*</span>
+                                </label>
+                                <select
+                                    multiple
+                                    name="sizes"
+                                    value={productData.sizes}
+                                    onChange={(e) => handleMultiSelectChange(e, 'sizes')}
+                                    className='w-full bg-[#2a2a2a] border border-[#3a3a3a] rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#ffbb00] h-24'
+                                    required
+                                >
+                                    {sizes.map((size) => (
+                                        <option key={size} value={size}>{size}</option>
+                                    ))}
+                                </select>
+                                {errors.sizes && <p className='text-red-500 text-xs mt-1'>{errors.sizes}</p>}
+                            </div>
+
+                            {/* Colors */}
+                            <div>
+                                <label className='block text-sm font-medium mb-1'>
+                                    Colors <span className='text-red-500'>*</span>
+                                </label>
+                                <div className="flex gap-2">
+                                    <input
+                                        type="text"
+                                        value={colorInput}
+                                        onChange={(e) => setColorInput(e.target.value)}
+                                        placeholder="Enter a color"
+                                        className="w-full bg-[#2a2a2a] border border-[#3a3a3a] rounded-lg p-2"
+                                    />
+                                    <button
+                                        type="button"
+                                        className="bg-[#ffbb00] text-black font-bold py-2 px-4 rounded-lg AddToCartInStore"
+                                        onClick={() => {
+                                            if (colorInput.trim() && !productData.colors.includes(colorInput.trim())) {
+                                                setProductData(prev => ({
+                                                    ...prev,
+                                                    colors: [...prev.colors, colorInput.trim()]
+                                                }));
+                                                setColorInput('');
+                                            }
+                                        }}
+                                    >
+                                        Add Color
+                                    </button>
+                                </div>
+                                <div className="flex flex-wrap gap-2 mt-2">
+                                    {productData.colors.map((color, index) => (
+                                        <span key={index} className="bg-[#ffbb00] text-black px-3 py-1 rounded-lg">
+                                            {color}
+                                            <button
+                                                type="button"
+                                                className="ml-2 text-black"
+                                                onClick={() =>
+                                                    setProductData(prev => ({
+                                                        ...prev,
+                                                        colors: prev.colors.filter(c => c !== color)
+                                                    }))
+                                                }
+                                            >
+                                                ×
+                                            </button>
+                                        </span>
+                                    ))}
+                                </div>
+                                {errors.colors && <p className='text-red-500 text-xs mt-1'>{errors.colors}</p>}
                             </div>
 
                             {/* Price */}
@@ -277,7 +400,6 @@ const ProductsManager = () => {
                                     placeholder="Enter discount percentage"
                                     min="0"
                                     max="100"
-                                    required
                                 />
                                 <p className='text-xs text-gray-400 mt-1'>Discount price will be calculated automatically</p>
                             </div>
@@ -298,38 +420,6 @@ const ProductsManager = () => {
                                     required
                                 />
                                 {errors.stock && <p className='text-red-500 text-xs mt-1'>{errors.stock}</p>}
-                            </div>
-
-                            {/* Size */}
-                            <div>
-                                <label className='block text-sm font-medium mb-1'>
-                                    Size
-                                </label>
-                                <input
-                                    type="text"
-                                    name="size"
-                                    value={productData.size}
-                                    onChange={handleChange}
-                                    className='w-full bg-[#2a2a2a] border border-[#3a3a3a] rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#ffbb00]'
-                                    placeholder="e.g. S, M, L, XL, etc."
-                                    required
-                                />
-                            </div>
-
-                            {/* Color */}
-                            <div>
-                                <label className='block text-sm font-medium mb-1'>
-                                    Color
-                                </label>
-                                <input
-                                    type="text"
-                                    name="color"
-                                    value={productData.color}
-                                    onChange={handleChange}
-                                    className='w-full bg-[#2a2a2a] border border-[#3a3a3a] rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#ffbb00]'
-                                    placeholder="e.g. Red, Blue, Black, etc."
-                                    required
-                                />
                             </div>
                         </div>
 
@@ -355,39 +445,3 @@ const ProductsManager = () => {
 }
 
 export default ProductsManager
-
-const ConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
-    return (
-        <AnimatePresence>
-            {isOpen && (
-                <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center backdrop-blur-sm z-50">
-                    <motion.div
-                        key="logout-modal"
-                        initial={{ opacity: 0, scale: 0.3, y: 200 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.3, y: 200 }}
-                        transition={{ duration: 0.5, ease: "backOut" }}
-                        className="bg-white p-6 rounded-lg shadow-lg border-2 border-black"
-                    >
-                        <h2 className="text-lg font-semibold">Confirm Deletion</h2>
-                        <p className="text-gray-600 mt-2">Are you sure you want to Delete a product ?</p>
-                        <div className="mt-4 flex justify-end gap-3">
-                            <button
-                                onClick={onClose}
-                                className="px-4 py-2 bg-gray-300 rounded-lg cursor-pointer active:scale-95"
-                            >
-                                No
-                            </button>
-                            <button
-                                onClick={onConfirm}
-                                className="px-4 py-2 bg-red-500 text-white rounded-lg cursor-pointer active:scale-95"
-                            >
-                                Yes, Delete
-                            </button>
-                        </div>
-                    </motion.div>
-                </div>
-            )}
-        </AnimatePresence>
-    );
-};

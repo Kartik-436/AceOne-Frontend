@@ -10,6 +10,7 @@ import { toast } from 'react-toastify';
 import useAuthStatus from '../../utils/IsLoggedInChecker';
 import { Heart } from 'lucide-react';
 import { addToWishlist } from '../../utils/UserService';
+import AddToCartButton from '../AddToCartButton';
 
 const Page2 = ({ bestSelling, Discounted }) => {
     const containerRef = useRef(null);
@@ -21,10 +22,10 @@ const Page2 = ({ bestSelling, Discounted }) => {
     const { isCartMenuOpen, setIsCartMenuOpen } = useCart();
     const { isLoggedIn, loading } = useAuthStatus();
 
-    const handleAddToCart = async (productId) => {
+    const handleAddToCart = async (productId, selectedColor, selectedSize) => {
         setIsCartMenuOpen(false);
 
-        const response = await addToCart(productId, 1);
+        const response = await addToCart(productId, 1, selectedColor, selectedSize);
 
         if (response.success) {
             window.location.reload();
@@ -225,8 +226,8 @@ const Page2 = ({ bestSelling, Discounted }) => {
                         }
                     }}
                 >
-                    <h1 className='text-black font-bold font-mono mb-2'>{product?.name} ({product?.color})</h1>
-                    <h1 className="text-black font-light font-mono text-sm -mt-1">{product?.category} ({product?.size})</h1>
+                    <h1 className='text-black font-bold font-mono mb-2'>{product?.name}</h1>
+                    <h1 className="text-black font-light font-mono text-sm -mt-1">{product?.category}</h1>
                     <div className='flex items-center gap-1.5'>
                         <span className='text-black font-light font-mono text-md'>${Math.round(product?.discountPrice) || Math.round(product?.price)}</span>
                         {product?.discountPrice && <span className='text-black font-medium font-mono text-sm line-through'>${Math.round(product?.price)}</span>}
@@ -234,12 +235,9 @@ const Page2 = ({ bestSelling, Discounted }) => {
                 </motion.div>
 
                 <div className='flex items-center justify-center gap-2'>
-                    <button
-                        onClick={() => handleAddToCart(product?._id)}
-                        id="Shp-Now-Home-Start"
-                        className="px-4 py-1.5 text-xs rounded-full bg-transparent uppercase font-mono text-black font-bold tracking-wide text-nowrap">
-                        Add to Cart
-                    </button>
+                    <div>
+                        <AddToCartButton product={product?._id} onAddToCart={handleAddToCart} />
+                    </div>
                     <span
                         onClick={async () => {
                             if (isLoggedIn) {

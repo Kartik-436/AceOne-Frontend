@@ -274,8 +274,8 @@ const BeforeSignedInNavBar = () => {
                                                 <div className="flex flex-col w-full h-full gap-1">
                                                     <div className="flex items-start justify-between w-full pr-3">
                                                         <div className="flex flex-col h-full mb-2">
-                                                            <span className="font-[poppins] font-semibold uppercase text-sm">{product.productId.name} ({product.productId.color})</span>
-                                                            <span className="font-[poppins] font-normal uppercase text-xs">{product.productId.category} ({product.productId.size})</span>
+                                                            <span className="font-[poppins] font-semibold uppercase text-sm">{product.productId.name} ({product.selectedColor})</span>
+                                                            <span className="font-[poppins] font-normal uppercase text-xs">{product.productId.category} ({product.selectedSize})</span>
                                                         </div>
                                                         <span className="cursor-pointer" onClick={() => removeProduct(product.productId._id)}><i className="ri-delete-bin-6-line text-lg cursor-pointer scale-y-125 hover:text-red-500 transition-colors duration-200"></i></span>
                                                     </div>

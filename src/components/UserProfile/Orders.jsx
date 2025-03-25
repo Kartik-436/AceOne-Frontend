@@ -252,6 +252,12 @@ const Orders = () => {
                                                                 </div>
                                                                 <div className="flex-1 min-w-0">
                                                                     <p className="font-medium text-sm truncate">{item.product?.name || 'Product Name'}</p>
+
+                                                                    <div className="flex flex-wrap items-center text-xs text-gray-600 gap-1">
+                                                                        <span>Selected Color: {item.selectedColor}</span>
+                                                                        <span>Selected Size: {item.selectedSize}</span>
+                                                                    </div>
+
                                                                     <div className="flex flex-wrap items-center text-xs text-gray-600 gap-1">
                                                                         <span>Qty: {item.quantity} ×</span>
                                                                         {item.product?.discount > 0 ? (

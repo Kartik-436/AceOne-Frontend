@@ -10,6 +10,7 @@ import { toast } from 'react-toastify';
 import useAuthStatus from './../../utils/IsLoggedInChecker';
 import { Heart } from 'lucide-react';
 import { addToWishlist } from '../../utils/UserService';
+import AddToCartButton from '../AddToCartButton';
 
 const Page3 = ({ Kids }) => {
     const targetRef = useRef(null);
@@ -17,10 +18,10 @@ const Page3 = ({ Kids }) => {
     const { animate, handleDelayNavigation } = useDelayedNavigation();
     const [error, setError] = useState(null);
 
-    const handleAddToCart = async (productId) => {
+    const handleAddToCart = async (productId, selectedColor, selectedSize) => {
         setIsCartMenuOpen(false);
 
-        const response = await addToCart(productId, 1);
+        const response = await addToCart(productId, 1, selectedColor, selectedSize);
 
         if (response.success) {
             window.location.reload();
@@ -167,8 +168,7 @@ const Page3 = ({ Kids }) => {
                                     <div className='flex flex-col items-start gap-2'>
                                         <h1 className="text-black font-bold font-mono text-xl">{Kids[0]?.name}</h1>
                                         <div className='flex items-start flex-col w-full'>
-                                            <h1 className="text-black font-lighter font-mono">{Kids[0]?.category} ({Kids[0]?.size})</h1>
-                                            <h1 className="text-black font-light font-mono mt-[-1.3vh]">{Kids[0]?.color}</h1>
+                                            <h1 className="text-black font-lighter font-mono">{Kids[0]?.category}</h1>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-1.5">
@@ -177,12 +177,9 @@ const Page3 = ({ Kids }) => {
                                     </div>
                                 </div>
                                 <div className='flex items-center justify-center gap-2'>
-                                    <button
-                                        onClick={() => handleAddToCart(Kids[0]?._id)}
-                                        id="Shp-Now-Home-Start"
-                                        className="px-4 py-1.5 text-sm rounded-full bg-[#fff] uppercase font-mono text-black font-bold tracking-wide text-nowrap">
-                                        Add to Cart
-                                    </button>
+                                    <div>
+                                        <AddToCartButton product={Kids[0]?._id} onAddToCart={handleAddToCart} />
+                                    </div>
                                     <span
                                         onClick={async () => {
                                             if (isLoggedIn) {
