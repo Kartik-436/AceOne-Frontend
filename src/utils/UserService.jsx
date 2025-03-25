@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const getUserOrders = async () => {
     try {
-        const response = await axios.get(`https://aceone-backend-wcgq.onrender.com/user/orders`, {
+        const response = await axios.get(`https://aceone-backend.up.railway.app/user/orders`, {
             withCredentials: true,
         });
         return response.data.success
@@ -42,7 +42,7 @@ export const placeOrder = async (orderData) => {
             };
         }
 
-        const response = await axios.post(`https://aceone-backend-wcgq.onrender.com/user/order`, orderData, {
+        const response = await axios.post(`https://aceone-backend.up.railway.app/user/order`, orderData, {
             withCredentials: true,
         });
 
@@ -74,7 +74,7 @@ export const verifyPayment = async (paymentData) => {
         }
 
         const response = await axios.post(
-            `https://aceone-backend-wcgq.onrender.com/user/order/verify-payment`,
+            `https://aceone-backend.up.railway.app/user/order/verify-payment`,
             paymentData,
             { withCredentials: true }
         );
@@ -100,7 +100,7 @@ export const verifyPayment = async (paymentData) => {
 export const cancelOrder = async (orderID, reason) => {
     try {
         const response = await axios.post(
-            `https://aceone-backend-wcgq.onrender.com/user/order/cancel`,
+            `https://aceone-backend.up.railway.app/user/order/cancel`,
             { orderID, reason },
             { withCredentials: true }
         );
@@ -126,7 +126,7 @@ export const cancelOrder = async (orderID, reason) => {
 
 export const getWishlist = async () => {
     try {
-        const response = await axios.get(`https://aceone-backend-wcgq.onrender.com/user/wishlist`, {
+        const response = await axios.get(`https://aceone-backend.up.railway.app/user/wishlist`, {
             withCredentials: true,
         });
         return response.data.success
@@ -146,7 +146,7 @@ export const getWishlist = async () => {
 export const addToWishlist = async (productID) => {
     try {
         const response = await axios.post(
-            `https://aceone-backend-wcgq.onrender.com/user/wishlist/add`,
+            `https://aceone-backend.up.railway.app/user/wishlist/add`,
             { productID },
             { withCredentials: true }
         );
@@ -167,7 +167,7 @@ export const addToWishlist = async (productID) => {
 
 export const removeFromWishlist = async (productID) => {
     try {
-        const response = await axios.post(`https://aceone-backend-wcgq.onrender.com/user/wishlist/remove`, { productID }, { withCredentials: true });
+        const response = await axios.post(`https://aceone-backend.up.railway.app/user/wishlist/remove`, { productID }, { withCredentials: true });
 
         return response.data.success
             ? { success: true, message: "Product removed from wishlist." }
@@ -186,7 +186,7 @@ export const removeFromWishlist = async (productID) => {
 
 export const updateUserProfile = async (profileData) => {
     try {
-        const response = await axios.put(`https://aceone-backend-wcgq.onrender.com/user/profile`, profileData, {
+        const response = await axios.put(`https://aceone-backend.up.railway.app/user/profile`, profileData, {
             withCredentials: true,
         });
         return response.data.success
@@ -205,7 +205,7 @@ export const updateUserProfile = async (profileData) => {
 
 export const updateProfilePicture = async (formData) => {
     try {
-        const response = await axios.put(`https://aceone-backend-wcgq.onrender.com/user/profile/picture`, formData, {
+        const response = await axios.put(`https://aceone-backend.up.railway.app/user/profile/picture`, formData, {
             withCredentials: true,
             headers: { "Content-Type": "multipart/form-data" },
         });
@@ -225,7 +225,7 @@ export const updateProfilePicture = async (formData) => {
 
 export const getUserDetails = async () => {
     try {
-        const response = await axios.get("https://aceone-backend-wcgq.onrender.com/user/profile", { withCredentials: true });
+        const response = await axios.get("https://aceone-backend.up.railway.app/user/profile", { withCredentials: true });
 
         if (response.data.success) {
             return { success: true, user: response.data.data };
@@ -239,7 +239,7 @@ export const getUserDetails = async () => {
 
 export const forgotPassword = async (email) => {
     try {
-        const response = await axios.post(`https://aceone-backend-wcgq.onrender.com/user/forgot-password`, { email }, { withCredentials: true });
+        const response = await axios.post(`https://aceone-backend.up.railway.app/user/forgot-password`, { email }, { withCredentials: true });
         return response.data.success
             ? { success: true, message: "Password reset code sent successfully." }
             : {
@@ -256,7 +256,7 @@ export const forgotPassword = async (email) => {
 
 export const verifyResetToken = async (Email_Otp) => {
     try {
-        const response = await axios.post(`https://aceone-backend-wcgq.onrender.com/user/verify-reset-token`, { Email_Otp }, { withCredentials: true });
+        const response = await axios.post(`https://aceone-backend.up.railway.app/user/verify-reset-token`, { Email_Otp }, { withCredentials: true });
         return response.data.success
             ? { success: true, message: "Password reset code verified successfully." }
             : {
@@ -273,7 +273,7 @@ export const verifyResetToken = async (Email_Otp) => {
 
 export const resetPassword = async (newPass) => {
     try {
-        const response = await axios.put(`https://aceone-backend-wcgq.onrender.com/user/reset-password`, { newPass }, { withCredentials: true });
+        const response = await axios.put(`https://aceone-backend.up.railway.app/user/reset-password`, { newPass }, { withCredentials: true });
         return response.data.success
             ? { success: true, message: "Password reset successfully, Please Login with New Password !" }
             : {
