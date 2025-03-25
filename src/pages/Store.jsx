@@ -325,7 +325,7 @@ const Store = (props) => {
 
                             {isLoggedIn ? <AfterSignedInNavBar /> : <BeforeSignedInNavBar />}
 
-                            <div className='min-h-screen w-full text-white mt-[10.6svh] bg-[#fbffef] flex'>
+                            <div className='min-h-screen w-full text-white mt-[10.6svh] bg-[#fbffef] flex relative'>
                                 <div className='min-h-full w-[25vw] bg-[#fbffef] relative hidden md:flex flex-col gap-10'>
                                     <div className='pl-10 pt-7'>
                                         <h1 className='text-[1.83vw] font-light text-black font-[poppins]'>

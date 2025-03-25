@@ -42,7 +42,7 @@ const AddToCartButton = ({ product, CProduct, onAddToCart }) => {
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
-                        className="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
+                        className="absolute inset-0 bg-black/60 flex items-center justify-center z-50"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
