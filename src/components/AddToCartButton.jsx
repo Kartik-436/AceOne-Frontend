@@ -12,6 +12,8 @@ const AddToCartButton = ({ product, CProduct, onAddToCart }) => {
     const [availableSizes, setavailableSizes] = useState(Array.isArray(CProduct?.color) ? CProduct?.color : []);
     const [availableColors, setavailableColors] = useState(Array.isArray(CProduct?.size) ? CProduct?.size : []);
 
+    console.log(CProduct.name + "     " + CProduct)
+
     const handleAdd = () => {
         if (selectedSize && selectedColor) {
             onAddToCart(product, selectedColor, selectedSize);
