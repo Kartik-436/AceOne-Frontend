@@ -156,7 +156,7 @@ const SearchProducts = () => {
                                     </div>
                                     <div className="flex gap-2">
                                         <div>
-                                            <AddToCartButton product={product?._id} CProduct={product} onAddToCart={handleAddToCart} />
+                                            <AddToCartButton product={product?._id} Name={product?.name} Color={product?.color} Size={product?.size} onAddToCart={handleAddToCart} />
                                         </div>
                                         <button
                                             id="Shp-Now-Home-Start"

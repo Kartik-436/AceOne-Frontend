@@ -186,7 +186,7 @@ const Wishlist = () => {
                                                 </div>
                                                 <div className='flex items-center justify-center gap-2'>
                                                     <div>
-                                                        <AddToCartButton product={product?._id} CProduct={product.product} onAddToCart={moveToCart} />
+                                                        <AddToCartButton product={product.product._id} Name={product.product.name} Color={product.product.color} Size={product.product.size} onAddToCart={moveToCart} />
                                                     </div>
                                                     <span
                                                         onClick={() => {

@@ -488,7 +488,7 @@ const Store = (props) => {
                                                             </div>
                                                             <div className='flex items-center justify-center gap-2'>
                                                                 <div className='flex items-center justify-center z-50'>
-                                                                    <AddToCartButton product={product?._id} CProduct={product} onAddToCart={handleAddToCart} />
+                                                                    <AddToCartButton product={product?._id} Name={product?.name} Color={product?.color} Size={product?.size} onAddToCart={handleAddToCart} />
                                                                 </div>
                                                                 <span
                                                                     onClick={async () => {

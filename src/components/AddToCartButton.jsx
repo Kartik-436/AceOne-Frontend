@@ -5,14 +5,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { toast } from "react-toastify";
 
-const AddToCartButton = ({ product, CProduct, onAddToCart }) => {
+const AddToCartButton = ({ product, Name, Color, Size, onAddToCart }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedSize, setSelectedSize] = useState(null);
     const [selectedColor, setSelectedColor] = useState(null);
-    const [availableSizes, setavailableSizes] = useState(Array.isArray(CProduct?.color) ? CProduct?.color : []);
-    const [availableColors, setavailableColors] = useState(Array.isArray(CProduct?.size) ? CProduct?.size : []);
-
-    console.log(CProduct?.name + "  " + CProduct.color + CProduct.size)
+    const [availableSizes, setavailableSizes] = useState(Array.isArray(Size) ? Size : []);
+    const [availableColors, setavailableColors] = useState(Array.isArray(Color) ? Color : []);
 
     const handleAdd = () => {
         if (selectedSize && selectedColor) {
@@ -56,7 +54,7 @@ const AddToCartButton = ({ product, CProduct, onAddToCart }) => {
                             </button>
 
                             <h2 className="text-xl font-semibold text-center mb-2 text-[#fff]">Select Size & Color for</h2>
-                            <h2 className="text-2xl text-nowrap font-bold text-center mb-5 text-[#ffbb00]">{CProduct.name}</h2>
+                            <h2 className="text-2xl text-nowrap font-bold text-center mb-5 text-[#ffbb00]">{Name}</h2>
 
                             <div className="space-y-4">
                                 <div>
