@@ -13,6 +13,8 @@ const AddToCartButton = ({ product, CProduct, onAddToCart }) => {
     const [availableColors, setavailableColors] = useState(null);
 
     useEffect(() => {
+        console.log(CProduct)
+
         setavailableColors(CProduct?.color);
         setavailableSizes(CProduct?.size);
     }, [])
