@@ -17,7 +17,6 @@ const AddToCartButton = ({ product, CProduct, onAddToCart }) => {
         setavailableSizes(CProduct?.size);
     }, [])
 
-
     const handleAdd = () => {
         if (selectedSize && selectedColor) {
             onAddToCart(product, selectedColor, selectedSize);
@@ -46,7 +45,7 @@ const AddToCartButton = ({ product, CProduct, onAddToCart }) => {
                         exit={{ opacity: 0 }}
                     >
                         <motion.div
-                            className="bg-[#1f1f1f] text-white p-6 scale-95 rounded-2xl w-96 shadow-lg relative"
+                            className="bg-[#1f1f1f] text-white p-6 scale-95 rounded-2xl w-[45] shadow-lg relative"
                             initial={{ scale: 0.35, opacity: 0, y: 200 }}
                             animate={{ scale: 1, opacity: 1, y: 0 }}
                             exit={{ scale: 0.35, opacity: 0, y: 200 }}
