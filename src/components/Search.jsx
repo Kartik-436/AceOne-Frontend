@@ -141,9 +141,10 @@ const SearchProducts = () => {
                                             alt={product.name}
                                             className="w-20 h-20 rounded-lg object-cover border-[1px] border-black"
                                         />
-                                        <div className="flex flex-col justify-between h-full">
+                                        <div className="flex justify-between h-full">
                                             <p className="text-sm font-semibold max-w-[80%]">{product.name}</p>
-
+                                        </div>
+                                        <div>
                                             {product.discount > 0 ? (
                                                 <p className="text-sm text-black font-semibold">
                                                     ${discountPrice.toFixed(2)}{" "}
@@ -153,18 +154,6 @@ const SearchProducts = () => {
                                                 <p className="text-sm text-gray-900 font-semibold">${product.price}</p>
                                             )}
                                         </div>
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <div>
-                                            <AddToCartButton product={product?._id} Name={product?.name} Color={product?.color} Size={product?.size} onAddToCart={handleAddToCart} />
-                                        </div>
-                                        <button
-                                            id="Shp-Now-Home-Start"
-                                            className="px-2 py-1.5 text-sm border border-gray-400 rounded-full hover:bg-gray-200 transition-all text-nowrap"
-                                            onClick={() => handleAddToWishlist(product._id)}
-                                        >
-                                            <Heart size={15} />
-                                        </button>
                                     </div>
                                 </motion.li>
                             );
