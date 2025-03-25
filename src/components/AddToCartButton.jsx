@@ -9,13 +9,8 @@ const AddToCartButton = ({ product, CProduct, onAddToCart }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedSize, setSelectedSize] = useState(null);
     const [selectedColor, setSelectedColor] = useState(null);
-    const [availableSizes, setavailableSizes] = useState([]);
-    const [availableColors, setavailableColors] = useState([]);
-
-    useEffect(() => {
-        setavailableColors(CProduct?.color);
-        setavailableSizes(CProduct?.size);
-    }, [])
+    const [availableSizes, setavailableSizes] = useState(CProduct?.color);
+    const [availableColors, setavailableColors] = useState(CProduct?.size);
 
     const handleAdd = () => {
         if (selectedSize && selectedColor) {
