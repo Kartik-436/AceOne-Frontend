@@ -36,13 +36,13 @@ const AddToCartButton = ({ product, CProduct, onAddToCart }) => {
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
-                        className="fixed -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 w-screen h-screen bg-black/60 flex items-center justify-center z-[99]"
+                        className="fixed -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 w-full h-screen bg-black/60 flex items-center justify-center z-[99]"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                     >
                         <motion.div
-                            className="bg-[#1f1f1f] text-white p-6 scale-95 rounded-2xl w-[45vw] shadow-lg relative"
+                            className="bg-[#1f1f1f] text-white p-6 scale-95 rounded-2xl md:w-[45vw] shadow-lg relative"
                             initial={{ scale: 0.35, opacity: 0, y: 200 }}
                             animate={{ scale: 1, opacity: 1, y: 0 }}
                             exit={{ scale: 0.35, opacity: 0, y: 200 }}
