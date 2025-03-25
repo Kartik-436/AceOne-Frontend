@@ -7,10 +7,37 @@ import { toast } from "react-toastify";
 
 const AddToCartButton = ({ product, Name, Color, Size, onAddToCart }) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedSize, setSelectedSize] = useState(null);
-    const [selectedColor, setSelectedColor] = useState(null);
-    const [availableSizes, setavailableSizes] = useState(Array.isArray(Size) ? Size : []);
-    const [availableColors, setavailableColors] = useState(Array.isArray(Color) ? Color : []);
+    const [selectedSize, setSelectedSize] = useState("");
+    const [selectedColor, setSelectedColor] = useState("");
+
+    // Modify state initialization to handle different input types
+    const [availableSizes, setAvailableSizes] = useState([]);
+    const [availableColors, setAvailableColors] = useState([]);
+
+    // Add useEffect to properly set sizes and colors
+    useEffect(() => {
+        // Handle cases where Size or Color might be a string or an array
+        const processOptions = (option) => {
+            // If it's already an array, return it
+            if (Array.isArray(option)) return option;
+
+            // If it's a string, split it by comma and trim
+            if (typeof option === 'string') {
+                return option.split(',').map(item => item.trim());
+            }
+
+            // If no valid option, return empty array
+            return [];
+        };
+
+        // Set sizes
+        const processedSizes = processOptions(Size);
+        setAvailableSizes(processedSizes);
+
+        // Set colors
+        const processedColors = processOptions(Color);
+        setAvailableColors(processedColors);
+    }, [Size, Color]);
 
     const handleAdd = () => {
         if (selectedSize && selectedColor) {
@@ -24,7 +51,12 @@ const AddToCartButton = ({ product, Name, Color, Size, onAddToCart }) => {
     return (
         <>
             <button
-                onClick={() => setIsOpen(true)}
+                onClick={() => {
+                    // Reset selections when opening
+                    setSelectedSize("");
+                    setSelectedColor("");
+                    setIsOpen(true);
+                }}
                 id="Shp-Now-Home-Start"
                 className="px-4 py-1.5 text-sm rounded-full bg-[#fff] uppercase font-mono text-black font-bold tracking-wide text-nowrap"
             >
