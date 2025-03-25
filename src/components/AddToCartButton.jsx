@@ -65,7 +65,7 @@ const AddToCartButton = ({ product, CProduct, onAddToCart }) => {
                                         onChange={(e) => setSelectedSize(e.target.value)}
                                     >
                                         <option value="" disabled>Select Size</option>
-                                        {availableSizes.map((size) => (
+                                        {availableSizes?.map((size) => (
                                             <option key={size} value={size} className="bg-black text-white">
                                                 {size}
                                             </option>
@@ -81,7 +81,7 @@ const AddToCartButton = ({ product, CProduct, onAddToCart }) => {
                                         onChange={(e) => setSelectedColor(e.target.value)}
                                     >
                                         <option value="" disabled>Select Color</option>
-                                        {availableColors.map((color) => (
+                                        {availableColors?.map((color) => (
                                             <option key={color} value={color} className="bg-black text-white">
                                                 {color}
                                             </option>
