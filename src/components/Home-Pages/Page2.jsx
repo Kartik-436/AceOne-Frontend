@@ -258,7 +258,6 @@ const Page2 = ({ bestSelling, Discounted }) => {
                 <div className='flex items-center justify-center gap-2'>
                     <div>
                         <AddToCartButton product={product?._id} Name={product?.name} Color={product?.color} Size={product?.size} onAddToCart={handleAddToCart} />
-                        {console.log("Name =" + product?.name, "Color=" + product?.color, "Size=" + product?.size)}
                     </div>
                     <span
                         onClick={async () => {
