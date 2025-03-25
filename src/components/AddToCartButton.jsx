@@ -6,34 +6,12 @@ import { X } from "lucide-react";
 import { toast } from "react-toastify";
 import { getProductById } from "../utils/ProductService";
 
-const AddToCartButton = ({ product, onAddToCart }) => {
+const AddToCartButton = ({ product, CProduct, onAddToCart }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedSize, setSelectedSize] = useState(null);
     const [selectedColor, setSelectedColor] = useState(null);
-    const [CProduct, setCProduct] = useState(null);
     const [availableSizes, setavailableSizes] = useState(null);
     const [availableColors, setavailableColors] = useState(null);
-
-    useEffect(() => {
-        const getProduct = async (productId) => {
-            try {
-                const response = await getProductById(productId);
-
-                if (response.success) {
-                    setCProduct(response.product)
-                    setavailableSizes(CProduct?.size || "Error Getting Sizes");
-                    setavailableColors(CProduct?.color || "Error Getting Colours");
-                } else {
-                    toast.error("Error getting product !");
-                    console.error(response.error)
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
-        getProduct(product);
-    }, [])
 
     const handleAdd = () => {
         if (selectedSize && selectedColor) {

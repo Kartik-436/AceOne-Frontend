@@ -178,7 +178,7 @@ const Page3 = ({ Kids }) => {
                                 </div>
                                 <div className='flex items-center justify-center gap-2'>
                                     <div>
-                                        <AddToCartButton product={Kids[0]?._id} onAddToCart={handleAddToCart} />
+                                        <AddToCartButton product={Kids[0]?._id} CProduct={Kids[0]} onAddToCart={handleAddToCart} />
                                     </div>
                                     <span
                                         onClick={async () => {
