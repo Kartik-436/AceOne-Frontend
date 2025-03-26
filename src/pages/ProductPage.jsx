@@ -452,30 +452,32 @@ const ProductPage = () => {
                                             <img className='w-12 h-12 rounded-full object-cover' src={review.user.picture || "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcreazilla-store.fra1.digitaloceanspaces.com%2Ficons%2F3202933%2Fuser-circle-icon-md.png&f=1&nofb=1&ipt=3c31159b2e0bac086a52351ed5919af4e6936e024f7c3baa351b44782de00eb1&ipo=images"} alt="" />
                                             <h1 className='text-lg font-[poppins] font-semibold'>{review.user.fullName}</h1>
                                         </div>
-                                        <div className="flex items-center justify-between mb-2 pr-8">
-                                            <div className="flex items-center ml-5">
-                                                {renderStars(review.rating)}
-                                                <p className="text-gray-600 ml-5">{review.comment}</p>
-                                            </div>
-                                            {console.log(user)}
-                                            {(review?.user?._id === user?._id) && (
-                                                <div className="flex space-x-2">
-                                                    <button
-                                                        id="Shp-Now-Home-Start"
-                                                        onClick={() => handleEditReview(review)}
-                                                        className="text-blue-500 hover:text-blue-700 p-3 rounded-full"
-                                                    >
-                                                        <Edit2Icon size={20} />
-                                                    </button>
-                                                    <button
-                                                        id="Shp-Now-Home-Start"
-                                                        onClick={() => handleDeleteReview(review._id)}
-                                                        className="text-red-500 hover:text-red-700 p-3 rounded-full"
-                                                    >
-                                                        <TrashIcon size={20} />
-                                                    </button>
+                                        <div>
+                                            <div className="flex items-center justify-between mb-2 pr-8">
+                                                <div className="flex items-center ml-5">
+                                                    {renderStars(review.rating)}
                                                 </div>
-                                            )}
+                                                {console.log(user)}
+                                                {(review?.user?._id === user?._id) && (
+                                                    <div className="flex space-x-2">
+                                                        <button
+                                                            id="Shp-Now-Home-Start"
+                                                            onClick={() => handleEditReview(review)}
+                                                            className="text-blue-500 hover:text-blue-700 p-3 rounded-full"
+                                                        >
+                                                            <Edit2Icon size={20} />
+                                                        </button>
+                                                        <button
+                                                            id="Shp-Now-Home-Start"
+                                                            onClick={() => handleDeleteReview(review._id)}
+                                                            className="text-red-500 hover:text-red-700 p-3 rounded-full"
+                                                        >
+                                                            <TrashIcon size={20} />
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <p className="text-gray-600 ml-5">{review.comment}</p>
                                         </div>
                                     </div>
                                 ))}
