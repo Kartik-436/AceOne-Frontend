@@ -457,7 +457,7 @@ const ProductPage = () => {
                                                 {renderStars(review.rating)}
                                             </div>
                                             {/* Only show edit/delete for user's own reviews */}
-                                            {review.isCurrentUserReview && (
+                                            {(review.user._id === user._id) && (
                                                 <div className="flex space-x-2">
                                                     <button
                                                         onClick={() => handleEditReview(review)}
