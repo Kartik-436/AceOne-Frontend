@@ -164,7 +164,7 @@ const Page3 = ({ Kids }) => {
                     <motion.div
                         className="w-full hidden md:flex items-center justify-end"
                     >
-                        <motion.div onClick={() => { handleDelayNavigation(`product/${Kids[0]?._id}`) }} key={Kids[0]?._id} className='w-[32vw] h-[34vh] bg-[#ffffff4e] rounded-md flex items-center justify-between px-2.5'>
+                        <motion.div key={Kids[0]?._id} className='w-[32vw] h-[34vh] bg-[#ffffff4e] rounded-md flex items-center justify-between px-2.5'>
                             <motion.div
                                 initial='hidden'
                                 animate={isInView ? 'visible' : 'hidden'}
@@ -177,7 +177,8 @@ const Page3 = ({ Kids }) => {
                                     variants={fadeSideCome}
                                     className='absolute top-2 left-3 px-3 py-0.5 bg-[#ffbb00] text-white rounded-md uppercase font-mono font-medium text-xs'>Sale</motion.div>
 
-                                <img className='w-full h-full object-cover rounded-md text-black' src={Kids[0]?.image || "https://icon-library.com/images/products-icon-png/products-icon-png-12.jpg"} alt="Kids Image" />
+                                <img onClick={() => { handleDelayNavigation(`product/${Kids[0]?._id}`) }}
+                                    className='w-full h-full object-cover rounded-md text-black' src={Kids[0]?.image || "https://icon-library.com/images/products-icon-png/products-icon-png-12.jpg"} alt="Kids Image" />
                             </motion.div>
                             <motion.div
                                 initial='hidden'
@@ -185,7 +186,8 @@ const Page3 = ({ Kids }) => {
                                 variants={fadeSideGo}
                                 className="flex flex-col items-start justify-between h-full py-6 px-3"
                             >
-                                <div className="flex flex-col items-start justify-center gap-1.5">
+                                <div onClick={() => { handleDelayNavigation(`product/${Kids[0]?._id}`) }}
+                                    className="flex flex-col items-start justify-center gap-1.5">
                                     <div className='flex flex-col items-start gap-2'>
                                         <h1 className="text-black font-bold font-mono text-xl">{Kids[0]?.name}</h1>
                                         <div className='flex items-start flex-col w-full'>

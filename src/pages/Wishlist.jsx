@@ -151,14 +151,13 @@ const Wishlist = () => {
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {wishlist.map((product, index) => (
                                     <motion.div
-                                        onClick={() => { handleDelayNavigation(`product/${product?.product?._id}`) }}
                                         key={product.product._id || index}
                                         initial={{ opacity: 0, y: 60 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: index * 0.1 }}
                                         className="bg-[#1f1f1f] rounded-xl overflow-hidden shadow-xl flex flex-col justify-between"
                                     >
-                                        <div className='relative'>
+                                        <div onClick={() => { handleDelayNavigation(`product/${product?.product?._id}`) }} className='relative'>
                                             <img
                                                 src={product.product.image || "https://icon-library.com/images/products-icon-png/products-icon-png-12.jpg"}
                                                 alt={product.product.name}
@@ -172,9 +171,9 @@ const Wishlist = () => {
                                         </div>
 
                                         <div className='md:p-5 p-3 bg-[#fff] text-black'>
-                                            <h3 className='text-xl font-semibold mb-2'>{product.product.name}</h3>
+                                            <h3 onClick={() => { handleDelayNavigation(`product/${product?.product?._id}`) }} className='text-xl font-semibold mb-2'>{product.product.name}</h3>
                                             <div className='flex justify-between items-center'>
-                                                <div>
+                                                <div onClick={() => { handleDelayNavigation(`product/${product?.product?._id}`) }}>
                                                     {product.product.discount ? (
                                                         <div className='flex items-center gap-2'>
                                                             <span className='text-lg font-bold'>₹{Math.round(product.product.discountPrice)}</span>

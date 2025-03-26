@@ -567,7 +567,6 @@ const Store = (props) => {
                                                 </motion.div>
                                             ) : products.map(product => (
                                                 <motion.div
-                                                    onClick={() => { handleDelayNavigation(`product/${product?._id}`) }}
                                                     key={product._id}
                                                     data-key={product._id}
                                                     className='rounded-xl bg-gray-500 overflow-hidden shadow-xl flex flex-col justify-between'
@@ -578,7 +577,8 @@ const Store = (props) => {
                                                     }}
                                                     style={isMobile ? "" : dynamicStyle}
                                                 >
-                                                    <div className='relative'>
+                                                    <div onClick={() => { handleDelayNavigation(`product/${product?._id}`) }}
+                                                        className='relative'>
                                                         <img
                                                             src={product.image || "https://icon-library.com/images/products-icon-png/products-icon-png-12.jpg"}
                                                             alt={product.name}
@@ -592,9 +592,11 @@ const Store = (props) => {
                                                     </div>
 
                                                     <div className='md:p-5 p-3 bg-[#fff] text-black'>
-                                                        <h3 className='text-xl tracking-tight font-semibold mb-3.5'>{product.name}</h3>
+                                                        <h3 onClick={() => { handleDelayNavigation(`product/${product?._id}`) }}
+                                                            className='text-xl tracking-tight font-semibold mb-3.5'>{product.name}</h3>
                                                         <div className='flex justify-between items-center'>
-                                                            <div>
+                                                            <div onClick={() => { handleDelayNavigation(`product/${product?._id}`) }}
+                                                            >
                                                                 {product.discount ? (
                                                                     <div className='flex items-center gap-2'>
                                                                         <span className='text-lg font-bold'>₹{Math.round(product.discountPrice)}</span>

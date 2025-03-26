@@ -179,7 +179,6 @@ const Page2 = ({ bestSelling, Discounted }) => {
 
     const productCard = (product, index) => (
         <motion.div
-            onClick={() => { handleDelayNavigation(`product/${product?._id}`) }}
             key={product?._id}
             className='min-h-[60vh] w-[80vw] md:w-full flex flex-col items-center md:items-start gap-4 md:px-4 py-2 rounded-xl'
             initial="hidden"
@@ -197,6 +196,7 @@ const Page2 = ({ bestSelling, Discounted }) => {
             }}
         >
             <motion.div
+                onClick={() => { handleDelayNavigation(`product/${product?._id}`) }}
                 ref={imgContainerRef}
                 className='min-h-[53vh] md:w-full w-[75vw] rounded-xl bg-[#e8e8e848] relative flex items-center justify-center overflow-hidden'
                 variants={{
@@ -235,6 +235,7 @@ const Page2 = ({ bestSelling, Discounted }) => {
 
             <div className='flex w-full items-start justify-between px-2 gap-3 pr-5'>
                 <motion.div
+                    onClick={() => { handleDelayNavigation(`product/${product?._id}`) }}
                     className='flex flex-col items-start justify-center gap-0 pl-1'
                     variants={{
                         hidden: { opacity: 0, y: 20 },
