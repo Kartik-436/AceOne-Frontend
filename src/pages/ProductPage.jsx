@@ -11,6 +11,9 @@ import { useParams } from 'react-router-dom';
 import { getProductById } from '../utils/ProductService';
 import { motion } from 'framer-motion';
 import { Package2Icon } from 'lucide-react';
+import { toast } from 'react-toastify';
+import { addToCart } from '../utils/CartService';
+import { useCart } from '../utils/CartContext';
 
 const StarIcon = ({ filled, onClick, size = 20 }) => (
     <svg
@@ -77,6 +80,7 @@ const ProductPage = () => {
 
     useEffect(() => {
         const fetchProduct = async () => {
+            setLoading(true);
             try {
                 const response = await getProductById(id);
                 if (response.success) {
@@ -93,9 +97,42 @@ const ProductPage = () => {
         fetchProduct();
     }, [id]);
 
-    const handleAddToCart = () => {
-        // TODO: Implement add to cart functionality
-        console.log('Add to cart', { product, size: selectedSize, color: selectedColor, quantity });
+    const { isCartMenuOpen, setIsCartMenuOpen } = useCart();
+
+    const handleAddToCart = async (productId, quantity, selectedColor, selectedSize) => {
+        setIsCartMenuOpen(false); // Close cart menu before request
+        setLoading(true);
+
+        const response = await addToCart(productId, quantity, selectedColor, selectedSize);
+
+        if (response.success) {
+            window.location.reload();
+            toast.success("Item Added to your Cart !", {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            })
+            setIsCartMenuOpen(true)
+            setLoading(false);
+        } else {
+            toast.error("Error adding item to your Cart !", {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            })
+            setLoading(false);
+        }
+        setLoading(false);
     };
 
     const handleReviewSubmit = () => {
@@ -277,7 +314,7 @@ const ProductPage = () => {
                         <button
                             id="Shp-Now-Home-Start"
                             className="w-full px-4 py-2 rounded-md bg-[#ffbb00] text-black"
-                            onClick={handleAddToCart}
+                            onClick={() => { handleAddToCart(product._id, quantity, selectedColor, selectedSize) }}
                         >
                             Add to Cart
                         </button>
@@ -319,10 +356,10 @@ const ProductPage = () => {
                         )}
                     </div>
                 </div>
-            </div>
+            </div >
 
             {/* Review Modal */}
-            <CustomModal
+            <CustomModal CustomModal
                 isOpen={reviewModalOpen}
                 onClose={() => setReviewModalOpen(false)}
                 title="Add a Review"
@@ -354,7 +391,7 @@ const ProductPage = () => {
                 >
                     Submit Review
                 </button>
-            </CustomModal>
+            </CustomModal >
         </>
     );
 }
