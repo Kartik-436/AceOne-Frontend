@@ -220,7 +220,7 @@ const ProductPage = () => {
                                     key={size}
                                     id="Shp-Now-Home-Start"
                                     className={`px-4 py-2 border rounded cursor-pointer transition-all duration-150 ease-in-out ${selectedSize === size
-                                        ? 'bg-black text-[#ffbb00]'
+                                        ? 'bg-black text-[#fff]'
                                         : 'bg-white text-black'
                                         }`}
                                     onClick={() => setSelectedSize(size)}
