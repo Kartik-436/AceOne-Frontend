@@ -200,7 +200,7 @@ const ProductPage = () => {
                         <img
                             src={selectedImage}
                             alt={product.name}
-                            className="w-full h-[500px] object-cover"
+                            className="w-full h-[200px] md:h-[500px] object-cover"
                         />
                     </div>
                     <div className="flex space-x-2">
