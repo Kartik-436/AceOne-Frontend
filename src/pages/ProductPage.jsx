@@ -455,6 +455,7 @@ const ProductPage = () => {
                                         <div className="flex items-center justify-between mb-2 pl-8">
                                             <div className="flex items-center ml-5">
                                                 {renderStars(review.rating)}
+                                                <p className="text-gray-600 ml-5">{review.comment}</p>
                                             </div>
                                             {console.log(user)}
                                             {(review?.user?._id === user?._id) && (
@@ -476,7 +477,6 @@ const ProductPage = () => {
                                                 </div>
                                             )}
                                         </div>
-                                        <p className="text-gray-600 ml-5">{review.comment}</p>
                                     </div>
                                 ))}
                             </div>
