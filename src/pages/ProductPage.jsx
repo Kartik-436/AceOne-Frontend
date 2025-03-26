@@ -456,8 +456,8 @@ const ProductPage = () => {
                                             <div className="flex items-center ml-5">
                                                 {renderStars(review.rating)}
                                             </div>
-                                            {/* Only show edit/delete for user's own reviews */}
-                                            {(review.user._id === user._id) && (
+                                            {console.log(user)}
+                                            {(review?.user?._id === user?._id) && (
                                                 <div className="flex space-x-2">
                                                     <button
                                                         onClick={() => handleEditReview(review)}
