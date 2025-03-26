@@ -164,15 +164,17 @@ const ProductPage = () => {
                             onClick={() => setSelectedImage(product.image)}
                         />
                         {/* Additional Images */}
-                        {product.additionalImages?.map((img, index) => (
-                            <img
-                                key={index}
-                                src={img}
-                                alt={`${product.name} - Additional ${index + 1}`}
-                                className="w-20 h-20 object-cover cursor-pointer border rounded"
-                                onClick={() => setSelectedImage(img)}
-                            />
-                        ))}
+                        <div className='w-full px-3'>
+                            {product.additionalImages?.map((img, index) => (
+                                <img
+                                    key={index}
+                                    src={img}
+                                    alt={`₹{product.name} - Additional ₹{index + 1}`}
+                                    className="w-20 h-20 object-cover cursor-pointer border rounded"
+                                    onClick={() => setSelectedImage(img)}
+                                />
+                            ))}
+                        </div>
                     </div>
                 </div>
 
@@ -184,11 +186,11 @@ const ProductPage = () => {
                     {/* Pricing */}
                     <div className="flex items-center mb-4">
                         <span className="text-2xl font-bold text-green-600 mr-4">
-                            ${product.discountPrice || product.price}
+                            ₹{product.discountPrice || product.price}
                         </span>
                         {product.discountPrice && (
                             <span className="line-through text-gray-400">
-                                ${product.price}
+                                ₹{product.price}
                             </span>
                         )}
                         {product.discount > 0 && (
@@ -205,7 +207,7 @@ const ProductPage = () => {
                             {product.size.map((size) => (
                                 <button
                                     key={size}
-                                    className={`px-4 py-2 border rounded ${selectedSize === size
+                                    className={`px-4 py-2 border rounded cursor-pointer ₹{selectedSize === size
                                         ? 'bg-black text-white'
                                         : 'bg-white text-black'
                                         }`}
@@ -224,7 +226,7 @@ const ProductPage = () => {
                             {product.color.map((color) => (
                                 <button
                                     key={color}
-                                    className={`w-10 h-10 rounded-full border ${selectedColor === color
+                                    className={`w-10 h-10 rounded-full cursor-pointer border ₹{selectedColor === color
                                         ? 'ring-2 ring-black'
                                         : ''
                                         }`}
@@ -240,14 +242,14 @@ const ProductPage = () => {
                         <h3 className="font-semibold mb-2">Quantity</h3>
                         <div className="flex items-center">
                             <button
-                                className="px-3 py-1 border"
+                                className="px-3 py-1 border AddToCartInStore cursor-pointer"
                                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
                             >
                                 -
                             </button>
                             <span className="px-4">{quantity}</span>
                             <button
-                                className="px-3 py-1 border"
+                                className="px-3 py-1 border AddToCartInStore cursor-pointer"
                                 onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
                             >
                                 +
@@ -262,7 +264,7 @@ const ProductPage = () => {
                     <div className="flex space-x-4">
                         <button
                             id="Shp-Now-Home-Start"
-                            className="AddToCartInStore w-full px-4 py-2 bg-black text-white rounded hover:bg-gray-800 transition-colors"
+                            className="w-full px-4 py-2 bg-black text-white rounded hover:bg-gray-800 transition-colors"
                             onClick={handleAddToCart}
                         >
                             Add to Cart
@@ -274,7 +276,8 @@ const ProductPage = () => {
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-2xl font-bold">Reviews</h2>
                             <button
-                                className="px-4 py-2 border rounded"
+                                id="Shp-Now-Home-Start"
+                                className="px-4 py-2 border rounded cursor-pointer"
                                 onClick={() => setReviewModalOpen(true)}
                             >
                                 Write a Review
