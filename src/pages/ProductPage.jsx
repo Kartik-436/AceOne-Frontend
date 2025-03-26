@@ -18,7 +18,7 @@ const StarIcon = ({ filled, onClick, size = 20 }) => (
         viewBox="0 0 24 24"
         width={size}
         height={size}
-        fill={filled ? '#FFD700' : '#E0E0E0'}
+        fill={filled ? '#ffbb00' : '#E0E0E0'}
         onClick={onClick}
         className="cursor-pointer"
     >
@@ -306,6 +306,7 @@ const ProductPage = () => {
             {/* Review Modal */}
             <CustomModal
                 isOpen={reviewModalOpen}
+                className="fixed inset-0 bg-black/60 backdrop-blur-md z-50"
                 onClose={() => setReviewModalOpen(false)}
                 title="Add a Review"
             >
@@ -323,7 +324,7 @@ const ProductPage = () => {
                     <label htmlFor="review" className="block mb-2">Your Review</label>
                     <textarea
                         id="review"
-                        className="w-full border rounded p-2"
+                        className="w-full border rounded p-2 resize-none"
                         placeholder="Write your review here"
                         value={newReview.comment}
                         onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
@@ -331,7 +332,7 @@ const ProductPage = () => {
                     />
                 </div>
                 <button
-                    className="w-full px-4 py-2 bg-black text-white rounded hover:bg-gray-800"
+                    className="w-full px-4 py-2 bg-white text-black rounded hover:bg-gray-800"
                     onClick={handleReviewSubmit}
                 >
                     Submit Review
