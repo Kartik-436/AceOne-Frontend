@@ -47,7 +47,12 @@ export const updateOwnerProfile = async (formData) => {
 
 export const deleteOwner = async () => {
     try {
-        const response = await axios.delete("https://aceone-backend.up.railway.app/owner/profile", { withCredentials: true });
+        const response = await axios.delete("https://aceone-backend.up.railway.app/owner/profile", {
+            withCredentials: true,
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
         return response.data.success ? { success: true } : { success: false, message: response.data.message || "Failed to delete owner." };
     } catch (err) {
         return { success: false, message: err.response?.data?.message || "Something went wrong." };

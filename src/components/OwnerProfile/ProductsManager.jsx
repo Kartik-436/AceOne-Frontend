@@ -163,89 +163,87 @@ const ProductsManager = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Validate form first
+        // Extensive debugging logs
+        console.group('Product Submission Debug');
+        console.log('Full Form State:', JSON.parse(JSON.stringify(formState)));
+
+        // Validate form
         const errors = {};
-        const requiredFields = ['name', 'description', 'price', 'category', 'stock'];
 
-        requiredFields.forEach(field => {
-            const value = formState[field];
-            if (!value ||
-                (typeof value === 'string' && value.trim() === '') ||
-                (typeof value === 'number' && value <= 0)) {
-                errors[field] = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
-            }
-        });
+        // Extra verbose name validation
+        console.log('Name raw value:', formState.name);
+        console.log('Name type:', typeof formState.name);
+        console.log('Name trimmed:', formState.name?.trim());
 
-        // Additional validations
-        if (!formState.mainImageFile) errors.mainImage = "Main image is required";
-        if (formState.sizes.length === 0) errors.sizes = "At least one size is required";
-        if (formState.colors.length === 0) errors.colors = "At least one color is required";
+        if (!formState.name || formState.name.trim() === '') {
+            console.error('Name validation failed');
+            errors.name = 'Product name is required';
+        }
 
-        // Validate price and discount
-        const price = parseFloat(formState.price);
-        const discount = parseFloat(formState.discount || 0);
-
-        if (isNaN(price) || price <= 0) errors.price = "Valid price is required";
-        if (discount < 0 || discount > 100) errors.discount = "Discount must be between 0 and 100";
-
-        // Set errors
-        setFormState(prev => ({ ...prev, errors }));
-
-        // Check if there are any errors
+        // If errors exist, set them and return
         if (Object.keys(errors).length > 0) {
-            console.error("Validation Errors:", errors);
+            console.error('Validation Errors:', errors);
+            setFormState(prev => ({
+                ...prev,
+                errors
+            }));
+            console.groupEnd();
             return;
         }
 
-        // Proceed with form submission
         setLoading(true);
         try {
             const formData = new FormData();
 
-            // Debug: Log all form data before submission
-            console.log('Form State:', formState);
+            // Extremely explicit field appending with type checks and logging
+            const appendField = (key, value) => {
+                console.log(`Appending ${key}:`, value, 'Type:', typeof value);
 
-            // Calculate discounted price
-            const discountedPrice = calculateDiscountedPrice(formState.price, formState.discount);
+                // Ensure value is string or converted to string
+                const stringValue = value === null || value === undefined
+                    ? ''
+                    : (typeof value === 'object'
+                        ? JSON.stringify(value)
+                        : value.toString().trim());
 
-            // Prepare product data
-            const productDataToSubmit = {
-                name: formState.name,
-                description: formState.description,
-                price: parseFloat(formState.price).toFixed(2),
-                discountPercentage: parseFloat(formState.discount || 0).toFixed(2),
-                discountedPrice: discountedPrice,
-                sizes: JSON.stringify(formState.sizes),
-                colors: JSON.stringify(formState.colors),
-                category: formState.category,
-                stock: parseInt(formState.stock, 10),
-                brand: 'AceOne'
+                formData.append(key, stringValue);
             };
 
-            // Debug: Log product data to submit
-            console.log('Product Data to Submit:', productDataToSubmit);
+            // Append all fields with logging
+            appendField('name', formState.name);
+            appendField('description', formState.description);
+            appendField('price', formState.price);
+            appendField('discount', formState.discount || '0');
+            appendField('size', formState.sizes);
+            appendField('color', formState.colors);
+            appendField('category', formState.category);
+            appendField('stock', formState.stock);
 
-            // Append main image
+            // Append main image with logging
             if (formState.mainImageFile) {
+                console.log('Main Image File:', formState.mainImageFile);
                 formData.append('image', formState.mainImageFile);
+            } else {
+                console.warn('No main image file found');
             }
 
-            // Append additional images
-            formState.additionalImageFiles.forEach(file => {
+            // Append additional images with logging
+            formState.additionalImageFiles.forEach((file, index) => {
+                console.log(`Additional Image ${index}:`, file);
                 formData.append('additionalImages', file);
             });
 
-            // Append product data
-            Object.entries(productDataToSubmit).forEach(([key, value]) => {
-                formData.append(key, value);
-            });
-
-            // Debug: Log FormData contents
+            // Log all FormData entries
+            console.log('FormData Entries:');
             for (let [key, value] of formData.entries()) {
                 console.log(`${key}:`, value);
             }
 
+            console.groupEnd();
+
             const response = await addProduct(formData);
+
+            console.log('Backend Response:', response);
 
             if (response.success) {
                 toast.success(`${formState.name} Added Successfully`);
@@ -265,12 +263,10 @@ const ProductsManager = () => {
                     errors: {}
                 });
             } else {
-                // Log the specific error message from the backend
                 console.error('Backend Error:', response);
                 toast.error(response.message || "Failed to add product");
             }
         } catch (error) {
-            // Log the full error object
             console.error('Submission Error:', error);
             toast.error("Error adding product");
         } finally {
