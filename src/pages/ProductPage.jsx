@@ -449,9 +449,9 @@ const ProductPage = () => {
                                 {reviews.map((review) => (
                                     <div key={review._id} className="border-b pb-4 relative">
                                         <div className="flex items-center justify-between mb-2">
-                                            <div className='flex items-end justify-start gap-3'>
-                                                <h1 className='text-lg font-[poppins] font-semibold'>{review.user.fullName}</h1>
+                                            <div className='flex items-center justify-start gap-3'>
                                                 <img className='w-12 h-12 rounded-full object-cover' src={review.user.picture} alt="" />
+                                                <h1 className='text-lg font-[poppins] font-semibold'>{review.user.fullName}</h1>
                                             </div>
                                             <div className="flex items-center ml-5">
                                                 {renderStars(review.rating)}
