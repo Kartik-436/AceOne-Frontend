@@ -340,7 +340,7 @@ const Dashboard = ({ setActive, setActiveTab }) => {
                                             <ConfirmationModal
                                                 isOpen={confirmModalOpen}
                                                 onClose={() => { setConfirmModalOpen(false) }}
-                                                onConfirm={() => { handleDeleteProduct(product._id) }}
+                                                onConfirm={() => { handleDeleteProduct(selectedProduct?._id) }}
                                                 product={selectedProduct}
                                             />
 

@@ -23,20 +23,19 @@ const ProductsManager = () => {
 
     const refreshProducts = async () => {
         try {
-            setLoading(true)
+            setLoading(true);
             const response = await getAllProducts();
-
             if (response.success) {
                 setProducts(response.products);
             } else {
                 setError(response.message);
-                console.error("Getting Products Error: ", response.message)
+                console.error("Error fetching products:", response.message);
             }
         } catch (error) {
-            console.error("Getting Products Error: ", error)
+            console.error("Error fetching products:", error);
         }
-        setLoading(false)
-    }
+        setLoading(false);
+    };
 
     const [productData, setProductData] = useState({
         name: '',
@@ -52,17 +51,15 @@ const ProductsManager = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setProductData(prev => ({
-            ...prev,
-            [name]: value
-        }));
+        setProductData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleMultiSelectChange = (e, field) => {
-        const selectedValues = Array.from(e.target.selectedOptions, option => option.value);
+    const handleSizeChange = (size) => {
         setProductData(prev => ({
             ...prev,
-            [field]: selectedValues
+            sizes: prev.sizes.includes(size)
+                ? prev.sizes.filter(s => s !== size)
+                : [...prev.sizes, size]
         }));
     };
 
@@ -70,11 +67,8 @@ const ProductsManager = () => {
         const file = e.target.files[0];
         if (file) {
             setMainImageFile(file);
-
             const reader = new FileReader();
-            reader.onloadend = () => {
-                setMainImagePreview(reader.result);
-            };
+            reader.onloadend = () => setMainImagePreview(reader.result);
             reader.readAsDataURL(file);
         }
     };
@@ -86,7 +80,6 @@ const ProductsManager = () => {
 
     const validateForm = () => {
         const newErrors = {};
-
         if (!productData.name.trim()) newErrors.name = "Product name is required";
         if (!productData.description.trim()) newErrors.description = "Product description is required";
         if (!productData.price) newErrors.price = "Price is required";
@@ -94,75 +87,38 @@ const ProductsManager = () => {
         if (productData.sizes.length === 0) newErrors.sizes = "At least one size is required";
         if (productData.colors.length === 0) newErrors.colors = "At least one color is required";
         if (!productData.stock) newErrors.stock = "Stock quantity is required";
-        if (!mainImageFile) newErrors.mainImage = "Product main image is required";
-
+        if (!mainImageFile) newErrors.mainImage = "Main image is required";
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         if (!validateForm()) return;
-
         setLoading(true);
 
         try {
             const formData = new FormData();
-
-            // Append main image
-            if (mainImageFile) {
-                formData.append('image', mainImageFile);
-            }
-
-            // Append additional images
-            additionalImageFiles.forEach((file, index) => {
-                formData.append('additionalImages', file);
+            formData.append('image', mainImageFile);
+            additionalImageFiles.forEach((file) => formData.append('additionalImages', file));
+            Object.keys(productData).forEach(key => {
+                formData.append(key, Array.isArray(productData[key]) ? JSON.stringify(productData[key]) : productData[key]);
             });
 
-            // Append other product data
-            formData.append('name', productData.name);
-            formData.append('description', productData.description);
-            formData.append('price', productData.price);
-            formData.append('discount', productData.discount || 0);
-            formData.append('brand', productData.brand);
-
-            // Append sizes and colors as JSON strings
-            formData.append('size', JSON.stringify(productData.sizes));
-            formData.append('color', JSON.stringify(productData.colors));
-
-            formData.append('category', productData.category);
-            formData.append('stock', productData.stock);
-
             const response = await addProduct(formData);
-
             if (response.success) {
                 toast.success(`${productData.name} Added Successfully`);
-
-                // Reset form
                 setProductData({
-                    name: '',
-                    description: '',
-                    price: '',
-                    discount: '',
-                    sizes: [],
-                    colors: [],
-                    category: '',
-                    stock: '',
-                    brand: 'AceOne'
+                    name: '', description: '', price: '', discount: '', sizes: [], colors: [], category: '', stock: '', brand: 'AceOne'
                 });
                 setMainImageFile(null);
                 setAdditionalImageFiles([]);
                 setMainImagePreview(null);
-
-                // Refresh products list
                 await refreshProducts();
             } else {
                 toast.error(response.message || `Failed to add product!`);
-                console.error('Error adding product:', response.message);
             }
         } catch (error) {
-            console.error('Error adding product:', error);
             toast.error(error.message || `Failed to add product!`);
         } finally {
             setLoading(false);
@@ -170,10 +126,8 @@ const ProductsManager = () => {
     };
 
     useEffect(() => {
-        ; (async () => {
-            await refreshProducts();
-        })()
-    }, [])
+        refreshProducts();
+    }, []);
 
     return (
         <>
@@ -297,24 +251,19 @@ const ProductsManager = () => {
                             </div>
 
                             {/* Sizes */}
-                            <div>
-                                <label className='block text-sm font-medium mb-1'>
-                                    Sizes <span className='text-red-500'>*</span>
-                                </label>
-                                <select
-                                    multiple
-                                    name="sizes"
-                                    value={productData.sizes}
-                                    onChange={(e) => handleMultiSelectChange(e, 'sizes')}
-                                    className='w-full bg-[#2a2a2a] border border-[#3a3a3a] rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#ffbb00] h-24'
-                                    required
-                                >
-                                    {sizes.map((size) => (
-                                        <option key={size} value={size}>{size}</option>
-                                    ))}
-                                </select>
-                                {errors.sizes && <p className='text-red-500 text-xs mt-1'>{errors.sizes}</p>}
+                            <div className='flex flex-wrap gap-2'>
+                                {sizes.map(size => (
+                                    <label key={size} className='flex items-center gap-2'>
+                                        <input
+                                            type='checkbox'
+                                            checked={productData.sizes.includes(size)}
+                                            onChange={() => handleSizeChange(size)}
+                                        />
+                                        {size}
+                                    </label>
+                                ))}
                             </div>
+                            {errors.sizes && <p className='text-red-500 text-xs'>{errors.sizes}</p>}
 
                             {/* Colors */}
                             <div>
