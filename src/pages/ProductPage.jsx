@@ -218,8 +218,9 @@ const ProductPage = () => {
                             {product.size.map((size) => (
                                 <button
                                     key={size}
+                                    id="Shp-Now-Home-Start"
                                     className={`px-4 py-2 border rounded cursor-pointer transition-all duration-150 ease-in-out ${selectedSize === size
-                                        ? 'bg-black text-white'
+                                        ? 'bg-black text-[#ffbb00]'
                                         : 'bg-white text-black'
                                         }`}
                                     onClick={() => setSelectedSize(size)}
