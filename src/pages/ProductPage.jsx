@@ -136,12 +136,14 @@ const ProductPage = () => {
     };
 
     const handleReviewSubmit = () => {
-        // TODO: Implement review submission logic
         if (!isLoggedIn) {
-            alert('Please log in to submit a review');
+            toast.error('Please log in to submit a review');
+            handleDelayNavigation("login");
             return;
         }
-        console.log('Submit review', newReview);
+
+        toast.error("Review functionality still in process !")
+
         setReviewModalOpen(false);
     };
 
