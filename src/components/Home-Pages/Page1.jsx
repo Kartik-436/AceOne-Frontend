@@ -168,7 +168,7 @@ const Page1 = ({ Discounted }) => {
                         variants={fadeInCome}
                         className='w-full md:flex items-center justify-end hidden'
                     >
-                        <motion.div key={Discounted[0]?._id} className='w-[32vw] h-[34vh] bg-[#ffffff4e] rounded-md flex items-center justify-between px-2.5'>
+                        <motion.div onClick={() => { handleDelayNavigation(`product/${Discounted[0]?._id}`) }} key={Discounted[0]?._id} className='w-[32vw] h-[34vh] bg-[#ffffff4e] rounded-md flex items-center justify-between px-2.5'>
                             <motion.div
                                 initial='hidden'
                                 animate={isInView ? 'visible' : 'hidden'}
