@@ -264,7 +264,7 @@ const ProductPage = () => {
                     <div className="flex space-x-4">
                         <button
                             id="Shp-Now-Home-Start"
-                            className="w-full px-4 py-2 bg-black text-white rounded hover:bg-gray-800 transition-colors"
+                            className="w-full px-4 py-2 bg-[#ffbb00] text-black rounded"
                             onClick={handleAddToCart}
                         >
                             Add to Cart
