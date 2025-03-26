@@ -161,19 +161,21 @@ const ProductsManager = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Centralize validation logic
+        // Validate form
         const errors = {};
         const requiredFields = ['name', 'description', 'price', 'category', 'stock'];
 
         requiredFields.forEach(field => {
-            // Use strict checking to catch empty strings and undefined
-            if (!formState[field] ||
-                (typeof formState[field] === 'string' && formState[field].trim() === '')) {
+            // Use more strict checking for all fields
+            const value = formState[field];
+            if (!value ||
+                (typeof value === 'string' && value.trim() === '') ||
+                (typeof value === 'number' && value <= 0)) {
                 errors[field] = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
             }
         });
 
-        // Additional validations
+        // Additional specific validations
         if (!formState.mainImageFile) errors.mainImage = "Main image is required";
         if (formState.sizes.length === 0) errors.sizes = "At least one size is required";
         if (formState.colors.length === 0) errors.colors = "At least one color is required";
@@ -186,10 +188,16 @@ const ProductsManager = () => {
         if (discount < 0 || discount > 100) errors.discount = "Discount must be between 0 and 100";
 
         // Set errors
-        setFormState(prev => ({ ...prev, errors }));
+        setFormState(prev => ({
+            ...prev,
+            errors
+        }));
 
         // Check if there are any errors
-        if (Object.keys(errors).length > 0) return;
+        if (Object.keys(errors).length > 0) {
+            console.log("Validation Errors:", errors);  // Add this for debugging
+            return;
+        }
 
         // Proceed with form submission
         setLoading(true);
