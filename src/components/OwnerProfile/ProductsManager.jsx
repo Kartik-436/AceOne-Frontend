@@ -211,7 +211,112 @@ const ProductsManager = () => {
                     </h2>
 
                     <form onSubmit={handleSubmit} className='space-y-6'>
-                        {/* Previous code for image upload remains the same */}
+                        {/* Image Upload Section */}
+                        <div className='grid md:grid-cols-2 gap-6'>
+                            {/* Main Image Upload */}
+                            <div>
+                                <label className='block text-sm font-medium mb-2'>
+                                    Main Product Image <span className='text-red-500'>*</span>
+                                </label>
+                                <div className='relative group'>
+                                    <input
+                                        type="file"
+                                        id="mainImage"
+                                        accept="image/*"
+                                        className='hidden'
+                                        onChange={(e) => handleImageChange(e, 'main')}
+                                    />
+                                    <label
+                                        htmlFor="mainImage"
+                                        className='block w-full h-64 border-2 border-dashed border-[#ffbb00] rounded-lg cursor-pointer overflow-hidden'
+                                    >
+                                        {formState.mainImagePreview ? (
+                                            <img
+                                                src={formState.mainImagePreview}
+                                                alt="Preview"
+                                                className='w-full h-full object-cover group-hover:opacity-70 transition-opacity'
+                                            />
+                                        ) : (
+                                            <div className='flex flex-col items-center justify-center h-full text-[#ffbb00]'>
+                                                <span>Click to Upload Main Image</span>
+                                            </div>
+                                        )}
+                                    </label>
+                                </div>
+                                {formState.errors.mainImage && (
+                                    <p className='text-red-500 text-xs mt-1'>
+                                        {formState.errors.mainImage}
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* Additional Images Upload */}
+                            <div>
+                                <label className='block text-sm font-medium mb-2'>
+                                    Additional Images (Optional)
+                                </label>
+                                <input
+                                    type="file"
+                                    multiple
+                                    accept="image/*"
+                                    className='w-full bg-[#3a3a3a] border border-[#4a4a4a] rounded-lg p-3'
+                                    onChange={(e) => handleImageChange(e, 'additional')}
+                                />
+                                {formState.additionalImageFiles.length > 0 && (
+                                    <p className='text-xs text-gray-400 mt-2'>
+                                        {formState.additionalImageFiles.length} additional image(s) selected
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Product Details Grid */}
+                        <div className='grid md:grid-cols-2 gap-4'>
+                            {/* Product Name */}
+                            <div>
+                                <label className='block text-sm font-medium mb-1'>
+                                    Product Name <span className='text-red-500'>*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    name="name"
+                                    value={formState.name}
+                                    onChange={handleInputChange}
+                                    className='w-full bg-[#3a3a3a] border border-[#4a4a4a] rounded-lg p-2'
+                                    placeholder="Enter product name"
+                                />
+                                {formState.errors.name && (
+                                    <p className='text-red-500 text-xs mt-1'>
+                                        {formState.errors.name}
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* Category Dropdown */}
+                            <div>
+                                <label className='block text-sm font-medium mb-1'>
+                                    Category <span className='text-red-500'>*</span>
+                                </label>
+                                <select
+                                    name="category"
+                                    value={formState.category}
+                                    onChange={handleInputChange}
+                                    className='w-full bg-[#3a3a3a] border border-[#4a4a4a] rounded-lg p-2'
+                                >
+                                    <option value="">Select Category</option>
+                                    {categories.map(cat => (
+                                        <option key={cat} value={cat}>
+                                            {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                                        </option>
+                                    ))}
+                                </select>
+                                {formState.errors.category && (
+                                    <p className='text-red-500 text-xs mt-1'>
+                                        {formState.errors.category}
+                                    </p>
+                                )}
+                            </div>
+                        </div>
 
                         {/* Sizes Selection */}
                         <div>
@@ -243,34 +348,127 @@ const ProductsManager = () => {
                             )}
                         </div>
 
-                        {/* Rest of the code remains the same */}
-
-                        {/* Category Dropdown remains the same */}
+                        {/* Colors Management */}
                         <div>
-                            <label className='block text-sm font-medium mb-1'>
-                                Category <span className='text-red-500'>*</span>
+                            <label className='block text-sm font-medium mb-2'>
+                                Colors <span className='text-red-500'>*</span>
                             </label>
-                            <select
-                                name="category"
-                                value={formState.category}
-                                onChange={handleInputChange}
-                                className='w-full bg-[#3a3a3a] border border-[#4a4a4a] rounded-lg p-2'
-                            >
-                                <option value="">Select Category</option>
-                                {categories.map(cat => (
-                                    <option key={cat} value={cat}>
-                                        {cat.charAt(0).toUpperCase() + cat.slice(1)}
-                                    </option>
+                            <div className='flex gap-2 mb-2'>
+                                <input
+                                    type="text"
+                                    value={formState.colorInput || ''}
+                                    onChange={(e) => setFormState(prev => ({
+                                        ...prev,
+                                        colorInput: e.target.value,
+                                        errors: { ...prev.errors, colors: '' }
+                                    }))}
+                                    placeholder="Enter color name"
+                                    className='flex-grow bg-[#3a3a3a] border border-[#4a4a4a] rounded-lg p-2'
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => handleColorManagement('add')}
+                                    className='bg-[#ffbb00] text-black px-4 py-2 rounded-lg'
+                                >
+                                    Add Color
+                                </button>
+                            </div>
+
+                            {/* Color Tags */}
+                            <div className='flex flex-wrap gap-2'>
+                                {formState.colors.map(color => (
+                                    <span
+                                        key={color}
+                                        className='bg-[#4a4a4a] text-white px-3 py-1 rounded-full flex items-center'
+                                    >
+                                        {color}
+                                        <button
+                                            type="button"
+                                            onClick={() => handleColorManagement('remove', color)}
+                                            className='ml-2 text-red-400 hover:text-red-600'
+                                        >
+                                            ×
+                                        </button>
+                                    </span>
                                 ))}
-                            </select>
-                            {formState.errors.category && (
+                            </div>
+                            {formState.errors.colors && (
                                 <p className='text-red-500 text-xs mt-1'>
-                                    {formState.errors.category}
+                                    {formState.errors.colors}
                                 </p>
                             )}
                         </div>
 
-                        {/* Remaining form code stays the same */}
+                        {/* Price and Stock */}
+                        <div className='grid md:grid-cols-2 gap-4'>
+                            <div>
+                                <label className='block text-sm font-medium mb-1'>
+                                    Price <span className='text-red-500'>*</span>
+                                </label>
+                                <input
+                                    type="number"
+                                    name="price"
+                                    value={formState.price}
+                                    onChange={handleInputChange}
+                                    className='w-full bg-[#3a3a3a] border border-[#4a4a4a] rounded-lg p-2'
+                                    placeholder="Enter price"
+                                    min="0"
+                                    step="0.01"
+                                />
+                                {formState.errors.price && (
+                                    <p className='text-red-500 text-xs mt-1'>
+                                        {formState.errors.price}
+                                    </p>
+                                )}
+                            </div>
+                            <div>
+                                <label className='block text-sm font-medium mb-1'>
+                                    Stock <span className='text-red-500'>*</span>
+                                </label>
+                                <input
+                                    type="number"
+                                    name="stock"
+                                    value={formState.stock}
+                                    onChange={handleInputChange}
+                                    className='w-full bg-[#3a3a3a] border border-[#4a4a4a] rounded-lg p-2'
+                                    placeholder="Enter stock quantity"
+                                    min="0"
+                                />
+                                {formState.errors.stock && (
+                                    <p className='text-red-500 text-xs mt-1'>
+                                        {formState.errors.stock}
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Description */}
+                        <div>
+                            <label className='block text-sm font-medium mb-1'>
+                                Description <span className='text-red-500'>*</span>
+                            </label>
+                            <textarea
+                                name="description"
+                                value={formState.description}
+                                onChange={handleInputChange}
+                                className='w-full bg-[#3a3a3a] border border-[#4a4a4a] rounded-lg p-2 h-24'
+                                placeholder="Enter product description"
+                            />
+                            {formState.errors.description && (
+                                <p className='text-red-500 text-xs mt-1'>
+                                    {formState.errors.description}
+                                </p>
+                            )}
+                        </div>
+
+                        {/* Submit Button */}
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className='w-full bg-[#ffbb00] text-black font-bold py-3 rounded-lg transition-colors duration-300 hover:bg-yellow-500 disabled:opacity-50'
+                        >
+                            {loading ? 'Adding Product...' : 'Add Product'}
+                        </button>
                     </form>
                 </div>
             </div>
