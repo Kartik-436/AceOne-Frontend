@@ -356,7 +356,7 @@ const Store = (props) => {
         return (
             <React.Fragment>
 
-                <div className='h-screen w-full fixed inset-0 backdrop-blur-sm'>
+                <div>
                     <AnimatePresence>
                         {isOpen && (
                             <motion.div
