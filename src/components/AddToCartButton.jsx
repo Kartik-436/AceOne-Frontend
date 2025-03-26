@@ -52,7 +52,6 @@ const AddToCartButton = ({ product, Name, Color, Size, onAddToCart }) => {
         <>
             <button
                 onClick={() => {
-                    // Reset selections when opening
                     setSelectedSize("");
                     setSelectedColor("");
                     setIsOpen(true);
