@@ -331,7 +331,7 @@ const ProductPage = () => {
                     />
                 </div>
                 <button
-                    className="w-full px-4 py-2 bg-white text-black rounded hover:bg-gray-800"
+                    className="w-full px-4 py-2 bg-white cursor-pointer text-black rounded AddToCartInStore"
                     onClick={handleReviewSubmit}
                 >
                     Submit Review
