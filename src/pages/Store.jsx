@@ -418,7 +418,14 @@ const Store = (props) => {
 
                                     <div className="mt-6 pt-3 border-t border-gray-700 flex justify-center">
                                         <button
-                                            onClick={() => { handleAddToCart(pdd, selectedColor, selectedSize) }}
+                                            onClick={() => {
+                                                if (selectedSize && selectedColor) {
+                                                    handleAddToCart(pdd, selectedColor, selectedSize)
+                                                    setIsOpen(false);
+                                                } else {
+                                                    toast.error("Please select size and color!");
+                                                }
+                                            }}
                                             id="Shp-Now-Home-Start"
                                             className="px-4 py-2 text-sm rounded-full bg-[#fff] uppercase font-mono text-black font-bold tracking-wide text-nowrap"
                                         >
