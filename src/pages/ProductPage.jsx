@@ -169,7 +169,7 @@ const ProductPage = () => {
                                 <img
                                     key={index}
                                     src={img}
-                                    alt={`₹{product.name} - Additional ₹{index + 1}`}
+                                    alt={`${product.name} - Additional ${index + 1}`}
                                     className="w-20 h-20 object-cover cursor-pointer border rounded"
                                     onClick={() => setSelectedImage(img)}
                                 />
@@ -194,7 +194,7 @@ const ProductPage = () => {
                             </span>
                         )}
                         {product.discount > 0 && (
-                            <span className="ml-4 bg-red-500 text-white px-2 py-1 rounded text-sm">
+                            <span className="ml-4 bg-[#ffbb00] text-white px-2 py-1 rounded text-sm">
                                 {product.discount}% OFF
                             </span>
                         )}
@@ -207,7 +207,7 @@ const ProductPage = () => {
                             {product.size.map((size) => (
                                 <button
                                     key={size}
-                                    className={`px-4 py-2 border rounded cursor-pointer ₹{selectedSize === size
+                                    className={`px-4 py-2 border rounded cursor-pointer ${selectedSize === size
                                         ? 'bg-black text-white'
                                         : 'bg-white text-black'
                                         }`}
@@ -226,7 +226,7 @@ const ProductPage = () => {
                             {product.color.map((color) => (
                                 <button
                                     key={color}
-                                    className={`w-10 h-10 rounded-full cursor-pointer border ₹{selectedColor === color
+                                    className={`w-10 h-10 rounded-full cursor-pointer border ${selectedColor === color
                                         ? 'ring-2 ring-black'
                                         : ''
                                         }`}
