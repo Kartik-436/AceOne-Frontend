@@ -156,7 +156,7 @@ const ProductPage = () => {
             <Transition animate={animate} />
             {isLoggedIn ? <AfterSignedInNavBar /> : <BeforeSignedInNavBar />}
 
-            <div className=" mt-[10.6vh] mx-auto px-4 py-8 grid md:grid-cols-2 gap-8">
+            <div className=" mt-[10.6vh] mx-auto px-4 bg-[#fbffef] py-8 grid md:grid-cols-2 gap-8">
                 {/* Image Gallery */}
                 <div className="flex flex-col">
                     <div className="mb-4 border rounded-lg overflow-hidden">
@@ -253,14 +253,14 @@ const ProductPage = () => {
                         <h3 className="font-semibold mb-2">Quantity</h3>
                         <div className="flex items-center">
                             <button
-                                className="px-3 py-1 border AddToCartInStore cursor-pointer"
+                                className="px-3 py-1 text-xl border AddToCartInStore cursor-pointer"
                                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
                             >
                                 -
                             </button>
                             <span className="px-4">{quantity}</span>
                             <button
-                                className="px-3 py-1 border AddToCartInStore cursor-pointer"
+                                className="px-3 py-1 text-xl border AddToCartInStore cursor-pointer"
                                 onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
                             >
                                 +
