@@ -447,12 +447,12 @@ const ProductPage = () => {
                         {reviews && reviews.length > 0 ? (
                             <div className="space-y-4">
                                 {reviews.map((review) => (
-                                    <div key={review._id} className="border-b pb-4 relative">
+                                    <div key={review._id} className="border-b pb-4 relative flex flex-col gap-2">
                                         <div className='flex items-center justify-start gap-3'>
                                             <img className='w-12 h-12 rounded-full object-cover' src={review.user.picture} alt="" />
                                             <h1 className='text-lg font-[poppins] font-semibold'>{review.user.fullName}</h1>
                                         </div>
-                                        <div className="flex items-center justify-between mb-2">
+                                        <div className="flex items-center justify-between mb-2 pl-8">
                                             <div className="flex items-center ml-5">
                                                 {renderStars(review.rating)}
                                             </div>
@@ -460,14 +460,16 @@ const ProductPage = () => {
                                             {(review?.user?._id === user?._id) && (
                                                 <div className="flex space-x-2">
                                                     <button
+                                                        id="Shp-Now-Home-Start"
                                                         onClick={() => handleEditReview(review)}
-                                                        className="text-blue-500 hover:text-blue-700"
+                                                        className="text-blue-500 hover:text-blue-700 p-3 rounded-full"
                                                     >
                                                         <Edit2Icon size={20} />
                                                     </button>
                                                     <button
+                                                        id="Shp-Now-Home-Start"
                                                         onClick={() => handleDeleteReview(review._id)}
-                                                        className="text-red-500 hover:text-red-700"
+                                                        className="text-red-500 hover:text-red-700 p-3 rounded-full"
                                                     >
                                                         <TrashIcon size={20} />
                                                     </button>
