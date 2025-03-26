@@ -236,7 +236,7 @@ const ProductPage = () => {
                         <span className="text-2xl font-bold text-green-600 mr-4">
                             ₹{product.discountPrice || product.price}
                         </span>
-                        {product.discountPrice && (
+                        {product.discountPrice > 0 && (
                             <span className="line-through text-gray-400">
                                 ₹{product.price}
                             </span>
