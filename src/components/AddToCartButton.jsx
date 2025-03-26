@@ -98,7 +98,7 @@ const AddToCartButton = ({ product, Name, Color, Size, onAddToCart }) => {
                                     >
                                         <option value="" disabled>Select Size</option>
                                         {availableSizes?.map((size) => (
-                                            <option key={size} value={size} className="bg-black text-white">
+                                            <option key={size} value={size} className="bg-black text-white selection:bg-[#ffbb00]">
                                                 {size}
                                             </option>
                                         ))}
@@ -114,7 +114,7 @@ const AddToCartButton = ({ product, Name, Color, Size, onAddToCart }) => {
                                     >
                                         <option value="" disabled>Select Color</option>
                                         {availableColors?.map((color) => (
-                                            <option key={color} value={color} className="bg-black text-white">
+                                            <option key={color} value={color} className="bg-black text-white selection:bg-[#ffbb00]">
                                                 {color}
                                             </option>
                                         ))}
