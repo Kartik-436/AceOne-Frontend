@@ -241,9 +241,12 @@ const ProductsManager = () => {
 
             console.groupEnd();
 
+            console.log(formData)
+
             const response = await addProduct(formData);
 
             console.log('Backend Response:', response);
+            console.log(formData)
 
             if (response.success) {
                 toast.success(`${formState.name} Added Successfully`);
