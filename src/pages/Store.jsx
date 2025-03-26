@@ -418,7 +418,7 @@ const Store = (props) => {
 
                                     <div className="mt-6 pt-3 border-t border-gray-700 flex justify-center">
                                         <button
-                                            onClick={() => { handleAddToCart(pdd, 1, selectedColor, selectedSize) }}
+                                            onClick={() => { handleAddToCart(pdd, selectedColor, selectedSize) }}
                                             id="Shp-Now-Home-Start"
                                             className="px-4 py-1.5 text-sm rounded-full bg-[#fff] uppercase font-mono text-black font-bold tracking-wide text-nowrap"
                                         >
