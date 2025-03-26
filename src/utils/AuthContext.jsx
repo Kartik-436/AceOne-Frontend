@@ -12,13 +12,13 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         axios.get("https://aceone-backend.up.railway.app/user/profile", { withCredentials: true })
             .then(response => {
-                if (response.data.success) setUser(response.data.user);
+                if (response.data.success) setUser(response.data.data);
             })
             .catch(() => setUser(null));
 
         axios.get("https://aceone-backend.up.railway.app/owner/profile", { withCredentials: true })
             .then(response => {
-                if (response.data.success) setOwner(response.data.owner);
+                if (response.data.success) setOwner(response.data.data);
             })
             .catch(() => setOwner(null));
     }, []);
