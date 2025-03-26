@@ -145,28 +145,30 @@ const ProductsManager = () => {
         const { name, value } = e.target;
 
         setFormState(prev => {
-            // Special handling for price and discount to ensure numeric input
-            const newState = {
+            // Trim the value to ensure empty spaces are not considered valid
+            const trimmedValue = typeof value === 'string' ? value.trim() : value;
+
+            return {
                 ...prev,
                 [name]: name === 'price' || name === 'discount'
                     ? value.replace(/[^0-9.]/g, '')
-                    : value,
+                    : trimmedValue,
                 errors: { ...prev.errors, [name]: '' }
             };
-
-            return newState;
         });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Validate form
+        // Centralize validation logic
         const errors = {};
         const requiredFields = ['name', 'description', 'price', 'category', 'stock'];
 
         requiredFields.forEach(field => {
-            if (!formState[field]?.toString().trim()) {
+            // Use strict checking to catch empty strings and undefined
+            if (!formState[field] ||
+                (typeof formState[field] === 'string' && formState[field].trim() === '')) {
                 errors[field] = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
             }
         });
