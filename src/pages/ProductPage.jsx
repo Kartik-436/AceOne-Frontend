@@ -150,7 +150,7 @@ const ProductPage = () => {
                 <div className="flex flex-col">
                     <div className="mb-4 border rounded-lg overflow-hidden">
                         <img
-                            src={`data:${selectedImage?.contentType};base64,${btoa(String.fromCharCode.apply(null, new Uint8Array(selectedImage?.data?.data)))}`}
+                            src={selectedImage}
                             alt={product.name}
                             className="w-full h-[500px] object-cover"
                         />
@@ -158,7 +158,7 @@ const ProductPage = () => {
                     <div className="flex space-x-2">
                         {/* Main Image */}
                         <img
-                            src={`data:${product.image?.contentType};base64,${btoa(String.fromCharCode.apply(null, new Uint8Array(product.image?.data?.data)))}`}
+                            src={product?.image}
                             alt={product.name}
                             className="w-20 h-20 object-cover cursor-pointer border rounded"
                             onClick={() => setSelectedImage(product.image)}
@@ -167,7 +167,7 @@ const ProductPage = () => {
                         {product.additionalImages?.map((img, index) => (
                             <img
                                 key={index}
-                                src={`data:${img.contentType};base64,${btoa(String.fromCharCode.apply(null, new Uint8Array(img.data?.data)))}`}
+                                src={img}
                                 alt={`${product.name} - Additional ${index + 1}`}
                                 className="w-20 h-20 object-cover cursor-pointer border rounded"
                                 onClick={() => setSelectedImage(img)}
