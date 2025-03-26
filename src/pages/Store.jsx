@@ -141,6 +141,7 @@ const Store = (props) => {
                 theme: "dark",
             })
             setIsCartMenuOpen(true)
+            setIsOpen(false)
         } else {
             setError(response.message);
             toast.error("Error adding item to your Cart !", {
