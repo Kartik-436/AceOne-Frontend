@@ -21,7 +21,7 @@ import { getAllProducts, getDiscountedProducts } from '../utils/ProductService';
 import { addToCart } from '../utils/CartService';
 import { useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { StoreIcon } from 'lucide-react';
+import { StoreIcon, X } from 'lucide-react';
 import { addToWishlist } from './../utils/UserService';
 import { Heart } from 'lucide-react';
 import SortMenuStore from '../components/SortOptionsStore';
@@ -309,6 +309,42 @@ const Store = (props) => {
 
     const { isLoggedIn, loading } = useAuthStatus();
 
+    const [isOpen, setIsOpen] = useState(false);
+    const [selectedSize, setSelectedSize] = useState("");
+    const [selectedColor, setSelectedColor] = useState("");
+
+    const [pdd, setPdd] = useState(null);
+    const [Name, setName] = useState(null);
+    const [Color, setColor] = useState(null);
+    const [Size, setSize] = useState(null);
+
+    const [availableSizes, setAvailableSizes] = useState([]);
+    const [availableColors, setAvailableColors] = useState([]);
+
+    useEffect(() => {
+        // Handle cases where Size or Color might be a string or an array
+        const processOptions = (option) => {
+            // If it's already an array, return it
+            if (Array.isArray(option)) return option;
+
+            // If it's a string, split it by comma and trim
+            if (typeof option === 'string') {
+                return option.split(',').map(item => item.trim());
+            }
+
+            // If no valid option, return empty array
+            return [];
+        };
+
+        // Set sizes
+        const processedSizes = processOptions(Size);
+        setAvailableSizes(processedSizes);
+
+        // Set colors
+        const processedColors = processOptions(Color);
+        setAvailableColors(processedColors);
+    }, [Size, Color]);
+
     if (loading) {
         return (
             <div className='h-screen w-screen bg-[#fbffef] flex items-center justify-center'>
@@ -318,6 +354,82 @@ const Store = (props) => {
     } else {
         return (
             <React.Fragment>
+
+                <div className='h-screen w-full fixed inset-0 backdrop-blur-sm'>
+                    <AnimatePresence>
+                        {isOpen && (
+                            <motion.div
+                                className="fixed inset-0 bg-black/60 flex items-center justify-center z-[9999] p-4"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                            >
+                                <motion.div
+                                    className="bg-[#1f1f1f] text-white p-6 rounded-2xl w-full max-w-md shadow-lg relative"
+                                    initial={{ scale: 0.35, opacity: 0 }}
+                                    animate={{ scale: 1, opacity: 1 }}
+                                    exit={{ scale: 0.35, opacity: 0 }}
+                                    transition={{ duration: 0.4, ease: "easeInOut" }}
+                                >
+                                    <button
+                                        onClick={() => setIsOpen(false)}
+                                        className={`absolute top-3 right-3 text-[#fff] cursor-pointer transition`}
+                                    >
+                                        <X size={28} />
+                                    </button>
+
+                                    <h2 className="text-xl font-semibold text-center mb-2 text-[#fff]">Select Size & Color for</h2>
+                                    <h2 className="text-2xl text-nowrap font-bold text-center mb-5 text-[#ffbb00]">{Name}</h2>
+
+                                    <div className="space-y-4">
+                                        <div>
+                                            <h3 className="text-lg font-semibold mb-2">Select Size:</h3>
+                                            <select
+                                                className="w-full px-4 py-2 rounded-lg border border-gray-500 bg-black selection:bg-[#ffbb00] text-white"
+                                                value={selectedSize}
+                                                onChange={(e) => setSelectedSize(e.target.value)}
+                                            >
+                                                <option value="" disabled>Select Size</option>
+                                                {availableSizes?.map((size) => (
+                                                    <option key={size} value={size} className="bg-black text-white selection:bg-[#ffbb00]">
+                                                        {size}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <h3 className="text-lg font-semibold mb-2">Select Color:</h3>
+                                            <select
+                                                className="w-full px-4 py-2 rounded-lg border border-gray-500 selection:bg-[#ffbb00] bg-black text-white"
+                                                value={selectedColor}
+                                                onChange={(e) => setSelectedColor(e.target.value)}
+                                            >
+                                                <option value="" disabled>Select Color</option>
+                                                {availableColors?.map((color) => (
+                                                    <option key={color} value={color} className="bg-black text-white selection:bg-[#ffbb00]">
+                                                        {color}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-6 pt-3 border-t border-gray-700 flex justify-center">
+                                        <button
+                                            onClick={handleAddToCart(pdd, 1, selectedColor, selectedSize)}
+                                            id="Shp-Now-Home-Start"
+                                            className="px-4 py-1.5 text-sm rounded-full bg-[#fff] uppercase font-mono text-black font-bold tracking-wide text-nowrap"
+                                        >
+                                            Add to Cart
+                                        </button>
+                                    </div>
+                                </motion.div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </div>
+
                 <AnimatePresence mode='wait'>
                     <div data-scroll-container>
                         <motion.div>
@@ -487,7 +599,22 @@ const Store = (props) => {
                                                                 </div>
                                                             </div>
                                                             <div className='relative flex items-center justify-center gap-2'>
-                                                                <AddToCartButton product={product?._id} Name={product?.name} Color={product?.color} Size={product?.size} onAddToCart={handleAddToCart} />
+                                                                <button
+                                                                    onClick={() => {
+                                                                        // Reset selections when opening
+                                                                        setSelectedSize("");
+                                                                        setSelectedColor("");
+                                                                        setIsOpen(true);
+                                                                        setPdd(product?._id);
+                                                                        setName(product?.name);
+                                                                        setColor(product?.color);
+                                                                        setSize(product?.size);
+                                                                    }}
+                                                                    id="Shp-Now-Home-Start"
+                                                                    className="px-4 py-1.5 text-sm rounded-full bg-[#fff] uppercase font-mono text-black font-bold tracking-wide text-nowrap"
+                                                                >
+                                                                    Add to Cart
+                                                                </button>
                                                                 <span
                                                                     onClick={async () => {
                                                                         if (isLoggedIn) {
