@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import axios from "axios";
 
 export const registerOwner = async (ownerData) => {
@@ -59,10 +60,56 @@ export const deleteOwner = async () => {
     }
 };
 
-export const addProduct = async (formData) => {
+export const addProduct = async (productData) => {
     try {
-        const response = await axios.post("https://aceone-backend.up.railway.app/owner/add-product", formData, { withCredentials: true });
-        return response.data.success ? { success: true, product: response.data.data } : { success: false, message: response.data.message || "Failed to add product." };
+        // If productData contains files, convert to FormData
+        const isMultipart = productData.image || productData.additionalImages?.length > 0;
+
+        let submitData = productData;
+        if (isMultipart) {
+            const formData = new FormData();
+
+            // Append all text fields
+            Object.keys(productData).forEach(key => {
+                if (key !== 'image' && key !== 'additionalImages') {
+                    // Handle array fields
+                    if (Array.isArray(productData[key])) {
+                        formData.append(key, productData[key].join(','));
+                    } else {
+                        formData.append(key, productData[key]);
+                    }
+                }
+            });
+
+            // Append main image
+            if (productData.image) {
+                formData.append('image', productData.image);
+            }
+
+            // Append additional images
+            if (productData.additionalImages && productData.additionalImages.length > 0) {
+                productData.additionalImages.forEach((file, index) => {
+                    formData.append('additionalImages', file);
+                });
+            }
+
+            submitData = formData;
+        }
+
+        const response = await axios.post(
+            "https://aceone-backend.up.railway.app/owner/add-product",
+            submitData,
+            {
+                withCredentials: true,
+                headers: isMultipart
+                    ? { 'Content-Type': 'multipart/form-data' }
+                    : { 'Content-Type': 'application/json' }
+            }
+        );
+
+        return response.data.success
+            ? { success: true, product: response.data.data }
+            : { success: false, message: response.data.message || "Failed to add product." };
     } catch (err) {
         return { success: false, message: err.response?.data?.message || "Something went wrong." };
     }

@@ -88,24 +88,6 @@ const ProductsManager = () => {
         });
     };
 
-    const validateForm = () => {
-        const errors = {};
-        const requiredFields = ['name', 'description', 'price', 'category', 'stock'];
-
-        requiredFields.forEach(field => {
-            if (!formState[field]?.toString().trim()) {
-                errors[field] = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
-            }
-        });
-
-        if (!formState.mainImageFile) errors.mainImage = "Main image is required";
-        if (formState.sizes.length === 0) errors.sizes = "At least one size is required";
-        if (formState.colors.length === 0) errors.colors = "At least one color is required";
-
-        setFormState(prev => ({ ...prev, errors }));
-        return Object.keys(errors).length === 0;
-    };
-
     const { animate } = useDelayedNavigation();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -128,7 +110,6 @@ const ProductsManager = () => {
         errors: {}
     });
 
-    // New function to calculate discounted price
     const calculateDiscountedPrice = (price, discountPercentage) => {
         if (!price || !discountPercentage) return '';
 
@@ -144,20 +125,13 @@ const ProductsManager = () => {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
 
-        console.log(`Changing ${name}:`, value);  // Debug log
-
-        setFormState(prev => {
-            const newState = {
-                ...prev,
-                [name]: name === 'price' || name === 'discount'
-                    ? value.replace(/[^0-9.]/g, '')
-                    : value,
-                errors: { ...prev.errors, [name]: '' }
-            };
-
-            console.log('New Form State:', newState);  // Debug log
-            return newState;
-        });
+        setFormState(prev => ({
+            ...prev,
+            [name]: name === 'price' || name === 'discount'
+                ? value.replace(/[^0-9.]/g, '')
+                : value,
+            errors: { ...prev.errors, [name]: '' }
+        }));
     };
 
     const handleSubmit = async (e) => {
@@ -200,42 +174,26 @@ const ProductsManager = () => {
 
         setLoading(true);
         try {
-            const formData = new FormData();
+            // Prepare product data object
+            const productData = {
+                name: formState.name.trim(),
+                description: formState.description.trim(),
+                price: parseFloat(formState.price).toFixed(2),
+                stock: parseInt(formState.stock),
+                category: formState.category,
 
-            // Append all fields with precise type handling
-            formData.append('name', formState.name.trim());
-            formData.append('description', formState.description.trim());
+                // Optional fields
+                discount: formState.discount ? parseFloat(formState.discount).toFixed(2) : '0',
+                sizes: formState.sizes,
+                colors: formState.colors,
 
-            // Ensure numeric fields are properly converted
-            formData.append('price', parseFloat(formState.price).toFixed(2));
-            formData.append('stock', parseInt(formState.stock));
-            formData.append('category', formState.category);
-
-            // Handle optional discount
-            const discountValue = formState.discount ? parseFloat(formState.discount).toFixed(2) : '0';
-            formData.append('discount', discountValue);
-
-            // Append arrays as comma-separated strings
-            formData.append('size', formState.sizes.join(','));
-            formData.append('color', formState.colors.join(','));
-
-            // Append main image
-            if (formState.mainImageFile) {
-                formData.append('image', formState.mainImageFile);
-            }
-
-            // Append additional images
-            formState.additionalImageFiles.forEach((file, index) => {
-                formData.append('additionalImages', file);
-            });
-
-            // Log FormData for debugging (optional)
-            for (let [key, value] of formData.entries()) {
-                console.log(`${key}:`, value);
-            }
+                // Handle image separately if needed
+                image: formState.mainImageFile,
+                additionalImages: formState.additionalImageFiles
+            };
 
             // Submit product
-            const response = await addProduct(formData);
+            const response = await addProduct(productData);
 
             if (response.success) {
                 toast.success(`${formState.name} Added Successfully`);
