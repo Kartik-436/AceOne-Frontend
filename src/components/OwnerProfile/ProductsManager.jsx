@@ -163,31 +163,38 @@ const ProductsManager = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Extensive debugging logs
-        console.group('Product Submission Debug');
-        console.log('Full Form State:', JSON.parse(JSON.stringify(formState)));
-
-        // Validate form
+        // Comprehensive form validation
         const errors = {};
+        const requiredFields = ['name', 'description', 'price', 'category', 'stock', 'sizes', 'colors'];
 
-        // Extra verbose name validation
-        console.log('Name raw value:', formState.name);
-        console.log('Name type:', typeof formState.name);
-        console.log('Name trimmed:', formState.name?.trim());
+        requiredFields.forEach(field => {
+            if (!formState[field] ||
+                (Array.isArray(formState[field]) && formState[field].length === 0) ||
+                (typeof formState[field] === 'string' && formState[field].trim() === '')) {
+                errors[field] = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
+            }
+        });
 
-        if (!formState.name || formState.name.trim() === '') {
-            console.error('Name validation failed');
-            errors.name = 'Product name is required';
+        // Validate price and stock as numbers
+        if (isNaN(parseFloat(formState.price)) || parseFloat(formState.price) <= 0) {
+            errors.price = 'Valid price is required';
         }
 
-        // If errors exist, set them and return
+        if (isNaN(parseInt(formState.stock)) || parseInt(formState.stock) < 0) {
+            errors.stock = 'Valid stock quantity is required';
+        }
+
+        // Image validation
+        if (!formState.mainImageFile) {
+            errors.mainImage = 'Main product image is required';
+        }
+
+        // If any errors exist, set them and prevent submission
         if (Object.keys(errors).length > 0) {
-            console.error('Validation Errors:', errors);
             setFormState(prev => ({
                 ...prev,
                 errors
             }));
-            console.groupEnd();
             return;
         }
 
@@ -195,62 +202,45 @@ const ProductsManager = () => {
         try {
             const formData = new FormData();
 
-            // Extremely explicit field appending with type checks and logging
-            const appendField = (key, value) => {
-                console.log(`Appending ${key}:`, value, 'Type:', typeof value);
+            // Append all fields with precise type handling
+            formData.append('name', formState.name.trim());
+            formData.append('description', formState.description.trim());
 
-                // Ensure value is string or converted to string
-                const stringValue = value === null || value === undefined
-                    ? ''
-                    : (typeof value === 'object'
-                        ? JSON.stringify(value)
-                        : value.toString().trim());
+            // Ensure numeric fields are properly converted
+            formData.append('price', parseFloat(formState.price).toFixed(2));
+            formData.append('stock', parseInt(formState.stock));
+            formData.append('category', formState.category);
 
-                formData.append(key, stringValue);
-            };
+            // Handle optional discount
+            const discountValue = formState.discount ? parseFloat(formState.discount).toFixed(2) : '0';
+            formData.append('discount', discountValue);
 
-            // Append all fields with logging
-            appendField('name', formState.name);
-            appendField('description', formState.description);
-            appendField('price', formState.price);
-            appendField('discount', formState.discount || '0');
-            appendField('size', formState.sizes);
-            appendField('color', formState.colors);
-            appendField('category', formState.category);
-            appendField('stock', formState.stock);
+            // Append arrays as comma-separated strings
+            formData.append('size', formState.sizes.join(','));
+            formData.append('color', formState.colors.join(','));
 
-            // Append main image with logging
+            // Append main image
             if (formState.mainImageFile) {
-                console.log('Main Image File:', formState.mainImageFile);
                 formData.append('image', formState.mainImageFile);
-            } else {
-                console.warn('No main image file found');
             }
 
-            // Append additional images with logging
+            // Append additional images
             formState.additionalImageFiles.forEach((file, index) => {
-                console.log(`Additional Image ${index}:`, file);
                 formData.append('additionalImages', file);
             });
 
-            // Log all FormData entries
-            console.log('FormData Entries:');
+            // Log FormData for debugging (optional)
             for (let [key, value] of formData.entries()) {
                 console.log(`${key}:`, value);
             }
 
-            console.groupEnd();
-
-            console.log(formData)
-
+            // Submit product
             const response = await addProduct(formData);
-
-            console.log('Backend Response:', response);
-            console.log(formData)
 
             if (response.success) {
                 toast.success(`${formState.name} Added Successfully`);
-                // Reset form
+
+                // Reset form state
                 setFormState({
                     name: '',
                     description: '',
@@ -265,12 +255,14 @@ const ProductsManager = () => {
                     additionalImageFiles: [],
                     errors: {}
                 });
+
+                // Optional: Refresh products list
+                refreshProducts();
             } else {
-                console.error('Backend Error:', response);
                 toast.error(response.message || "Failed to add product");
             }
         } catch (error) {
-            console.error('Submission Error:', error);
+            console.error('Product Submission Error:', error);
             toast.error("Error adding product");
         } finally {
             setLoading(false);
