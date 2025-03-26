@@ -30,8 +30,19 @@ const CustomModal = ({ isOpen, onClose, title, children }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-[#000000c6] flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-[#000000c6] flex items-center justify-center z-50"
+        >
+            <motion.div
+                initial={{ scale: 0.35, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.35, opacity: 0 }}
+                transition={{ duration: 0.4, ease: "easeInOut" }}
+                className="bg-white rounded-lg shadow-xl w-full max-w-md p-6"
+            >
                 <div className="flex justify-between items-center mb-4">
                     <h2 className=" text-xl font-[poppins] font-semibold">{title}</h2>
                     <button
@@ -42,8 +53,8 @@ const CustomModal = ({ isOpen, onClose, title, children }) => {
                     </button>
                 </div>
                 {children}
-            </div>
-        </div>
+            </motion.div>
+        </motion.div>
     );
 };
 
