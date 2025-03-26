@@ -126,7 +126,7 @@ const AddToCartButton = ({ product, Name, Color, Size, onAddToCart }) => {
                                 <button
                                     onClick={handleAdd}
                                     id="Shp-Now-Home-Start"
-                                    className="px-4 py-1.5 text-sm rounded-full bg-[#fff] uppercase font-mono text-black font-bold tracking-wide text-nowrap"
+                                    className="px-4 py-2 text-sm rounded-full bg-[#fff] uppercase font-mono text-black font-bold tracking-wide text-nowrap"
                                 >
                                     Add to Cart
                                 </button>
