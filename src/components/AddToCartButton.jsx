@@ -92,7 +92,7 @@ const AddToCartButton = ({ product, Name, Color, Size, onAddToCart }) => {
                                 <div>
                                     <h3 className="text-lg font-semibold mb-2">Select Size:</h3>
                                     <select
-                                        className="w-full px-4 py-2 rounded-lg border border-gray-500 bg-black text-white"
+                                        className="w-full px-4 py-2 rounded-lg border border-gray-500 bg-black selection:bg-[#ffbb00] text-white"
                                         value={selectedSize}
                                         onChange={(e) => setSelectedSize(e.target.value)}
                                     >
@@ -108,7 +108,7 @@ const AddToCartButton = ({ product, Name, Color, Size, onAddToCart }) => {
                                 <div>
                                     <h3 className="text-lg font-semibold mb-2">Select Color:</h3>
                                     <select
-                                        className="w-full px-4 py-2 rounded-lg border border-gray-500 bg-black text-white"
+                                        className="w-full px-4 py-2 rounded-lg border border-gray-500 selection:bg-[#ffbb00] bg-black text-white"
                                         value={selectedColor}
                                         onChange={(e) => setSelectedColor(e.target.value)}
                                     >
