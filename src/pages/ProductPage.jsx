@@ -15,6 +15,7 @@ import { toast } from 'react-toastify';
 import { addToCart } from '../utils/CartService';
 import { useCart } from '../utils/CartContext';
 import { addReview, deleteReview, getProductReviews, updateReview } from '../utils/UserService';
+import { useAuth } from '../utils/AuthContext';
 
 const StarIcon = ({ filled, onClick, size = 20 }) => (
     <svg
@@ -83,6 +84,7 @@ const ProductPage = () => {
 
     const { id } = useParams();
     const { isLoggedIn, loading: authLoading } = useAuthStatus();
+    const { user } = useAuth();
 
     useEffect(() => {
         const fetchProductAndReviews = async () => {
@@ -447,7 +449,11 @@ const ProductPage = () => {
                                 {reviews.map((review) => (
                                     <div key={review._id} className="border-b pb-4 relative">
                                         <div className="flex items-center justify-between mb-2">
-                                            <div className="flex items-center">
+                                            <div className='flex items-end justify-start gap-3'>
+                                                <h1 className='text-lg font-[poppins] font-semibold'>{review.user.fullName}</h1>
+                                                <img className='w-12 h-12 rounded-full object-cover' src={review.user.picture} alt="" />
+                                            </div>
+                                            <div className="flex items-center ml-5">
                                                 {renderStars(review.rating)}
                                             </div>
                                             {/* Only show edit/delete for user's own reviews */}
@@ -468,7 +474,7 @@ const ProductPage = () => {
                                                 </div>
                                             )}
                                         </div>
-                                        <p className="text-gray-600">{review.comment}</p>
+                                        <p className="text-gray-600 ml-5">{review.comment}</p>
                                     </div>
                                 ))}
                             </div>
