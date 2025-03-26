@@ -448,7 +448,7 @@ const ProductPage = () => {
                             <div className="space-y-4">
                                 {reviews.map((review) => (
                                     <div key={review._id} className="border-b pb-4 relative flex flex-col gap-2">
-                                        <div className='flex items-center justify-start gap-3'>
+                                        <div className='flex items-center justify-start gap-2'>
                                             <img className='w-12 h-12 rounded-full object-cover' src={review.user.picture || "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcreazilla-store.fra1.digitaloceanspaces.com%2Ficons%2F3202933%2Fuser-circle-icon-md.png&f=1&nofb=1&ipt=3c31159b2e0bac086a52351ed5919af4e6936e024f7c3baa351b44782de00eb1&ipo=images"} alt="" />
                                             <h1 className='text-lg font-[poppins] font-semibold'>{review.user.fullName}</h1>
                                         </div>
