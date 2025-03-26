@@ -314,7 +314,13 @@ const ProductPage = () => {
                         <button
                             id="Shp-Now-Home-Start"
                             className="w-full px-4 py-2 rounded-md bg-[#ffbb00] text-black"
-                            onClick={() => { handleAddToCart(product._id, quantity, selectedColor, selectedSize) }}
+                            onClick={() => {
+                                if (selectedSize && selectedColor) {
+                                    handleAddToCart(product._id, quantity, selectedColor, selectedSize);
+                                } else {
+                                    toast.error("Please select size and color!");
+                                }
+                            }}
                         >
                             Add to Cart
                         </button>
