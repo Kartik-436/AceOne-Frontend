@@ -331,7 +331,7 @@ const ProductPage = () => {
                     />
                 </div>
                 <button
-                    className="w-full px-4 py-2 bg-white cursor-pointer text-black rounded AddToCartInStore"
+                    className="w-full px-4 py-2 bg-white cursor-pointer border-2 font-[poppins] text-black rounded AddToCartInStore"
                     onClick={handleReviewSubmit}
                 >
                     Submit Review
