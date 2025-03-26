@@ -9,6 +9,8 @@ import AfterSignedInNavBar from '../components/NavBars/AfterSignedInNavBar';
 import BeforeSignedInNavBar from '../components/NavBars/BeforeSignedInNavBar';
 import { useParams } from 'react-router-dom';
 import { getProductById } from '../utils/ProductService';
+import { motion } from 'framer-motion';
+import { Package2Icon } from 'lucide-react';
 
 const StarIcon = ({ filled, onClick, size = 20 }) => (
     <svg
@@ -115,7 +117,25 @@ const ProductPage = () => {
     if (!product) {
         return (
             <div className='h-screen w-screen bg-[#fbffef] flex items-center justify-center'>
-                <p>Product not found</p>
+                <motion.div
+                    initial={{ opacity: 0, y: 100 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2, delayChildren: 0.5, type: "spring", stiffness: 200 }}
+                    className="flex flex-col items-center justify-center h-96 rounded-3xl p-8 col-span-3"
+                >
+                    <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
+                        className="w-24 h-24 bg-[#ffbb00]/10 rounded-full flex items-center justify-center mb-6"
+                    >
+                        <Package2Icon size={48} className="text-[#ffbb00]" />
+                    </motion.div>
+                    <h2 className="text-2xl font-bold text-[#1f1f1f] mb-2">No Product Found !</h2>
+                    <p className="text-[#1f1f1f]/70 text-center max-w-md mb-6">
+                        There might be an issue in fetching Product...
+                    </p>
+                </motion.div>
             </div>
         );
     }
@@ -125,7 +145,7 @@ const ProductPage = () => {
             <Transition animate={animate} />
             {isLoggedIn ? <AfterSignedInNavBar /> : <BeforeSignedInNavBar />}
 
-            <div className="container mx-auto px-4 py-8 grid md:grid-cols-2 gap-8">
+            <div className=" mt-[10.6vh] mx-auto px-4 py-8 grid md:grid-cols-2 gap-8">
                 {/* Image Gallery */}
                 <div className="flex flex-col">
                     <div className="mb-4 border rounded-lg overflow-hidden">
