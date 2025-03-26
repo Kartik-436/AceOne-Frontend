@@ -10,10 +10,11 @@ import BeforeSignedInNavBar from '../components/NavBars/BeforeSignedInNavBar';
 import { useParams } from 'react-router-dom';
 import { getProductById } from '../utils/ProductService';
 import { motion } from 'framer-motion';
-import { Package2Icon } from 'lucide-react';
+import { Edit2Icon, Package2Icon, TrashIcon } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { addToCart } from '../utils/CartService';
 import { useCart } from '../utils/CartContext';
+import { addReview, deleteReview, getProductReviews, updateReview } from '../utils/UserService';
 
 const StarIcon = ({ filled, onClick, size = 20 }) => (
     <svg
@@ -69,32 +70,45 @@ const ProductPage = () => {
     const [selectedSize, setSelectedSize] = useState(null);
     const [selectedColor, setSelectedColor] = useState(null);
     const [quantity, setQuantity] = useState(1);
+
+    // Review-related states
     const [reviewModalOpen, setReviewModalOpen] = useState(false);
+    const [reviews, setReviews] = useState([]);
     const [newReview, setNewReview] = useState({
         rating: 0,
-        comment: ''
+        comment: '',
+        _id: null // For tracking which review is being edited
     });
+    const [isEditingReview, setIsEditingReview] = useState(false);
 
     const { id } = useParams();
     const { isLoggedIn, loading: authLoading } = useAuthStatus();
 
     useEffect(() => {
-        const fetchProduct = async () => {
+        const fetchProductAndReviews = async () => {
             setLoading(true);
             try {
-                const response = await getProductById(id);
-                if (response.success) {
-                    setProduct(response.product);
-                    setSelectedImage(response.product.image);
+                // Fetch product details
+                const productResponse = await getProductById(id);
+                if (productResponse.success) {
+                    setProduct(productResponse.product);
+                    setSelectedImage(productResponse.product.image);
+                }
+
+                // Fetch product reviews
+                const reviewsResponse = await getProductReviews(id);
+                if (reviewsResponse.success) {
+                    setReviews(reviewsResponse.reviews);
                 }
             } catch (error) {
-                console.error('Failed to fetch product', error);
+                console.error('Failed to fetch product or reviews', error);
+                toast.error('Failed to load product details');
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchProduct();
+        fetchProductAndReviews();
     }, [id]);
 
     const { isCartMenuOpen, setIsCartMenuOpen } = useCart();
@@ -135,16 +149,94 @@ const ProductPage = () => {
         setLoading(false);
     };
 
-    const handleReviewSubmit = () => {
+    const handleReviewSubmit = async () => {
         if (!isLoggedIn) {
             toast.error('Please log in to submit a review');
             handleDelayNavigation("login");
             return;
         }
 
-        toast.error("Review functionality still in process !")
+        if (newReview.rating === 0) {
+            toast.error('Please select a rating');
+            return;
+        }
 
-        setReviewModalOpen(false);
+        if (!newReview.comment.trim()) {
+            toast.error('Please write a review comment');
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            let response;
+            if (isEditingReview) {
+                response = await updateReview(
+                    id,
+                    newReview._id,
+                    newReview.rating,
+                    newReview.comment
+                );
+            } else {
+                response = await addReview(
+                    id,
+                    newReview.rating,
+                    newReview.comment
+                );
+            }
+
+            if (response.success) {
+                const updatedReviewsResponse = await getProductReviews(id);
+                if (updatedReviewsResponse.success) {
+                    setReviews(updatedReviewsResponse.reviews);
+                }
+
+                toast.success(isEditingReview
+                    ? "Review updated successfully!"
+                    : "Review added successfully!"
+                );
+
+                setReviewModalOpen(false);
+                setNewReview({ rating: 0, comment: '', _id: null });
+                setIsEditingReview(false);
+            } else {
+                toast.error(response.message);
+            }
+        } catch (error) {
+            toast.error('Failed to submit review');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleEditReview = (review) => {
+        setNewReview({
+            rating: review.rating,
+            comment: review.comment,
+            _id: review._id
+        });
+        setIsEditingReview(true);
+        setReviewModalOpen(true);
+    };
+
+    const handleDeleteReview = async (reviewId) => {
+        setLoading(true);
+        try {
+            const response = await deleteReview(id);
+            if (response.success) {
+                const updatedReviewsResponse = await getProductReviews(id);
+                if (updatedReviewsResponse.success) {
+                    setReviews(updatedReviewsResponse.reviews);
+                }
+                toast.success('Review deleted successfully!');
+            } else {
+                toast.error(response.message);
+            }
+        } catch (error) {
+            toast.error('Failed to delete review');
+        } finally {
+            setLoading(false);
+        }
     };
 
     const renderStars = (rating) => {
@@ -339,8 +431,10 @@ const ProductPage = () => {
                                     setReviewModalOpen(true)
                                     setNewReview({
                                         rating: 0,
-                                        comment: ''
+                                        comment: '',
+                                        _id: null
                                     });
+                                    setIsEditingReview(false);
                                 }}
                             >
                                 Write a Review
@@ -348,12 +442,31 @@ const ProductPage = () => {
                         </div>
 
                         {/* Existing Reviews */}
-                        {product.reviews && product.reviews.length > 0 ? (
+                        {reviews && reviews.length > 0 ? (
                             <div className="space-y-4">
-                                {product.reviews.map((review, index) => (
-                                    <div key={index} className="border-b pb-4">
-                                        <div className="flex items-center mb-2">
-                                            {renderStars(review.rating)}
+                                {reviews.map((review) => (
+                                    <div key={review._id} className="border-b pb-4 relative">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <div className="flex items-center">
+                                                {renderStars(review.rating)}
+                                            </div>
+                                            {/* Only show edit/delete for user's own reviews */}
+                                            {review.isCurrentUserReview && (
+                                                <div className="flex space-x-2">
+                                                    <button
+                                                        onClick={() => handleEditReview(review)}
+                                                        className="text-blue-500 hover:text-blue-700"
+                                                    >
+                                                        <Edit2Icon size={20} />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDeleteReview(review._id)}
+                                                        className="text-red-500 hover:text-red-700"
+                                                    >
+                                                        <TrashIcon size={20} />
+                                                    </button>
+                                                </div>
+                                            )}
                                         </div>
                                         <p className="text-gray-600">{review.comment}</p>
                                     </div>
@@ -367,10 +480,14 @@ const ProductPage = () => {
             </div >
 
             {/* Review Modal */}
-            <CustomModal CustomModal
+            <CustomModal
                 isOpen={reviewModalOpen}
-                onClose={() => setReviewModalOpen(false)}
-                title="Add a Review"
+                onClose={() => {
+                    setReviewModalOpen(false);
+                    setNewReview({ rating: 0, comment: '', _id: null });
+                    setIsEditingReview(false);
+                }}
+                title={isEditingReview ? "Edit Review" : "Add a Review"}
             >
                 <div className="flex justify-center mb-4">
                     {[1, 2, 3, 4, 5].map((star) => (
@@ -397,9 +514,9 @@ const ProductPage = () => {
                     className="w-full px-4 py-2 bg-black cursor-pointer border-2 font-[poppins] text-white rounded AddToCartInStore"
                     onClick={handleReviewSubmit}
                 >
-                    Submit Review
+                    {isEditingReview ? "Update Review" : "Submit Review"}
                 </button>
-            </CustomModal >
+            </CustomModal>
         </>
     );
 }

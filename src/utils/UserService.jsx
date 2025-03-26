@@ -183,7 +183,6 @@ export const removeFromWishlist = async (productID) => {
     }
 };
 
-
 export const updateUserProfile = async (profileData) => {
     try {
         const response = await axios.put(`https://aceone-backend.up.railway.app/user/profile`, profileData, {
@@ -284,6 +283,127 @@ export const resetPassword = async (newPass) => {
         return {
             success: false,
             message: err.response?.data?.message || "Something went wrong.",
+        };
+    }
+};
+
+export const addReview = async (productID, rating, comment) => {
+    try {
+        const response = await axios.post(`https://aceone-backend.up.railway.app/user/reviews`,
+            { productID, rating, comment },
+            { withCredentials: true }
+        );
+
+        return response.data.success
+            ? {
+                success: true,
+                message: "Review added successfully.",
+                review: response.data.data
+            }
+            : {
+                success: false,
+                message: response.data.message || "Failed to add review."
+            };
+    } catch (err) {
+        return {
+            success: false,
+            message: err.response?.data?.message || "Something went wrong while adding review."
+        };
+    }
+};
+
+export const updateReview = async (productID, reviewID, rating, comment) => {
+    try {
+        const response = await axios.put(`https://aceone-backend.up.railway.app/user/reviews`,
+            { productID, reviewID, rating, comment },
+            { withCredentials: true }
+        );
+
+        return response.data.success
+            ? {
+                success: true,
+                message: "Review updated successfully."
+            }
+            : {
+                success: false,
+                message: response.data.message || "Failed to update review."
+            };
+    } catch (err) {
+        return {
+            success: false,
+            message: err.response?.data?.message || "Something went wrong while updating review."
+        };
+    }
+};
+
+export const deleteReview = async (productID) => {
+    try {
+        const response = await axios.delete(`https://aceone-backend.up.railway.app/user/reviews`, {
+            withCredentials: true,
+            data: { productID }
+        });
+
+        return response.data.success
+            ? {
+                success: true,
+                message: "Review deleted successfully."
+            }
+            : {
+                success: false,
+                message: response.data.message || "Failed to delete review."
+            };
+    } catch (err) {
+        return {
+            success: false,
+            message: err.response?.data?.message || "Something went wrong while deleting review."
+        };
+    }
+};
+
+export const getProductReviews = async (productID) => {
+    try {
+        const response = await axios.get(`https://aceone-backend.up.railway.app/user/${productID}/reviews`, {
+            withCredentials: true
+        });
+
+        return response.data.success
+            ? {
+                success: true,
+                message: "Product reviews fetched successfully.",
+                reviews: response.data.data
+            }
+            : {
+                success: false,
+                message: response.data.message || "Failed to fetch product reviews."
+            };
+    } catch (err) {
+        return {
+            success: false,
+            message: err.response?.data?.message || "Something went wrong while fetching product reviews."
+        };
+    }
+};
+
+export const getUserReviews = async () => {
+    try {
+        const response = await axios.get(`https://aceone-backend.up.railway.app/user/reviews`, {
+            withCredentials: true
+        });
+
+        return response.data.success
+            ? {
+                success: true,
+                message: "User reviews fetched successfully.",
+                reviews: response.data.data
+            }
+            : {
+                success: false,
+                message: response.data.message || "Failed to fetch user reviews."
+            };
+    } catch (err) {
+        return {
+            success: false,
+            message: err.response?.data?.message || "Something went wrong while fetching user reviews."
         };
     }
 };
