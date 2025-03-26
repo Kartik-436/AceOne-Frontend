@@ -290,7 +290,13 @@ const ProductPage = () => {
                             <button
                                 id="Shp-Now-Home-Start"
                                 className="px-4 py-2 border rounded cursor-pointer"
-                                onClick={() => setReviewModalOpen(true)}
+                                onClick={() => {
+                                    setReviewModalOpen(true)
+                                    setNewReview({
+                                        rating: 0,
+                                        comment: ''
+                                    });
+                                }}
                             >
                                 Write a Review
                             </button>
