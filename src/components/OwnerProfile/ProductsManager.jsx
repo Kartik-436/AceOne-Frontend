@@ -137,40 +137,11 @@ const ProductsManager = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Comprehensive form validation
+        // Comprehensive form validation (keep your existing validation)
         const errors = {};
         const requiredFields = ['name', 'description', 'price', 'category', 'stock', 'sizes', 'colors'];
 
-        requiredFields.forEach(field => {
-            if (!formState[field] ||
-                (Array.isArray(formState[field]) && formState[field].length === 0) ||
-                (typeof formState[field] === 'string' && formState[field].trim() === '')) {
-                errors[field] = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
-            }
-        });
-
-        // Validate price and stock as numbers
-        if (isNaN(parseFloat(formState.price)) || parseFloat(formState.price) <= 0) {
-            errors.price = 'Valid price is required';
-        }
-
-        if (isNaN(parseInt(formState.stock)) || parseInt(formState.stock) < 0) {
-            errors.stock = 'Valid stock quantity is required';
-        }
-
-        // Image validation
-        if (!formState.mainImageFile) {
-            errors.mainImage = 'Main product image is required';
-        }
-
-        // If any errors exist, set them and prevent submission
-        if (Object.keys(errors).length > 0) {
-            setFormState(prev => ({
-                ...prev,
-                errors
-            }));
-            return;
-        }
+        // ... (existing validation logic)
 
         setLoading(true);
         try {
@@ -178,18 +149,20 @@ const ProductsManager = () => {
             const productData = {
                 name: formState.name.trim(),
                 description: formState.description.trim(),
-                price: parseFloat(formState.price).toFixed(2),
+                price: parseFloat(formState.price),
                 stock: parseInt(formState.stock),
                 category: formState.category,
 
                 // Optional fields
-                discount: formState.discount ? parseFloat(formState.discount).toFixed(2) : '0',
+                discount: formState.discount ? parseFloat(formState.discount) : 0,
                 sizes: formState.sizes,
                 colors: formState.colors,
 
-                // Handle image separately if needed
+                // Handle images
                 image: formState.mainImageFile,
-                additionalImages: formState.additionalImageFiles
+                additionalImages: formState.additionalImageFiles.length > 0
+                    ? formState.additionalImageFiles
+                    : undefined
             };
 
             // Submit product

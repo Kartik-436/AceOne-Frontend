@@ -72,7 +72,7 @@ export const addProduct = async (productData) => {
             // Append all text fields
             Object.keys(productData).forEach(key => {
                 if (key !== 'image' && key !== 'additionalImages') {
-                    // Handle array fields
+                    // Handle array fields by converting to comma-separated string
                     if (Array.isArray(productData[key])) {
                         formData.append(key, productData[key].join(','));
                     } else {
@@ -94,6 +94,13 @@ export const addProduct = async (productData) => {
             }
 
             submitData = formData;
+        } else {
+            // For non-file submissions, ensure arrays are comma-separated
+            submitData = {
+                ...productData,
+                size: productData.sizes?.join(','),
+                color: productData.colors?.join(',')
+            };
         }
 
         const response = await axios.post(
