@@ -7,8 +7,8 @@ import useAuthStatus from '../utils/IsLoggedInChecker';
 import BarLoader from '../components/Loaders/CustomLoader1';
 import AfterSignedInNavBar from '../components/NavBars/AfterSignedInNavBar';
 import BeforeSignedInNavBar from '../components/NavBars/BeforeSignedInNavBar';
-import { getProductById } from '../services/productService';
 import { useParams } from 'react-router-dom';
+import { getProductById } from '../utils/ProductService';
 
 const StarIcon = ({ filled, onClick, size = 20 }) => (
     <svg

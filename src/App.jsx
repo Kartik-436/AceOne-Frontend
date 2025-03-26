@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import React, { useRef } from "react";
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
