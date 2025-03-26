@@ -7,29 +7,6 @@ import { addProduct, getAllProducts } from '../../utils/OwnerService';
 import { toast } from 'react-toastify';
 
 const ProductsManager = () => {
-    const { animate } = useDelayedNavigation();
-    const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(false);
-
-    // Fixed size options for all categories
-    const sizeOptions = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
-    const categories = ["kids", "mens", "womens"];
-
-    const [formState, setFormState] = useState({
-        name: '',
-        description: '',
-        price: '',
-        discount: '',
-        sizes: [],
-        colors: [],
-        category: '',
-        stock: '',
-        mainImageFile: null,
-        mainImagePreview: null,
-        additionalImageFiles: [],
-        errors: {}
-    });
-
     const refreshProducts = async () => {
         try {
             setLoading(true);
@@ -49,15 +26,6 @@ const ProductsManager = () => {
     useEffect(() => {
         refreshProducts();
     }, []);
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormState(prev => ({
-            ...prev,
-            [name]: value,
-            errors: { ...prev.errors, [name]: '' }
-        }));
-    };
 
     const handleImageChange = (e, type = 'main') => {
         const file = type === 'main' ? e.target.files[0] : Array.from(e.target.files);
@@ -138,13 +106,110 @@ const ProductsManager = () => {
         return Object.keys(errors).length === 0;
     };
 
+    const { animate } = useDelayedNavigation();
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+    const sizeOptions = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+    const categories = ["kids", "mens", "womens"];
+
+    const [formState, setFormState] = useState({
+        name: '',
+        description: '',
+        price: '',
+        discount: '',
+        sizes: [],
+        colors: [],
+        category: '',
+        stock: '',
+        mainImageFile: null,
+        mainImagePreview: null,
+        additionalImageFiles: [],
+        errors: {}
+    });
+
+    // New function to calculate discounted price
+    const calculateDiscountedPrice = (price, discountPercentage) => {
+        if (!price || !discountPercentage) return '';
+
+        const numPrice = parseFloat(price);
+        const numDiscount = parseFloat(discountPercentage);
+
+        if (isNaN(numPrice) || isNaN(numDiscount)) return '';
+
+        const discountedPrice = numPrice * (1 - numDiscount / 100);
+        return discountedPrice.toFixed(2);
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+
+        setFormState(prev => {
+            // Special handling for price and discount to ensure numeric input
+            const newState = {
+                ...prev,
+                [name]: name === 'price' || name === 'discount'
+                    ? value.replace(/[^0-9.]/g, '')
+                    : value,
+                errors: { ...prev.errors, [name]: '' }
+            };
+
+            return newState;
+        });
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!validateForm()) return;
 
+        // Validate form
+        const errors = {};
+        const requiredFields = ['name', 'description', 'price', 'category', 'stock'];
+
+        requiredFields.forEach(field => {
+            if (!formState[field]?.toString().trim()) {
+                errors[field] = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
+            }
+        });
+
+        // Additional validations
+        if (!formState.mainImageFile) errors.mainImage = "Main image is required";
+        if (formState.sizes.length === 0) errors.sizes = "At least one size is required";
+        if (formState.colors.length === 0) errors.colors = "At least one color is required";
+
+        // Validate price and discount
+        const price = parseFloat(formState.price);
+        const discount = parseFloat(formState.discount || 0);
+
+        if (isNaN(price) || price <= 0) errors.price = "Valid price is required";
+        if (discount < 0 || discount > 100) errors.discount = "Discount must be between 0 and 100";
+
+        // Set errors
+        setFormState(prev => ({ ...prev, errors }));
+
+        // Check if there are any errors
+        if (Object.keys(errors).length > 0) return;
+
+        // Proceed with form submission
         setLoading(true);
         try {
             const formData = new FormData();
+
+            // Calculate discounted price
+            const discountedPrice = calculateDiscountedPrice(formState.price, formState.discount);
+
+            // Prepare product data
+            const productDataToSubmit = {
+                name: formState.name,
+                description: formState.description,
+                price: formState.price,
+                discountPercentage: formState.discount || 0,
+                discountedPrice: discountedPrice,
+                sizes: JSON.stringify(formState.sizes),
+                colors: JSON.stringify(formState.colors),
+                category: formState.category,
+                stock: formState.stock,
+                brand: 'AceOne'
+            };
 
             // Append main image
             formData.append('image', formState.mainImageFile);
@@ -154,19 +219,7 @@ const ProductsManager = () => {
                 formData.append('additionalImages', file);
             });
 
-            // Append other form data
-            const productDataToSubmit = {
-                name: formState.name,
-                description: formState.description,
-                price: formState.price,
-                discount: formState.discount || 0,
-                sizes: JSON.stringify(formState.sizes),
-                colors: JSON.stringify(formState.colors),
-                category: formState.category,
-                stock: formState.stock,
-                brand: 'AceOne'
-            };
-
+            // Append product data
             Object.entries(productDataToSubmit).forEach(([key, value]) => {
                 formData.append(key, value);
             });
@@ -190,7 +243,6 @@ const ProductsManager = () => {
                     additionalImageFiles: [],
                     errors: {}
                 });
-                await refreshProducts();
             } else {
                 toast.error(response.message || "Failed to add product");
             }
@@ -200,7 +252,6 @@ const ProductsManager = () => {
             setLoading(false);
         }
     };
-
     return (
         <>
             <Transition animate={animate} />
@@ -406,14 +457,12 @@ const ProductsManager = () => {
                                     Price <span className='text-red-500'>*</span>
                                 </label>
                                 <input
-                                    type="number"
+                                    type="text"
                                     name="price"
                                     value={formState.price}
                                     onChange={handleInputChange}
                                     className='w-full bg-[#3a3a3a] border border-[#4a4a4a] rounded-lg p-2'
                                     placeholder="Enter price"
-                                    min="0"
-                                    step="0.01"
                                 />
                                 {formState.errors.price && (
                                     <p className='text-red-500 text-xs mt-1'>
@@ -421,25 +470,49 @@ const ProductsManager = () => {
                                     </p>
                                 )}
                             </div>
+
                             <div>
                                 <label className='block text-sm font-medium mb-1'>
-                                    Stock <span className='text-red-500'>*</span>
+                                    Discount (%)
                                 </label>
                                 <input
-                                    type="number"
-                                    name="stock"
-                                    value={formState.stock}
+                                    type="text"
+                                    name="discount"
+                                    value={formState.discount}
                                     onChange={handleInputChange}
                                     className='w-full bg-[#3a3a3a] border border-[#4a4a4a] rounded-lg p-2'
-                                    placeholder="Enter stock quantity"
-                                    min="0"
+                                    placeholder="Enter discount percentage"
                                 />
-                                {formState.errors.stock && (
+                                {formState.errors.discount && (
                                     <p className='text-red-500 text-xs mt-1'>
-                                        {formState.errors.stock}
+                                        {formState.errors.discount}
+                                    </p>
+                                )}
+                                {formState.price && formState.discount && (
+                                    <p className='text-xs text-gray-400 mt-1'>
+                                        Discounted Price: ${calculateDiscountedPrice(formState.price, formState.discount)}
                                     </p>
                                 )}
                             </div>
+                        </div>
+                        <div>
+                            <label className='block text-sm font-medium mb-1'>
+                                Stock <span className='text-red-500'>*</span>
+                            </label>
+                            <input
+                                type="number"
+                                name="stock"
+                                value={formState.stock}
+                                onChange={handleInputChange}
+                                className='w-full bg-[#3a3a3a] border border-[#4a4a4a] rounded-lg p-2'
+                                placeholder="Enter stock quantity"
+                                min="0"
+                            />
+                            {formState.errors.stock && (
+                                <p className='text-red-500 text-xs mt-1'>
+                                    {formState.errors.stock}
+                                </p>
+                            )}
                         </div>
 
                         {/* Description */}
@@ -469,9 +542,9 @@ const ProductsManager = () => {
                         >
                             {loading ? 'Adding Product...' : 'Add Product'}
                         </button>
-                    </form>
-                </div>
-            </div>
+                    </form >
+                </div >
+            </div >
         </>
     );
 };
