@@ -276,7 +276,7 @@ const ProductPage = () => {
                     <div className="flex space-x-4">
                         <button
                             id="Shp-Now-Home-Start"
-                            className="w-full px-4 py-2 rounded-xl bg-[#ffbb00] text-black"
+                            className="w-full px-4 py-2 rounded-md bg-[#ffbb00] text-black"
                             onClick={handleAddToCart}
                         >
                             Add to Cart
