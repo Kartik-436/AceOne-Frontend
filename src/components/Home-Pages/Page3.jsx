@@ -164,7 +164,7 @@ const Page3 = ({ Kids }) => {
                     <motion.div
                         className="w-full hidden md:flex items-center justify-end"
                     >
-                        <motion.div key={Kids[0]?._id} className='w-[32vw] h-[34vh] bg-[#ffffff4e] rounded-md flex items-center justify-between px-2.5'>
+                        <motion.div onClick={() => { handleDelayNavigation(`product/${Kids[0]?._id}`) }} key={Kids[0]?._id} className='w-[32vw] h-[34vh] bg-[#ffffff4e] rounded-md flex items-center justify-between px-2.5'>
                             <motion.div
                                 initial='hidden'
                                 animate={isInView ? 'visible' : 'hidden'}

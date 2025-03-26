@@ -179,6 +179,7 @@ const Page2 = ({ bestSelling, Discounted }) => {
 
     const productCard = (product, index) => (
         <motion.div
+            onClick={() => { handleDelayNavigation(`product/${product?._id}`) }}
             key={product?._id}
             className='min-h-[60vh] w-[80vw] md:w-full flex flex-col items-center md:items-start gap-4 md:px-4 py-2 rounded-xl'
             initial="hidden"

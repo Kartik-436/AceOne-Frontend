@@ -567,6 +567,7 @@ const Store = (props) => {
                                                 </motion.div>
                                             ) : products.map(product => (
                                                 <motion.div
+                                                    onClick={() => { handleDelayNavigation(`product/${product?._id}`) }}
                                                     key={product._id}
                                                     data-key={product._id}
                                                     className='rounded-xl bg-gray-500 overflow-hidden shadow-xl flex flex-col justify-between'

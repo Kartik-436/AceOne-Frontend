@@ -9,11 +9,14 @@ import { toast } from "react-toastify";
 import { addToCart } from "../utils/CartService";
 import { useCart } from "../utils/CartContext";
 import AddToCartButton from "./AddToCartButton";
+import useDelayedNavigation from "../utils/useDelayedNavigation";
 
 const SearchProducts = () => {
     const [query, setQuery] = useState("");
     const [results, setResults] = useState([]);
     const [loading, setLoading] = useState(false);
+
+    const { animate, handleDelayNavigation } = useDelayedNavigation();
 
     useEffect(() => {
         const delayDebounce = setTimeout(() => {
@@ -128,6 +131,7 @@ const SearchProducts = () => {
 
                             return (
                                 <motion.li
+                                    onClick={() => { handleDelayNavigation(`product/${product?._id}`) }}
                                     key={product._id}
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}

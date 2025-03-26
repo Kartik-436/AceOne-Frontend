@@ -62,7 +62,7 @@ const CustomModal = ({ isOpen, onClose, title, children }) => {
 };
 
 const ProductPage = () => {
-    const { animate, handleDelayedNavigation } = useDelayedNavigation();
+    const { animate, handleDelayNavigation } = useDelayedNavigation();
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
     const [selectedImage, setSelectedImage] = useState(null);
