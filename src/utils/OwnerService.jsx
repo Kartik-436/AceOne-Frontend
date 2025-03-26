@@ -66,42 +66,11 @@ export const addProduct = async (productData) => {
         const isMultipart = productData.image || productData.additionalImages?.length > 0;
 
         let submitData = productData;
-        if (isMultipart) {
-            const formData = new FormData();
-
-            // Append all text fields
-            Object.keys(productData).forEach(key => {
-                if (key !== 'image' && key !== 'additionalImages') {
-                    // Handle array fields by converting to comma-separated string
-                    if (Array.isArray(productData[key])) {
-                        formData.append(key, productData[key].join(','));
-                    } else {
-                        formData.append(key, productData[key]);
-                    }
-                }
-            });
-
-            // Append main image
-            if (productData.image) {
-                formData.append('image', productData.image);
-            }
-
-            // Append additional images
-            if (productData.additionalImages && productData.additionalImages.length > 0) {
-                productData.additionalImages.forEach((file, index) => {
-                    formData.append('additionalImages', file);
-                });
-            }
-
-            submitData = formData;
-        } else {
-            // For non-file submissions, ensure arrays are comma-separated
-            submitData = {
-                ...productData,
-                size: productData.sizes?.join(','),
-                color: productData.colors?.join(',')
-            };
-        }
+        submitData = {
+            ...productData,
+            size: productData.sizes?.join(','),
+            color: productData.colors?.join(',')
+        };
 
         const response = await axios.post(
             "https://aceone-backend.up.railway.app/owner/add-product",
