@@ -484,7 +484,7 @@ const Store = (props) => {
                                     <div className='min-h-full w-[25vw] bg-[#fbffef] relative hidden md:flex flex-col gap-10'>
                                         <div className='pl-10 pt-7'>
                                             <h1 className='text-[1.83vw] font-light text-black font-[poppins]'>
-                                                All Products <i className="ri-arrow-right-long-line"></i>
+                                                {selectedCategory} <i className="ri-arrow-right-long-line"></i>
                                             </h1>
                                         </div>
                                         <div className='w-[25vw] flex-col flex gap-5'>
