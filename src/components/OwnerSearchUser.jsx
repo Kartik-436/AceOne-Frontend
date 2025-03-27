@@ -29,7 +29,7 @@ const OwnerUserSearch = () => {
         try {
             setLoading(true);
             console.log("Searching for:", searchTerm);
-            const response = await axios.get(`https://aceone-backend.up.railway.app/user/search?q=${searchTerm}`);
+            const response = await axios.get(`https://aceone-backend-wd1f.onrender.com/user/search?q=${searchTerm}`);
             console.log("Response received:", response.data);
             setResults(response.data.data);
         } catch (error) {
@@ -42,7 +42,7 @@ const OwnerUserSearch = () => {
 
     const handleDeleteUser = async (userId) => {
         try {
-            const response = await axios.delete(`https://aceone-backend.up.railway.app/owner/delete-user/${userId}`);
+            const response = await axios.delete(`https://aceone-backend-wd1f.onrender.com/owner/delete-user/${userId}`);
             if (response.success) {
                 setResults(results.filter(user => user._id !== userId));
                 toast.success("User deleted successfully");
