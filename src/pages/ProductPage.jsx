@@ -457,7 +457,6 @@ const ProductPage = () => {
                                                 <div className="flex items-center">
                                                     {renderStars(review.rating)}
                                                 </div>
-                                                {console.log(user)}
                                                 {(review?.user?._id === user?._id) && (
                                                     <div className="flex space-x-2">
                                                         <button
