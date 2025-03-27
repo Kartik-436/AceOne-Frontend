@@ -33,6 +33,8 @@ const Store = (props) => {
     const lenisRef = useRef(null);
     const productContainerRef = useRef(null);
 
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
     const [searchParams, setSearchParams] = useSearchParams();
     const category = searchParams.get("category");
 
@@ -446,73 +448,168 @@ const Store = (props) => {
                             {isLoggedIn ? <AfterSignedInNavBar /> : <BeforeSignedInNavBar />}
 
                             <div className='min-h-screen w-full text-white mt-[10.6svh] bg-[#fbffef] flex relative'>
-                                <div className='min-h-full w-[25vw] bg-[#fbffef] relative hidden md:flex flex-col gap-10'>
-                                    <div className='pl-10 pt-7'>
-                                        <h1 className='text-[1.83vw] font-light text-black font-[poppins]'>
-                                            All Products <i className="ri-arrow-right-long-line"></i>
-                                        </h1>
+                                <div className='w-[25vw] bg-[#fbffef] relative'>
+                                    {/* Mobile Burger Menu */}
+                                    <div className='md:hidden fixed top-4 right-4 z-50'>
+                                        <button
+                                            className='hamburger hamburger--spin'
+                                            type='button'
+                                            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                                        >
+                                            <span className='hamburger-box'>
+                                                <span className='hamburger-inner bg-black'></span>
+                                            </span>
+                                        </button>
                                     </div>
-                                    <div className='w-[25vw] flex-col flex gap-5'>
-                                        <div className='w-full px-5 pt-5'>
-                                            <h1 className='text-[1.13vw] font-light text-black font-[poppins]'>
-                                                Browse By
+
+                                    {/* Desktop Sidebar - Unchanged for screens >= md */}
+                                    <div className='min-h-full w-[25vw] bg-[#fbffef] relative hidden md:flex flex-col gap-10'>
+                                        <div className='pl-10 pt-7'>
+                                            <h1 className='text-[1.83vw] font-light text-black font-[poppins]'>
+                                                All Products <i className="ri-arrow-right-long-line"></i>
                                             </h1>
-                                            <div>
-                                                <SmallStringAnimation />
-                                            </div>
-                                            <div className='w-full pl-5 flex flex-col items-start gap-2'>
-                                                {["All_Products", "Discounted", "mens", "womens", "kids"].map((category) => (
-                                                    <div key={category} onClick={() => handleCategoryChange(category)}>
-                                                        <FlipLink
-                                                            size="text-[1.2vw]"
-                                                            color={selectedCategory === category ? "text-[#ffbb00]" : "text-[#111]"}
-                                                            font="font-light font-mono"
-                                                        >
-                                                            {category}
-                                                        </FlipLink>
-                                                    </div>
-                                                ))}
-                                            </div>
                                         </div>
-
-                                        <div className='w-full px-5 pt-5'>
-                                            <h1 className='text-[1.13vw] font-light text-black font-[poppins]'>
-                                                Filter By
-                                            </h1>
-                                            <div>
-                                                <SmallStringAnimation />
-                                            </div>
-
-                                            <div className='w-full mb-5 mt-[-3vh]'>
-                                                <div className='w-full flex flex-col gap-4'>
-                                                    <div className='w-full'>
-                                                        <h1 className='text-[1.13vw] font-light text-black font-[poppins]'>Price</h1>
-                                                    </div>
-                                                    <div className='w-full px-4 pb-3'>
-                                                        <input
-                                                            ref={rangeRef}
-                                                            className="w-full appearance-none h-2 bg-gray-300 rounded-lg outline-none transition-all"
-                                                            type="range"
-                                                            min="200"
-                                                            max="20000"
-                                                            value={priceRange[1]}
-                                                            onChange={handlePriceChange}
-                                                            name="range"
-                                                            id="PriceRange"
-                                                        />
-                                                        <div className="flex w-full items-center justify-between">
-                                                            <h1 className="text-[1.1vw] font-light text-black font-mono">{priceRange[0]}</h1>
-                                                            <h1 className="text-[1.1vw] font-light text-black font-mono">{priceRange[1]}</h1>
+                                        <div className='w-[25vw] flex-col flex gap-5'>
+                                            <div className='w-full px-5 pt-5'>
+                                                <h1 className='text-[1.13vw] font-light text-black font-[poppins]'>
+                                                    Browse By
+                                                </h1>
+                                                <div>
+                                                    <SmallStringAnimation />
+                                                </div>
+                                                <div className='w-full pl-5 flex flex-col items-start gap-2'>
+                                                    {["All_Products", "Discounted", "mens", "womens", "kids"].map((category) => (
+                                                        <div key={category} onClick={() => handleCategoryChange(category)}>
+                                                            <FlipLink
+                                                                size="text-[1.2vw]"
+                                                                color={selectedCategory === category ? "text-[#ffbb00]" : "text-[#111]"}
+                                                                font="font-light font-mono"
+                                                            >
+                                                                {category}
+                                                            </FlipLink>
                                                         </div>
-                                                    </div>
+                                                    ))}
                                                 </div>
                                             </div>
 
-                                            <div>
-                                                <SmallStringAnimation />
+                                            <div className='w-full px-5 pt-5'>
+                                                <h1 className='text-[1.13vw] font-light text-black font-[poppins]'>
+                                                    Filter By
+                                                </h1>
+                                                <div>
+                                                    <SmallStringAnimation />
+                                                </div>
+
+                                                <div className='w-full mb-5 mt-[-3vh]'>
+                                                    <div className='w-full flex flex-col gap-4'>
+                                                        <div className='w-full'>
+                                                            <h1 className='text-[1.13vw] font-light text-black font-[poppins]'>Price</h1>
+                                                        </div>
+                                                        <div className='w-full px-4 pb-3'>
+                                                            <input
+                                                                ref={rangeRef}
+                                                                className="w-full appearance-none h-2 bg-gray-300 rounded-lg outline-none transition-all"
+                                                                type="range"
+                                                                min="200"
+                                                                max="20000"
+                                                                value={priceRange[1]}
+                                                                onChange={handlePriceChange}
+                                                                name="range"
+                                                                id="PriceRange"
+                                                            />
+                                                            <div className="flex w-full items-center justify-between">
+                                                                <h1 className="text-[1.1vw] font-light text-black font-mono">{priceRange[0]}</h1>
+                                                                <h1 className="text-[1.1vw] font-light text-black font-mono">{priceRange[1]}</h1>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <SmallStringAnimation />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+
+                                    {/* Mobile Sidebar Overlay */}
+                                    <AnimatePresence>
+                                        {isSidebarOpen && (
+                                            <motion.div
+                                                className='fixed inset-0 z-40 bg-black/60 md:hidden'
+                                                initial={{ opacity: 0 }}
+                                                animate={{ opacity: 1 }}
+                                                exit={{ opacity: 0 }}
+                                                onClick={() => setIsSidebarOpen(false)}
+                                            >
+                                                <motion.div
+                                                    className='absolute left-0 top-0 w-[80%] h-full bg-[#fbffef] p-6 overflow-y-auto'
+                                                    initial={{ x: '-100%' }}
+                                                    animate={{ x: 0 }}
+                                                    exit={{ x: '-100%' }}
+                                                    transition={{ type: 'tween' }}
+                                                    onClick={(e) => e.stopPropagation()}
+                                                >
+                                                    <div className='mb-6'>
+                                                        <h1 className='text-2xl font-light text-black font-[poppins]'>
+                                                            All Products <i className="ri-arrow-right-long-line"></i>
+                                                        </h1>
+                                                    </div>
+
+                                                    <div className='flex flex-col gap-5'>
+                                                        <div>
+                                                            <h1 className='text-lg font-light text-black font-[poppins] mb-3'>
+                                                                Browse By
+                                                            </h1>
+                                                            <div className='flex flex-col items-start gap-2 pl-2'>
+                                                                {["All_Products", "Discounted", "mens", "womens", "kids"].map((category) => (
+                                                                    <div
+                                                                        key={category}
+                                                                        onClick={() => {
+                                                                            handleCategoryChange(category);
+                                                                            setIsSidebarOpen(false);
+                                                                        }}
+                                                                    >
+                                                                        <FlipLink
+                                                                            size="text-base"
+                                                                            color={selectedCategory === category ? "text-[#ffbb00]" : "text-[#111]"}
+                                                                            font="font-light font-mono"
+                                                                        >
+                                                                            {category}
+                                                                        </FlipLink>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+
+                                                        <div>
+                                                            <h1 className='text-lg font-light text-black font-[poppins] mb-3'>
+                                                                Filter By
+                                                            </h1>
+                                                            <div className='mb-4'>
+                                                                <h2 className='text-base font-light text-black mb-2'>Price</h2>
+                                                                <input
+                                                                    ref={rangeRef}
+                                                                    className="w-full appearance-none h-2 bg-gray-300 rounded-lg outline-none transition-all"
+                                                                    type="range"
+                                                                    min="200"
+                                                                    max="20000"
+                                                                    value={priceRange[1]}
+                                                                    onChange={handlePriceChange}
+                                                                    name="range"
+                                                                    id="PriceRange"
+                                                                />
+                                                                <div className="flex w-full items-center justify-between">
+                                                                    <h1 className="text-sm font-light text-black font-mono">{priceRange[0]}</h1>
+                                                                    <h1 className="text-sm font-light text-black font-mono">{priceRange[1]}</h1>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </motion.div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
                                 </div>
 
                                 <div className='min-h-full w-full bg-[#fbffef] text-black p-8'>
