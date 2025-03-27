@@ -450,10 +450,10 @@ const Store = (props) => {
                             <div className='min-h-screen w-full text-white mt-[10.6svh] bg-[#fbffef] flex relative'>
                                 <div className='md:w-[25vw] bg-[#fbffef] relative'>
                                     {/* Mobile Burger Menu */}
-                                    <div className='md:hidden fixed top-4 right-4 z-50'>
+                                    <div className='md:hidden fixed top-10 left-5 z-50'>
                                         <button
                                             className={`
-                                                w-10 h-8 flex flex-col justify-between items-center 
+                                                w-6 h-4 flex flex-col justify-between items-center 
                                                 focus:outline-none transition-all duration-300 
                                                 ${isSidebarOpen ? 'rotate-180' : ''}
                                             `}
