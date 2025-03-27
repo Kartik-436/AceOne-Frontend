@@ -450,7 +450,7 @@ const Store = (props) => {
                             <div className='min-h-screen w-full text-white mt-[10.6svh] bg-[#fbffef] flex relative'>
                                 <div className='md:w-[25vw] bg-[#fbffef] relative'>
                                     {/* Mobile Burger Menu */}
-                                    <div className={`md:hidden fixed z-50 ${isSidebarOpen ? "top-10 left-[67%]" : "top-20 left-5"}`}>
+                                    <div className={`md:hidden fixed z-50 ${isSidebarOpen ? "hidden" : "top-18 left-5"}`}>
                                         <button
                                             className={`
                                                 w-6 h-4 flex flex-col justify-between items-center 
