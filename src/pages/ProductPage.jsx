@@ -16,6 +16,7 @@ import { addToCart } from '../utils/CartService';
 import { useCart } from '../utils/CartContext';
 import { addReview, deleteReview, getProductReviews, updateReview } from '../utils/UserService';
 import { useAuth } from '../utils/AuthContext';
+import Footer from './../components/Footer/Footer';
 
 const StarIcon = ({ filled, onClick, size = 20 }) => (
     <svg
@@ -526,6 +527,10 @@ const ProductPage = () => {
                     {isEditingReview ? "Update Review" : "Submit Review"}
                 </button>
             </CustomModal>
+
+            <div>
+                <Footer />
+            </div>
         </>
     );
 }
