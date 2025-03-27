@@ -570,7 +570,7 @@ const Store = (props) => {
                                                 >
                                                     <div className='mb-6'>
                                                         <h1 className='text-2xl font-light text-black font-[poppins]'>
-                                                            All Products <i className="ri-arrow-right-long-line"></i>
+                                                            {selectedCategory} <i className="ri-arrow-right-long-line"></i>
                                                         </h1>
                                                     </div>
 
