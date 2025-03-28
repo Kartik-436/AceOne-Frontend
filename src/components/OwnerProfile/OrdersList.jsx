@@ -8,6 +8,7 @@ import { getAllOrders, getAllUsers } from '../../utils/OwnerService';
 import BarLoader from './../Loaders/CustomLoader1';
 import { motion } from 'motion/react';
 import { ShoppingBasket } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 const OrdersList = () => {
     const { animate, handleDelayNavigation } = useDelayedNavigation();
@@ -137,7 +138,16 @@ const OrdersList = () => {
                                                         </h1>
                                                         <h1 className="text-black font-[poppins] font-medium row-span-full" rowSpan={order.items.length}>₹ {order.totalAmount.toFixed(2)}</h1>
                                                         <h1 className="text-black font-[poppins] font-medium row-span-full" rowSpan={order.items.length}>{order.modeOfPayment}</h1>
-                                                        <h1 className="text-black font-[poppins] text-wrap max-w-[80%] overflow-x-scroll font-medium row-span-full noScrollbar" rowSpan={order.items.length}>{order._id}</h1>
+                                                        <h1
+                                                            onClick={() => {
+                                                                navigator.clipboard.writeText(order._id);
+                                                                toast.success("Order ID copied!");
+                                                            }}
+                                                            className="text-black font-[poppins] text-wrap max-w-[80%] break-words break-before-right font-medium row-span-full noScrollbar"
+                                                            rowSpan={order.items.length}
+                                                        >
+                                                            {order._id}
+                                                        </h1>
                                                     </>
                                                 )}
                                             </div>
