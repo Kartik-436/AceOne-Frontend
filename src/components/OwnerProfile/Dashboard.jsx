@@ -37,7 +37,7 @@ const Dashboard = ({ setActive, setActiveTab }) => {
             const response = await getOwnerProfile();
 
             if (response.success) {
-                setOwner(response.profile);
+                setOwner(response.data);
             } else {
                 setError(response.message);
                 console.error("getting Owner Error: ", response.message)
@@ -54,7 +54,7 @@ const Dashboard = ({ setActive, setActiveTab }) => {
             const response = await getAllOrders();
 
             if (response.success) {
-                setOrders(response.orders);
+                setOrders(response.data);
             } else {
                 setError(response.message);
                 console.error("getting Orders Error: ", response.message)
@@ -71,7 +71,7 @@ const Dashboard = ({ setActive, setActiveTab }) => {
             const response = await getAllUsers();
 
             if (response.success) {
-                setUsers(response.users);
+                setUsers(response.data);
             } else {
                 setError(response.message);
                 console.error("getting Users Error: ", response.message)
@@ -88,7 +88,7 @@ const Dashboard = ({ setActive, setActiveTab }) => {
             const response = await getAllProducts();
 
             if (response.success) {
-                setProducts(response.products);
+                setProducts(response.data);
             } else {
                 setError(response.message);
                 console.error("getting Products Error: ", response.message)
