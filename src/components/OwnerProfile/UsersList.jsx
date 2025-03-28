@@ -52,7 +52,7 @@ const UsersList = () => {
                 toast.error("Failed to delete user")
             }
         } catch (error) {
-            console.error("Delete error:", error.message);
+            console.error("Delete error:", error);
             toast.error("Failed to delete user");
         }
     };
