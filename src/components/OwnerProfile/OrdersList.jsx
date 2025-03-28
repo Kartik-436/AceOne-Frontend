@@ -104,7 +104,7 @@ const OrdersList = () => {
                                             <div key={item.product?._id || itemIndex} className="grid grid-cols-8 py-2">
                                                 {/* Product Details */}
                                                 <div className="col-span-2 flex items-center justify-start gap-5 row-span-full">
-                                                    <div className="w-18 h-18 rounded-lg border-[1px]">
+                                                    <div className="w-20 h-20 rounded-lg border-[1px]">
                                                         <img
                                                             src={item.product?.image || "https://icon-library.com/images/products-icon-png/products-icon-png-12.jpg"}
                                                             alt={item.product?.name}
