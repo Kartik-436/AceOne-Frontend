@@ -122,7 +122,7 @@ const UsersList = () => {
                                                 <h1 className='text-black font-[poppins] text-sm font-light'>Orders Made: {user.orders.length}</h1>
                                             </div>
                                         </div>
-                                        <h1 className='col-span-2 text-black font-[poppins] font-medium max-w-[90%] text-wrap overflow-ellipsis'>{user.email}</h1>
+                                        <h1 className='col-span-2 text-black font-[poppins] font-medium h-full max-w-[90%] text-wrap overflow'>{user.email}</h1>
                                         <h1 className='text-black font-[poppins] font-medium'>{user.contact}</h1>
                                         <h1 className='col-span-2 text-black font-[poppins] font-medium w-ful'>{user.address}</h1>
                                         <div className='col-span-3 text-black font-[poppins] font-medium w-full'>
