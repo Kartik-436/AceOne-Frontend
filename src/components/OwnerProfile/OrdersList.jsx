@@ -124,7 +124,7 @@ const OrdersList = () => {
                                                 {/* Display Order Info ONLY ONCE per order using rowSpan */}
                                                 {itemIndex === 0 && (
                                                     <>
-                                                        <h1 className="text-black font-[poppins] font-medium row-span-full" rowSpan={order.items.length}>{order.orderStatus}</h1>
+                                                        <h1 className={`${order.orderStatus === "Cancelled" ? "text-red-500" : order.orderStatus === "Shipped" ? "text-blue-400" : "text-black"} font-[poppins] font-medium row-span-full`} rowSpan={order.items.length}>{order.orderStatus}</h1>
                                                         <h1 className="text-black font-[poppins] font-medium row-span-full max-w-[60%]" rowSpan={order.items.length}>
                                                             {new Date(order.orderDate).toLocaleString("en-US", {
                                                                 year: "numeric",
