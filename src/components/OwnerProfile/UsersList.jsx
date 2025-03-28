@@ -48,7 +48,7 @@ const UsersList = () => {
                 await refreshUsers();
                 toast.success("User deleted successfully");
             } else {
-                console.error("user deletion error: ", response.messages)
+                console.error("user deletion error: ", response.message)
                 toast.error("Failed to delete user")
             }
         } catch (error) {
