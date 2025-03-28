@@ -27,6 +27,14 @@ const ProductsManager = () => {
         refreshProducts();
     }, []);
 
+
+    const { animate } = useDelayedNavigation();
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+    const sizeOptions = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+    const categories = ["kids", "mens", "womens"];
+
     const handleImageChange = (e, type = 'main') => {
         const file = type === 'main' ? e.target.files[0] : Array.from(e.target.files);
 
@@ -88,13 +96,6 @@ const ProductsManager = () => {
         });
     };
 
-    const { animate } = useDelayedNavigation();
-    const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(false);
-
-    const sizeOptions = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
-    const categories = ["kids", "mens", "womens"];
-
     const [formState, setFormState] = useState({
         name: '',
         description: '',
@@ -137,41 +138,25 @@ const ProductsManager = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Comprehensive form validation (keep your existing validation)
-        const errors = {};
-        const requiredFields = ['name', 'description', 'price', 'category', 'stock', 'sizes', 'colors'];
+        const productData = {
+            name: formState.name,
+            description: formState.description,
+            price: formState.price,
+            discount: formState.discount,
+            category: formState.category,
+            stock: formState.stock,
+            sizes: formState.sizes,
+            colors: formState.colors,
+            image: formState.mainImageFile,
+            additionalImages: formState.additionalImageFiles,
+        };
 
-        // ... (existing validation logic)
-
-        setLoading(true);
         try {
-            // Prepare product data object
-            const productData = {
-                name: formState.name.trim(),
-                description: formState.description.trim(),
-                price: parseFloat(formState.price),
-                stock: parseInt(formState.stock),
-                category: formState.category,
-
-                // Optional fields
-                discount: formState.discount ? parseFloat(formState.discount) : 0,
-                sizes: formState.sizes,
-                colors: formState.colors,
-
-                // Handle images
-                image: formState.mainImageFile,
-                additionalImages: formState.additionalImageFiles.length > 0
-                    ? formState.additionalImageFiles
-                    : undefined
-            };
-
-            // Submit product
+            setLoading(true);
             const response = await addProduct(productData);
-
             if (response.success) {
-                toast.success(`${formState.name} Added Successfully`);
-
-                // Reset form state
+                toast.success('Product added successfully');
+                refreshProducts();
                 setFormState({
                     name: '',
                     description: '',
@@ -186,15 +171,11 @@ const ProductsManager = () => {
                     additionalImageFiles: [],
                     errors: {}
                 });
-
-                // Optional: Refresh products list
-                refreshProducts();
             } else {
-                toast.error(response.message || "Failed to add product");
+                toast.error(response.message || 'Failed to add product');
             }
         } catch (error) {
-            console.error('Product Submission Error:', error);
-            toast.error("Error adding product");
+            toast.error('Error adding product');
         } finally {
             setLoading(false);
         }
