@@ -12,7 +12,7 @@ const ProductsManager = () => {
             setLoading(true);
             const response = await getAllProducts();
             if (response.success) {
-                setProducts(response.products);
+                setProducts(response.data);
             } else {
                 toast.error(response.message || "Failed to fetch products");
             }

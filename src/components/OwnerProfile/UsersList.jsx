@@ -30,7 +30,7 @@ const UsersList = () => {
             const response = await getAllUsers();
 
             if (response.success) {
-                setUsers(response.users);
+                setUsers(response.data);
             } else {
                 setError(response.message);
                 console.error("getting Users Error: ", response.message)

@@ -23,7 +23,7 @@ const OrdersList = () => {
             setLoading(true)
             const response = await getAllOrders();
             if (response.success) {
-                setOrders(response.orders);
+                setOrders(response.data);
             } else {
                 setError(response.message);
                 console.error("getting Orders Error: ", response.message)

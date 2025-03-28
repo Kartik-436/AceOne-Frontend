@@ -32,15 +32,15 @@ const OwnerSettings = ({ setActive, setActiveTab }) => {
             const response = await getOwnerProfile();
 
             if (response.success) {
-                setOwner(response.profile);
+                setOwner(response.data);
                 setProfileData({
-                    fullName: response.profile.fullName || '',
-                    email: response.profile.email || '',
-                    contact: response.profile.contact || '',
-                    dateOfBirth: response.profile.dateOfBirth ? new Date(response.profile.dateOfBirth).toISOString().split('T')[0] : '',
-                    gstNo: response.profile.gstNo || '',
+                    fullName: response.data.fullName || '',
+                    email: response.data.email || '',
+                    contact: response.data.contact || '',
+                    dateOfBirth: response.data.dateOfBirth ? new Date(response.profile.dateOfBirth).toISOString().split('T')[0] : '',
+                    gstNo: response.data.gstNo || '',
                 });
-                setPicturePreview(response.profile.picture || null);
+                setPicturePreview(response.data.picture || null);
             } else {
                 setError(response.message);
                 console.error("Getting Owner Error: ", response.message);
