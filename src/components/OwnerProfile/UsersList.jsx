@@ -55,6 +55,7 @@ const UsersList = () => {
             console.error("Delete error:", error);
             toast.error("Failed to delete user");
         }
+        setConfirmModalOpen(false);
     };
 
     useEffect(() => {
