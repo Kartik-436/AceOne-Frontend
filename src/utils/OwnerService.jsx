@@ -1,191 +1,305 @@
 /* eslint-disable no-unused-vars */
 import axios from "axios";
 
+// Base URL for consistency
+const BASE_URL = import.meta.env.VITE_BASE_URL_OWNER;
+
+// Utility function to handle responses
+const handleResponse = (response) =>
+    response.data.success
+        ? { success: true, data: response.data.data }
+        : { success: false, message: response.data.message || "Operation failed." };
+
+// Utility function to handle errors
+const handleError = (err) =>
+    ({ success: false, message: err.response?.data?.message || "Something went wrong." });
+
 export const registerOwner = async (ownerData) => {
     try {
-        const response = await axios.post("https://aceone-backend-wd1f.onrender.com/owner/register", ownerData);
-        return response.data.success ? { success: true, owner: response.data.data } : { success: false, message: response.data.message || "Failed to register owner." };
+        const response = await axios.post(`${BASE_URL}/register`, ownerData);
+        return handleResponse(response);
     } catch (err) {
-        return { success: false, message: err.response?.data?.message || "Something went wrong." };
+        return handleError(err);
     }
 };
 
 export const loginOwner = async (credentials) => {
     try {
-        const response = await axios.post("https://aceone-backend-wd1f.onrender.com/owner/login", credentials, { withCredentials: true });
-        return response.data.success ? { success: true, owner: response.data.data } : { success: false, message: response.data.message || "Login failed." };
+        const response = await axios.post(`${BASE_URL}/login`, credentials, {
+            withCredentials: true
+        });
+        return handleResponse(response);
     } catch (err) {
-        return { success: false, message: err.response?.data?.message || "Something went wrong." };
+        return handleError(err);
     }
 };
 
 export const logoutOwner = async () => {
     try {
-        const response = await axios.get("https://aceone-backend-wd1f.onrender.com/owner/logout", { withCredentials: true });
-        return response.data.success ? { success: true } : { success: false, message: response.data.message || "Logout failed." };
+        const response = await axios.get(`${BASE_URL}/logout`, {
+            withCredentials: true
+        });
+        return handleResponse(response);
     } catch (err) {
-        return { success: false, message: err.response?.data?.message || "Something went wrong." };
+        return handleError(err);
     }
 };
 
 export const getOwnerProfile = async () => {
     try {
-        const response = await axios.get("https://aceone-backend-wd1f.onrender.com/owner/profile", { withCredentials: true });
-        return response.data.success ? { success: true, profile: response.data.data } : { success: false, message: response.data.message || "Failed to fetch profile." };
+        const response = await axios.get(`${BASE_URL}/profile`, {
+            withCredentials: true
+        });
+        return handleResponse(response);
     } catch (err) {
-        return { success: false, message: err.response?.data?.message || "Something went wrong." };
+        return handleError(err);
     }
 };
 
-export const updateOwnerProfile = async (formData) => {
+export const updateOwnerProfile = async (profileData) => {
     try {
-        const response = await axios.put("https://aceone-backend-wd1f.onrender.com/owner/profile", formData, { withCredentials: true });
-        return response.data.success ? { success: true, profile: response.data.data } : { success: false, message: response.data.message || "Failed to update profile." };
+        // Ensure proper FormData for file upload
+        const formData = new FormData();
+
+        // Append text fields
+        Object.keys(profileData).forEach(key => {
+            if (key !== 'picture' && profileData[key] !== undefined) {
+                formData.append(key, profileData[key]);
+            }
+        });
+
+        // Append picture if exists
+        if (profileData.picture instanceof File) {
+            formData.append('picture', profileData.picture);
+        }
+
+        const response = await axios.put(`${BASE_URL}/profile`, formData, {
+            withCredentials: true,
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        return handleResponse(response);
     } catch (err) {
-        return { success: false, message: err.response?.data?.message || "Something went wrong." };
+        return handleError(err);
     }
 };
 
 export const deleteOwner = async () => {
     try {
-        const response = await axios.delete("https://aceone-backend-wd1f.onrender.com/owner/profile", {
-            withCredentials: true,
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
+        const response = await axios.delete(`${BASE_URL}/profile`, {
+            withCredentials: true
         });
-        return response.data.success ? { success: true } : { success: false, message: response.data.message || "Failed to delete owner." };
+        return handleResponse(response);
     } catch (err) {
-        return { success: false, message: err.response?.data?.message || "Something went wrong." };
+        return handleError(err);
     }
 };
 
 export const addProduct = async (productData) => {
     try {
-        // If productData contains files, convert to FormData
-        const isMultipart = productData.image || productData.additionalImages?.length > 0;
+        // Create FormData for file uploads
+        const formData = new FormData();
 
-        let submitData = productData;
-        submitData = {
-            ...productData,
-            size: productData.sizes?.join(','),
-            color: productData.colors?.join(',')
-        };
-
-        const response = await axios.post(
-            "https://aceone-backend-wd1f.onrender.com/owner/add-product",
-            submitData,
-            {
-                withCredentials: true,
-                headers: isMultipart
-                    ? { 'Content-Type': 'multipart/form-data' }
-                    : { 'Content-Type': 'application/json' }
+        // Append text fields
+        Object.keys(productData).forEach(key => {
+            if (key !== 'image' && key !== 'additionalImages') {
+                // Handle array fields like size and color
+                if (Array.isArray(productData[key])) {
+                    formData.append(key, productData[key].join(','));
+                } else {
+                    formData.append(key, productData[key]);
+                }
             }
-        );
+        });
 
-        return response.data.success
-            ? { success: true, product: response.data.data }
-            : { success: false, message: response.data.message || "Failed to add product." };
+        // Append main image
+        if (productData.image instanceof File) {
+            formData.append('image', productData.image);
+        }
+
+        // Append additional images
+        if (productData.additionalImages && productData.additionalImages.length > 0) {
+            productData.additionalImages.forEach((file, index) => {
+                formData.append('additionalImages', file);
+            });
+        }
+
+        const response = await axios.post(`${BASE_URL}/products`, formData, {
+            withCredentials: true,
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        return handleResponse(response);
     } catch (err) {
-        return { success: false, message: err.response?.data?.message || "Something went wrong." };
+        return handleError(err);
     }
 };
 
-export const updateProduct = async (id, formData) => {
+export const updateProduct = async (id, productData) => {
     try {
-        const response = await axios.put(`https://aceone-backend-wd1f.onrender.com/owner/update-product/${id}`, formData, { withCredentials: true });
-        return response.data.success ? { success: true, product: response.data.data } : { success: false, message: response.data.message || "Failed to update product." };
+        // Create FormData for file uploads
+        const formData = new FormData();
+
+        // Append text fields
+        Object.keys(productData).forEach(key => {
+            if (key !== 'image' && key !== 'additionalImages') {
+                // Handle array fields like size and color
+                if (Array.isArray(productData[key])) {
+                    formData.append(key, productData[key].join(','));
+                } else {
+                    formData.append(key, productData[key]);
+                }
+            }
+        });
+
+        // Append main image
+        if (productData.image instanceof File) {
+            formData.append('image', productData.image);
+        }
+
+        // Append additional images
+        if (productData.additionalImages && productData.additionalImages.length > 0) {
+            productData.additionalImages.forEach((file, index) => {
+                formData.append('additionalImages', file);
+            });
+        }
+
+        const response = await axios.put(`${BASE_URL}/products/${id}`, formData, {
+            withCredentials: true,
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        return handleResponse(response);
     } catch (err) {
-        return { success: false, message: err.response?.data?.message || "Something went wrong." };
+        return handleError(err);
     }
 };
 
 export const deleteProduct = async (id) => {
     try {
-        const response = await axios.delete(`https://aceone-backend-wd1f.onrender.com/owner/delete-product/${id}`, { withCredentials: true });
-        return response.data.success ? { success: true } : { success: false, message: response.data.message || "Failed to delete product." };
+        const response = await axios.delete(`${BASE_URL}/products/${id}`, {
+            withCredentials: true
+        });
+        return handleResponse(response);
     } catch (err) {
-        return { success: false, message: err.response?.data?.message || "Something went wrong." };
+        return handleError(err);
     }
 };
 
 export const getAllProducts = async () => {
     try {
-        const response = await axios.get("https://aceone-backend-wd1f.onrender.com/owner/all-products", { withCredentials: true });
-        return response.data.success ? { success: true, products: response.data.data } : { success: false, message: response.data.message || "Failed to fetch products." };
+        const response = await axios.get(`${BASE_URL}/products`, {
+            withCredentials: true
+        });
+        return handleResponse(response);
     } catch (err) {
-        return { success: false, message: err.response?.data?.message || "Something went wrong." };
+        return handleError(err);
     }
 };
 
 export const getProductById = async (id) => {
     try {
-        const response = await axios.get(`https://aceone-backend-wd1f.onrender.com/owner/product/${id}`, { withCredentials: true });
-        return response.data.success ? { success: true, product: response.data.data } : { success: false, message: response.data.message || "Failed to fetch product." };
+        const response = await axios.get(`${BASE_URL}/products/${id}`, {
+            withCredentials: true
+        });
+        return handleResponse(response);
     } catch (err) {
-        return { success: false, message: err.response?.data?.message || "Something went wrong." };
+        return handleError(err);
     }
 };
 
 export const getAllUsers = async () => {
     try {
-        const response = await axios.get("https://aceone-backend-wd1f.onrender.com/owner/all-users", { withCredentials: true });
-        return response.data.success ? { success: true, users: response.data.data } : { success: false, message: response.data.message || "Failed to fetch users." };
+        const response = await axios.get(`${BASE_URL}/users`, {
+            withCredentials: true
+        });
+        return handleResponse(response);
     } catch (err) {
-        return { success: false, message: err.response?.data?.message || "Something went wrong." };
+        return handleError(err);
     }
 };
 
 export const getSingleUser = async (id) => {
     try {
-        const response = await axios.get(`https://aceone-backend-wd1f.onrender.com/owner/user/${id}`, { withCredentials: true });
-        return response.data.success ? { success: true, user: response.data.data } : { success: false, message: response.data.message || "Failed to fetch user." };
+        const response = await axios.get(`${BASE_URL}/users/${id}`, {
+            withCredentials: true
+        });
+        return handleResponse(response);
     } catch (err) {
-        return { success: false, message: err.response?.data?.message || "Something went wrong." };
+        return handleError(err);
     }
 };
 
 export const deleteUser = async (id) => {
     try {
-        const response = await axios.delete(`https://aceone-backend-wd1f.onrender.com/owner/delete-user/${id}`, { withCredentials: true });
-        return response.data.success ? { success: true } : { success: false, message: response.data.message || "Failed to delete user." };
+        const response = await axios.delete(`${BASE_URL}/users/${id}`, {
+            withCredentials: true
+        });
+        return handleResponse(response);
     } catch (err) {
-        return { success: false, message: err.response?.data?.message || "Something went wrong." };
-    }
-};
-
-export const applyDiscount = async (id, discountData) => {
-    try {
-        const response = await axios.put(`https://aceone-backend-wd1f.onrender.com/owner/apply-discount/${id}`, discountData, { withCredentials: true });
-        return response.data.success ? { success: true, product: response.data.data } : { success: false, message: response.data.message || "Failed to apply discount." };
-    } catch (err) {
-        return { success: false, message: err.response?.data?.message || "Something went wrong." };
-    }
-};
-
-export const removeDiscount = async (id) => {
-    try {
-        const response = await axios.put(`https://aceone-backend-wd1f.onrender.com/owner/remove-discount/${id}`, {}, { withCredentials: true });
-        return response.data.success ? { success: true, product: response.data.data } : { success: false, message: response.data.message || "Failed to remove discount." };
-    } catch (err) {
-        return { success: false, message: err.response?.data?.message || "Something went wrong." };
+        return handleError(err);
     }
 };
 
 export const getAllOrders = async () => {
     try {
-        const response = await axios.get("https://aceone-backend-wd1f.onrender.com/owner/all-orders", { withCredentials: true });
-        return response.data.success ? { success: true, orders: response.data.data } : { success: false, message: response.data.message || "Failed to fetch orders." };
+        const response = await axios.get(`${BASE_URL}/orders`, {
+            withCredentials: true
+        });
+        return handleResponse(response);
     } catch (err) {
-        return { success: false, message: err.response?.data?.message || "Something went wrong." };
+        return handleError(err);
+    }
+};
+
+export const getSingleOrder = async (id) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/orders/${id}`, {
+            withCredentials: true
+        });
+        return handleResponse(response);
+    } catch (err) {
+        return handleError(err);
+    }
+};
+
+export const deleteOrder = async (id) => {
+    try {
+        const response = await axios.delete(`${BASE_URL}/orders/${id}`, {
+            withCredentials: true
+        });
+        return handleResponse(response);
+    } catch (err) {
+        return handleError(err);
+    }
+};
+
+export const applyDiscount = async (id, discountData) => {
+    try {
+        const response = await axios.put(`${BASE_URL}/products/${id}/apply-discount`, discountData, {
+            withCredentials: true
+        });
+        return handleResponse(response);
+    } catch (err) {
+        return handleError(err);
+    }
+};
+
+export const removeDiscount = async (id) => {
+    try {
+        const response = await axios.put(`${BASE_URL}/products/${id}/remove-discount`, {}, {
+            withCredentials: true
+        });
+        return handleResponse(response);
+    } catch (err) {
+        return handleError(err);
     }
 };
 
 export const getRevenueStats = async () => {
     try {
-        const response = await axios.get("https://aceone-backend-wd1f.onrender.com/owner/sales", { withCredentials: true });
-        return response.data.success ? { success: true, stats: response.data.data } : { success: false, message: response.data.message || "Failed to fetch revenue stats." };
+        const response = await axios.get(`${BASE_URL}/sales`, {
+            withCredentials: true
+        });
+        return handleResponse(response);
     } catch (err) {
-        return { success: false, message: err.response?.data?.message || "Something went wrong." };
+        return handleError(err);
     }
 };
