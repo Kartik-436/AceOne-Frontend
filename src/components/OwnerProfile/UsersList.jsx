@@ -5,7 +5,7 @@ import OwnerSearch from '../OwnerSearch'
 import Transition from '../../Transition'
 import useDelayedNavigation from '../../utils/useDelayedNavigation';
 import SortByMenu from './../SortOptions';
-import { getAllOrders, getAllProducts, getAllUsers, getOwnerProfile } from '../../utils/OwnerService';
+import { deleteUser, getAllOrders, getAllProducts, getAllUsers, getOwnerProfile } from '../../utils/OwnerService';
 import BarLoader from './../Loaders/CustomLoader1';
 import { AnimatePresence, motion } from 'motion/react';
 import { LucidePackage2, ShoppingBasket, Trash2, User } from 'lucide-react';
@@ -43,7 +43,7 @@ const UsersList = () => {
 
     const handleDeleteUser = async (userId) => {
         try {
-            const response = await axios.delete(`https://aceone-backend-wd1f.onrender.com/owner/delete-user/${userId}`);
+            const response = await deleteUser(userId);
             if (response.success) {
                 await refreshUsers();
                 toast.success("User deleted successfully");
