@@ -172,7 +172,15 @@ const UsersList = () => {
                                                                             hour12: true
                                                                         })}
                                                                     </h1>
-                                                                    <h1 className="text-black font-[poppins] font-medium select-all">Order Id - {order._id}</h1>
+                                                                    <h1
+                                                                        onClick={() => {
+                                                                            navigator.clipboard.writeText(order._id);
+                                                                            toast.success("Order ID copied!");
+                                                                        }}
+                                                                        className="text-black font-[poppins] font-medium select-all"
+                                                                    >
+                                                                        Order Id - {order._id}
+                                                                    </h1>
                                                                 </div>
                                                             </div>
                                                         ))}
