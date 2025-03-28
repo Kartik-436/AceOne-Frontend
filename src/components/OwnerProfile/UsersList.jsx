@@ -171,7 +171,7 @@ const UsersList = () => {
                                                                             hour12: true
                                                                         })}
                                                                     </h1>
-                                                                    <h1 className="text-black font-[poppins] font-medium">Order Id - {order._id}</h1>
+                                                                    <h1 className="text-black font-[poppins] font-medium select-text">Order Id - {order._id}</h1>
                                                                 </div>
                                                             </div>
                                                         ))}
