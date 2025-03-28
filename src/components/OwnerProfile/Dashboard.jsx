@@ -241,7 +241,7 @@ const Dashboard = ({ setActive, setActiveTab }) => {
 
                 <div className='flex flex-col gap-5'>
                     <div className='flex items-center justify-between w-full'>
-                        <h1 className='text-3xl font-[nunito] text-black font-bold'>Listed Products</h1>
+                        <h1 className='text-3xl font-[nunito] text-black font-bold'>Listed Products ({products.length})</h1>
                         <div className='pr-5'>
                             <button
                                 onClick={() => setActiveTab("products")}
