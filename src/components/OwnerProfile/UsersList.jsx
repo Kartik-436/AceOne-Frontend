@@ -159,7 +159,7 @@ const UsersList = () => {
 
                                                                 {/* Order-Level Details */}
                                                                 <div className="flex flex-col items-start mt-2">
-                                                                    <h1 className="text-black font-[poppins] font-medium">Total: ₹ {order.totalAmount.toFixed(2)}</h1>
+                                                                    <h1 className="text-black font-[poppins] font-medium">Total: ₹ {((order?.discountedTotalAmount ? order?.discountedTotalAmount : order?.totalAmount) + order.deliveryFee).toFixed(2)}</h1>
                                                                     <h1 className="text-black font-[poppins] font-medium">{order.orderStatus}</h1>
                                                                     <h1 className="text-black font-[poppins] font-medium">
                                                                         {new Date(order.orderDate).toLocaleString("en-US", {

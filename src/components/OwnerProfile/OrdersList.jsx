@@ -136,7 +136,7 @@ const OrdersList = () => {
                                                                 hour12: true
                                                             })}
                                                         </h1>
-                                                        <h1 className="text-black font-[poppins] font-medium row-span-full" rowSpan={order.items.length}>₹ {order.totalAmount.toFixed(2)}</h1>
+                                                        <h1 className="text-black font-[poppins] font-medium row-span-full" rowSpan={order.items.length}>₹ {((order?.discountedTotalAmount ? order?.discountedTotalAmount : order?.totalAmount) + order.deliveryFee).toFixed(2)}</h1>
                                                         <h1 className="text-black font-[poppins] font-medium row-span-full" rowSpan={order.items.length}>{order.modeOfPayment}</h1>
                                                         <h1
                                                             onClick={() => {
