@@ -290,7 +290,7 @@ const Dashboard = ({ setActive, setActiveTab }) => {
                             <div className='flex flex-col w-full max-h-[78vh] overflow-y-scroll noScrollbar'>
                                 {products.map((product, index) => (
                                     <div key={product._id} className='py-5 pl-5 grid grid-cols-9 bg-white hover:bg-[#e6e6e6] border-b-4 border-gray-300 rounded-md'>
-                                        <div className='col-span-2 flex items-center justify-start gap-5'>
+                                        <div className='col-span-2 flex items-start justify-start gap-5'>
                                             <div className='w-18 h-18 rounded-lg border-[1px] '>
                                                 <img src={product.image || "https://icon-library.com/images/products-icon-png/products-icon-png-12.jpg"} alt={product.name} className='w-full h-full object-cover rounded-lg' />
                                             </div>
