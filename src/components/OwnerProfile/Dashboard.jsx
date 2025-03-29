@@ -303,12 +303,12 @@ const Dashboard = ({ setActive, setActiveTab }) => {
                                         <h1 className='text-black font-[poppins] font-medium'>₹ {product.price.toFixed(2)}</h1>
                                         <h1 className='text-black font-[poppins] font-medium'>{product.discount}</h1>
                                         <h1 className='text-black font-[poppins] font-medium'>{product.category}</h1>
-                                        <div className='flex flex-col gap-2 justify-center'>
+                                        <div className='flex flex-col gap-2 items-center'>
                                             {product.size.map((sz) => (
                                                 <h1 key={sz} className='text-black font-[poppins] font-medium'>{sz}</h1>
                                             ))}
                                         </div>
-                                        <div className='flex flex-col gap-2 justify-center'>
+                                        <div className='flex flex-col gap-2 items-center'>
                                             {product.color.map((clr) => (
                                                 <h1 key={clr} className='text-black font-[poppins] font-medium'>{clr}</h1>
                                             ))}
