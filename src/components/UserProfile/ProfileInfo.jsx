@@ -305,7 +305,7 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
         }
     }, [mapLoaded, showMapSelector]);
 
-    const initMap = async () => {
+    const initMap = () => {
         const google = window.google;
         const defaultLocation = { lat: 40.7128, lng: -74.006 }; // Default to NYC
 
@@ -320,14 +320,12 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
         });
         googleMapRef.current = map;
 
-        await google.maps.importLibrary("marker");
-
-        const marker = new google.maps.marker.AdvancedMarkerElement({
+        // Create a marker
+        const marker = new google.maps.Marker({
             map,
-            position: defaultLocation,
             draggable: true,
+            position: defaultLocation,
         });
-
         markerRef.current = marker;
 
         // Try to center map on user's current location
@@ -356,7 +354,7 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
 
         // Setup the search box
         const input = document.getElementById("address-input");
-        const autocomplete = new google.maps.places.Autocomplete(input);
+        const autocomplete = new google.maps.places.PlaceAutocompleteElement(input);
         autocomplete.bindTo("bounds", map);
         autocompleteRef.current = autocomplete;
 
