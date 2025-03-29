@@ -309,7 +309,7 @@ const ProductPage = () => {
                             onClick={() => setSelectedImage(product.image)}
                         />
                         {/* Additional Images */}
-                        <div className='w-full px-3'>
+                        <div className='w-full flex space-x-2 px-3'>
                             {product.additionalImages?.map((img, index) => (
                                 <img
                                     key={index}
