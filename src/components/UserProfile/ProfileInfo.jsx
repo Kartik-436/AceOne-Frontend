@@ -248,7 +248,7 @@ const ProfileInfo = () => {
 
                                 <div className="bg-gray-50 p-3 rounded-lg md:col-span-2">
                                     <h3 className="text-sm text-gray-500">Address</h3>
-                                    <p className={`font-medium break-words ${user?.address !== "" && user?.address !== undefined && user?.address !== null ? "" : "text-red-500"} `}>{user?.address || "Address is not added"}</p>
+                                    <p className={`font-medium break-words ${user?.address !== "" && user?.address !== undefined && user?.address !== null ? "" : "text-red-500"} `}>{user?.address?.formattedAddress || "Address is not added"}</p>
                                 </div>
                             </div>
                         </motion.div>
