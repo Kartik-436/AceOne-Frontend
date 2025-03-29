@@ -354,7 +354,7 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
 
         // Setup the search box
         const input = document.getElementById("address-input");
-        const autocomplete = new google.maps.places.PlaceAutocompleteElement(input);
+        const autocomplete = new google.maps.places.Autocomplete(input);
         autocomplete.bindTo("bounds", map);
         autocompleteRef.current = autocomplete;
 
