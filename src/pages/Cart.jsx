@@ -214,13 +214,13 @@ const Cart = () => {
                                         </button>
                                     </motion.div>
                                 ) : products.map(product => (
-                                    <div key={product.productId._id} data-key={product.productId._id} className='flex justify-between md:gap-15 h-[24vh] w-full px-2 py-5 border-b-[1px] border-black'>
+                                    <div key={product.productId._id} data-key={product.productId._id} className='flex justify-between md:gap-15 min-h-[24vh] w-full px-2 py-5 border-b-[1px] border-black'>
                                         <div className='flex gap-2 items-start md:gap-4 h-full w-full'>
-                                            <div onClick={() => { handleDelayNavigation(`product/${product?.productId?._id}`) }}  className='border-[1px] border-black h-full min-w-[50%] rounded-sm'>
+                                            <div onClick={() => { handleDelayNavigation(`product/${product?.productId?._id}`) }} className='border-[1px] border-black h-full min-w-[50%] rounded-sm'>
                                                 <img src={product.productId.image || "https://icon-library.com/images/products-icon-png/products-icon-png-12.jpg"} className='h-full w-full object-cover' alt={product.productId.name} />
                                             </div>
                                             <div className='flex flex-col h-full w-full justify-between gap-2'>
-                                                <div onClick={() => { handleDelayNavigation(`product/${product?.productId?._id}`) }}  className='flex flex-col items-start justify-center gap-2'>
+                                                <div onClick={() => { handleDelayNavigation(`product/${product?.productId?._id}`) }} className='flex flex-col items-start justify-center gap-2'>
                                                     <h1 className='text-lg font-[poppins] font-normal md:max-w-[5vw] text-wrap'>{product.productId.name}</h1>
                                                     <div>
                                                         <h1 className='text-xs font-[poppins] font-medium text-wrap'>{product.productId.category} ({product.selectedSize})</h1>
