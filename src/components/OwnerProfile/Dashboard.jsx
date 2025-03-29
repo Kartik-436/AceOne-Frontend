@@ -310,7 +310,7 @@ const Dashboard = ({ setActive, setActiveTab }) => {
                                         </div>
                                         <div className='flex flex-col gap-2'>
                                             {product.color.map((clr) => (
-                                                <h1 key={clr} className={`text-[${clr}] font-[poppins] font-medium`}>{clr}</h1>
+                                                <h1 key={clr} className={`text-${clr} font-[poppins] font-medium`}>{clr}</h1>
                                             ))}
                                         </div>
                                         <div className='text-black font-[poppins] font-medium flex flex-col items-end justify-center w-full gap-3 pr-5'>
