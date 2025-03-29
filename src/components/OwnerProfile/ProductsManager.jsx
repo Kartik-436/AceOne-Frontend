@@ -34,26 +34,75 @@ const ProductsManager = () => {
 
     const sizeOptions = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
     const categories = ["kids", "mens", "womens"];
+    const allowedImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    const maxImageSize = 5 * 1024 * 1024; // 5MB in bytes
+
+    const validateImage = (file) => {
+        if (!file) return null;
+
+        if (!allowedImageTypes.includes(file.type)) {
+            return "Invalid image type. Only JPEG, PNG, and GIF are allowed.";
+        }
+
+        if (file.size > maxImageSize) {
+            return "Image size should be less than 5MB.";
+        }
+
+        return null;
+    };
 
     const handleImageChange = (e, type = 'main') => {
-        const file = type === 'main' ? e.target.files[0] : Array.from(e.target.files);
+        if (type === 'main') {
+            const file = e.target.files[0];
 
-        if (type === 'main' && file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
+            if (file) {
+                const error = validateImage(file);
+
+                if (error) {
+                    setFormState(prev => ({
+                        ...prev,
+                        errors: { ...prev.errors, mainImage: error }
+                    }));
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    setFormState(prev => ({
+                        ...prev,
+                        mainImageFile: file,
+                        mainImagePreview: reader.result,
+                        errors: { ...prev.errors, mainImage: '' }
+                    }));
+                };
+                reader.readAsDataURL(file);
+            }
+        } else if (type === 'additional') {
+            const files = Array.from(e.target.files);
+            let hasErrors = false;
+            let errorMsg = "";
+
+            for (const file of files) {
+                const error = validateImage(file);
+                if (error) {
+                    hasErrors = true;
+                    errorMsg = error;
+                    break;
+                }
+            }
+
+            if (hasErrors) {
                 setFormState(prev => ({
                     ...prev,
-                    mainImageFile: file,
-                    mainImagePreview: reader.result,
-                    errors: { ...prev.errors, mainImage: '' }
+                    errors: { ...prev.errors, additionalImages: errorMsg }
                 }));
-            };
-            reader.readAsDataURL(file);
-        } else if (type === 'additional') {
-            setFormState(prev => ({
-                ...prev,
-                additionalImageFiles: file
-            }));
+            } else {
+                setFormState(prev => ({
+                    ...prev,
+                    additionalImageFiles: files,
+                    errors: { ...prev.errors, additionalImages: '' }
+                }));
+            }
         }
     };
 
@@ -108,6 +157,7 @@ const ProductsManager = () => {
         mainImageFile: null,
         mainImagePreview: null,
         additionalImageFiles: [],
+        colorInput: '',
         errors: {}
     });
 
@@ -126,6 +176,19 @@ const ProductsManager = () => {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
 
+        // Special validation for discount
+        if (name === 'discount') {
+            const numValue = parseFloat(value);
+            if (value && !isNaN(numValue) && (numValue < 0 || numValue > 100)) {
+                setFormState(prev => ({
+                    ...prev,
+                    [name]: value.replace(/[^0-9.]/g, ''),
+                    errors: { ...prev.errors, [name]: 'Discount must be between 0 and 100' }
+                }));
+                return;
+            }
+        }
+
         setFormState(prev => ({
             ...prev,
             [name]: name === 'price' || name === 'discount'
@@ -135,18 +198,68 @@ const ProductsManager = () => {
         }));
     };
 
+    const validateForm = () => {
+        const errors = {};
+
+        // Required fields
+        if (!formState.name.trim()) errors.name = "Product name is required";
+        if (!formState.description.trim()) errors.description = "Description is required";
+        if (!formState.price.trim()) errors.price = "Price is required";
+        if (!formState.category) errors.category = "Category is required";
+        if (!formState.stock) errors.stock = "Stock is required";
+        if (formState.sizes.length === 0) errors.sizes = "At least one size must be selected";
+        if (formState.colors.length === 0) errors.colors = "At least one color must be selected";
+        if (!formState.mainImageFile) errors.mainImage = "Main product image is required";
+
+        // Number validations
+        if (formState.price && isNaN(parseFloat(formState.price))) {
+            errors.price = "Price must be a valid number";
+        }
+
+        if (formState.discount && isNaN(parseFloat(formState.discount))) {
+            errors.discount = "Discount must be a valid number";
+        }
+
+        if (formState.discount) {
+            const discount = parseFloat(formState.discount);
+            if (discount < 0 || discount > 100) {
+                errors.discount = "Discount must be between 0 and 100";
+            }
+        }
+
+        if (formState.stock && isNaN(parseInt(formState.stock))) {
+            errors.stock = "Stock must be a valid number";
+        }
+
+        return errors;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Validate form
+        const errors = validateForm();
+        if (Object.keys(errors).length > 0) {
+            setFormState(prev => ({
+                ...prev,
+                errors: errors
+            }));
+
+            // Show the first error
+            const firstError = Object.values(errors)[0];
+            toast.error(firstError);
+            return;
+        }
 
         const productData = {
             name: formState.name,
             description: formState.description,
-            price: formState.price,
-            discount: formState.discount,
+            price: parseFloat(formState.price),
+            discount: formState.discount ? parseFloat(formState.discount) : null,
             category: formState.category,
-            stock: formState.stock,
-            sizes: formState.sizes,
-            colors: formState.colors,
+            stock: parseInt(formState.stock),
+            size: formState.sizes,
+            color: formState.colors,
             image: formState.mainImageFile,
             additionalImages: formState.additionalImageFiles,
         };
@@ -169,6 +282,7 @@ const ProductsManager = () => {
                     mainImageFile: null,
                     mainImagePreview: null,
                     additionalImageFiles: [],
+                    colorInput: '',
                     errors: {}
                 });
             } else {
@@ -202,7 +316,7 @@ const ProductsManager = () => {
                                     <input
                                         type="file"
                                         id="mainImage"
-                                        accept="image/*"
+                                        accept="image/jpeg,image/png,image/gif"
                                         className='hidden'
                                         onChange={(e) => handleImageChange(e, 'main')}
                                     />
@@ -219,6 +333,7 @@ const ProductsManager = () => {
                                         ) : (
                                             <div className='flex flex-col items-center justify-center h-full text-[#ffbb00]'>
                                                 <span>Click to Upload Main Image</span>
+                                                <span className='text-xs mt-2'>(JPEG, PNG, GIF, max 5MB)</span>
                                             </div>
                                         )}
                                     </label>
@@ -238,13 +353,21 @@ const ProductsManager = () => {
                                 <input
                                     type="file"
                                     multiple
-                                    accept="image/*"
+                                    accept="image/jpeg,image/png,image/gif"
                                     className='w-full bg-[#3a3a3a] border border-[#4a4a4a] rounded-lg p-3'
                                     onChange={(e) => handleImageChange(e, 'additional')}
                                 />
+                                <p className='text-xs text-gray-400 mt-1'>
+                                    JPEG, PNG, GIF only, max 5MB each
+                                </p>
                                 {formState.additionalImageFiles.length > 0 && (
-                                    <p className='text-xs text-gray-400 mt-2'>
+                                    <p className='text-xs text-green-400 mt-1'>
                                         {formState.additionalImageFiles.length} additional image(s) selected
+                                    </p>
+                                )}
+                                {formState.errors.additionalImages && (
+                                    <p className='text-red-500 text-xs mt-1'>
+                                        {formState.errors.additionalImages}
                                     </p>
                                 )}
                             </div>
@@ -410,7 +533,7 @@ const ProductsManager = () => {
                                     value={formState.discount}
                                     onChange={handleInputChange}
                                     className='w-full bg-[#3a3a3a] border border-[#4a4a4a] rounded-lg p-2'
-                                    placeholder="Enter discount percentage"
+                                    placeholder="Enter discount percentage (0-100)"
                                 />
                                 {formState.errors.discount && (
                                     <p className='text-red-500 text-xs mt-1'>

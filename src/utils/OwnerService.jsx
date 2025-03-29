@@ -96,6 +96,17 @@ export const deleteOwner = async () => {
 
 export const addProduct = async (productData) => {
     try {
+        // Validate required fields
+        if (!productData.name || productData.name.trim() === '') {
+            return { success: false, message: "Product name is required" };
+        }
+
+        if (productData.discount !== undefined && productData.discount !== null) {
+            if (productData.discount < 0 || productData.discount > 100) {
+                return { success: false, message: "Discount must be between 0 and 100" };
+            }
+        }
+
         // Create FormData for file uploads
         const formData = new FormData();
 
@@ -111,16 +122,38 @@ export const addProduct = async (productData) => {
             }
         });
 
-        // Append main image
+        // Validate and append main image
         if (productData.image instanceof File) {
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+            const maxSize = 5 * 1024 * 1024; // 5MB
+
+            if (!allowedTypes.includes(productData.image.type)) {
+                return { success: false, message: "Invalid image type" };
+            }
+
+            if (productData.image.size > maxSize) {
+                return { success: false, message: "Image size should be less than 5MB" };
+            }
+
             formData.append('image', productData.image);
         }
 
-        // Append additional images
+        // Validate and append additional images
         if (productData.additionalImages && productData.additionalImages.length > 0) {
-            productData.additionalImages.forEach((file, index) => {
-                formData.append('additionalImages', file);
-            });
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+            const maxSize = 5 * 1024 * 1024; // 5MB
+
+            for (const image of productData.additionalImages) {
+                if (!allowedTypes.includes(image.type)) {
+                    return { success: false, message: "Invalid additional image type" };
+                }
+
+                if (image.size > maxSize) {
+                    return { success: false, message: "Additional image size should be less than 5MB" };
+                }
+
+                formData.append('additionalImages', image);
+            }
         }
 
         const response = await axios.post(`${BASE_URL}/products`, formData, {
@@ -135,6 +168,17 @@ export const addProduct = async (productData) => {
 
 export const updateProduct = async (id, productData) => {
     try {
+        // Validate required fields
+        if (productData.name !== undefined && productData.name.trim() === '') {
+            return { success: false, message: "Product name cannot be empty" };
+        }
+
+        if (productData.discount !== undefined && productData.discount !== null) {
+            if (productData.discount < 0 || productData.discount > 100) {
+                return { success: false, message: "Discount must be between 0 and 100" };
+            }
+        }
+
         // Create FormData for file uploads
         const formData = new FormData();
 
@@ -144,22 +188,44 @@ export const updateProduct = async (id, productData) => {
                 // Handle array fields like size and color
                 if (Array.isArray(productData[key])) {
                     formData.append(key, productData[key].join(','));
-                } else {
+                } else if (productData[key] !== undefined) {
                     formData.append(key, productData[key]);
                 }
             }
         });
 
-        // Append main image
+        // Validate and append main image
         if (productData.image instanceof File) {
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+            const maxSize = 5 * 1024 * 1024; // 5MB
+
+            if (!allowedTypes.includes(productData.image.type)) {
+                return { success: false, message: "Invalid image type" };
+            }
+
+            if (productData.image.size > maxSize) {
+                return { success: false, message: "Image size should be less than 5MB" };
+            }
+
             formData.append('image', productData.image);
         }
 
-        // Append additional images
+        // Validate and append additional images
         if (productData.additionalImages && productData.additionalImages.length > 0) {
-            productData.additionalImages.forEach((file, index) => {
-                formData.append('additionalImages', file);
-            });
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+            const maxSize = 5 * 1024 * 1024; // 5MB
+
+            for (const image of productData.additionalImages) {
+                if (!allowedTypes.includes(image.type)) {
+                    return { success: false, message: "Invalid additional image type" };
+                }
+
+                if (image.size > maxSize) {
+                    return { success: false, message: "Additional image size should be less than 5MB" };
+                }
+
+                formData.append('additionalImages', image);
+            }
         }
 
         const response = await axios.put(`${BASE_URL}/products/${id}`, formData, {
@@ -273,6 +339,11 @@ export const deleteOrder = async (id) => {
 
 export const applyDiscount = async (id, discountData) => {
     try {
+        // Validate discount value
+        if (discountData.discount < 0 || discountData.discount > 100) {
+            return { success: false, message: "Discount must be between 0 and 100" };
+        }
+
         const response = await axios.put(`${BASE_URL}/products/${id}/apply-discount`, discountData, {
             withCredentials: true
         });
