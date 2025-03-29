@@ -305,7 +305,7 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
         }
     }, [mapLoaded, showMapSelector]);
 
-    const initMap = () => {
+    const initMap = async () => {
         const google = window.google;
         const defaultLocation = { lat: 40.7128, lng: -74.006 }; // Default to NYC
 
@@ -319,12 +319,14 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
         });
         googleMapRef.current = map;
 
-        // Create a marker
+        await google.maps.importLibrary("marker");
+
         const marker = new google.maps.marker.AdvancedMarkerElement({
             map,
-            draggable: true,
             position: defaultLocation,
+            draggable: true,
         });
+
         markerRef.current = marker;
 
         // Try to center map on user's current location
