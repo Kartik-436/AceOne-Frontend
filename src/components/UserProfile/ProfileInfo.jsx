@@ -276,9 +276,9 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
     const [mapLoaded, setMapLoaded] = useState(false);
     const [showMapSelector, setShowMapSelector] = useState(false);
     const mapRef = useRef(null);
-    const autocompleteRef = useRef(null);
     const markerRef = useRef(null);
     const googleMapRef = useRef(null);
+    const autocompleteElementRef = useRef(null);
 
     // Load Google Maps API
     useEffect(() => {
@@ -286,7 +286,7 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
         const loader = new Loader({
             apiKey,
             version: "weekly",
-            libraries: ["places"]
+            libraries: ["places", "marker"]
         });
 
         loader.load()
@@ -319,13 +319,13 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
         });
         googleMapRef.current = map;
 
-        // Create a marker
-        const marker = new google.maps.Marker({
+        // Create an advanced marker element (recommended over deprecated Marker)
+        const advancedMarker = new google.maps.marker.AdvancedMarkerElement({
             map,
-            draggable: true,
             position: defaultLocation,
+            draggable: true,
         });
-        markerRef.current = marker;
+        markerRef.current = advancedMarker;
 
         // Try to center map on user's current location
         if (navigator.geolocation) {
@@ -336,55 +336,90 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
                         lng: position.coords.longitude,
                     };
                     map.setCenter(pos);
-                    marker.setPosition(pos);
-                    updateAddressFromMarker(marker);
+                    advancedMarker.position = pos;
+                    updateAddressFromPosition(pos);
                 },
                 () => {
                     // If geolocation fails, try to use the user's saved address
                     if (formData.address) {
-                        geocodeAddress(formData.address, map, marker);
+                        geocodeAddress(formData.address, map, advancedMarker);
                     }
                 }
             );
         } else if (formData.address) {
             // If geolocation is not available, try to use the user's saved address
-            geocodeAddress(formData.address, map, marker);
+            geocodeAddress(formData.address, map, advancedMarker);
         }
 
-        // Setup the search box
-        const input = document.getElementById("address-input");
-        const autocomplete = new google.maps.places.Autocomplete(input);
-        autocomplete.bindTo("bounds", map);
-        autocompleteRef.current = autocomplete;
+        // Create and setup place autocomplete element
+        const addressInput = document.getElementById("address-input");
+        const placesDiv = document.createElement("div");
+        placesDiv.className = "absolute w-full bg-[#222] text-white rounded-lg mt-1 z-10";
+        addressInput.parentNode.appendChild(placesDiv);
 
-        // Listen for location selection from autocomplete
-        autocomplete.addListener("place_changed", () => {
-            const place = autocomplete.getPlace();
-            if (!place.geometry || !place.geometry.location) {
-                return;
-            }
+        // Initialize PlaceAutocompleteElement (recommended over deprecated Autocomplete)
+        const autocompleteOptions = {
+            fields: ["formatted_address", "geometry", "name"],
+        };
 
-            // If the place has a geometry, present it on the map
-            if (place.geometry.viewport) {
-                map.fitBounds(place.geometry.viewport);
-            } else {
-                map.setCenter(place.geometry.location);
-                map.setZoom(17);
-            }
+        // If the advanced API is available, use it
+        if (google.maps.places.PlaceAutocompleteElement) {
+            const autocompleteElement = new google.maps.places.PlaceAutocompleteElement({
+                inputElement: addressInput,
+                ...autocompleteOptions
+            });
 
-            marker.setPosition(place.geometry.location);
-            updateAddressFromPlace(place);
-        });
+            autocompleteElementRef.current = autocompleteElement;
 
-        // Listen for marker drag end
-        marker.addListener("dragend", () => {
-            updateAddressFromMarker(marker);
+            autocompleteElement.addListener("place_changed", () => {
+                const place = autocompleteElement.getPlace();
+                if (!place.geometry || !place.geometry.location) {
+                    return;
+                }
+
+                // If the place has a geometry, present it on the map
+                if (place.geometry.viewport) {
+                    map.fitBounds(place.geometry.viewport);
+                } else {
+                    map.setCenter(place.geometry.location);
+                    map.setZoom(17);
+                }
+
+                advancedMarker.position = place.geometry.location;
+                updateAddressFromPlace(place);
+            });
+        } else {
+            // Fallback to older Autocomplete if PlaceAutocompleteElement is not available
+            const autocomplete = new google.maps.places.Autocomplete(addressInput);
+            autocomplete.bindTo("bounds", map);
+
+            autocomplete.addListener("place_changed", () => {
+                const place = autocomplete.getPlace();
+                if (!place.geometry || !place.geometry.location) {
+                    return;
+                }
+
+                if (place.geometry.viewport) {
+                    map.fitBounds(place.geometry.viewport);
+                } else {
+                    map.setCenter(place.geometry.location);
+                    map.setZoom(17);
+                }
+
+                advancedMarker.position = place.geometry.location;
+                updateAddressFromPlace(place);
+            });
+        }
+
+        // Listen for marker position changes
+        advancedMarker.addListener("dragend", () => {
+            updateAddressFromPosition(advancedMarker.position);
         });
 
         // Listen for map clicks
         map.addListener("click", (e) => {
-            marker.setPosition(e.latLng);
-            updateAddressFromMarker(marker);
+            advancedMarker.position = e.latLng;
+            updateAddressFromPosition(e.latLng);
         });
     };
 
@@ -393,7 +428,7 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
         geocoder.geocode({ address }, (results, status) => {
             if (status === "OK" && results[0]) {
                 map.setCenter(results[0].geometry.location);
-                marker.setPosition(results[0].geometry.location);
+                marker.position = results[0].geometry.location;
                 updateAddressFromPlace(results[0]);
             }
         });
@@ -404,8 +439,17 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
         const formattedAddress = place.formatted_address;
 
         // Create Google Maps link
-        const lat = place.geometry.location.lat();
-        const lng = place.geometry.location.lng();
+        let lat, lng;
+        if (place.geometry) {
+            if (typeof place.geometry.location.lat === 'function') {
+                lat = place.geometry.location.lat();
+                lng = place.geometry.location.lng();
+            } else {
+                lat = place.geometry.location.lat;
+                lng = place.geometry.location.lng;
+            }
+        }
+
         const googleMapsLink = `https://www.google.com/maps?q=${lat},${lng}`;
 
         setFormData(prev => ({
@@ -415,9 +459,19 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
         }));
     };
 
-    const updateAddressFromMarker = (marker) => {
+    const updateAddressFromPosition = (position) => {
         const geocoder = new window.google.maps.Geocoder();
-        const latLng = marker.getPosition();
+        let latLng;
+
+        // Handle different position formats
+        if (position instanceof google.maps.LatLng) {
+            latLng = position;
+        } else if (position.lat && position.lng) {
+            // Check if lat and lng are functions or properties
+            const lat = typeof position.lat === 'function' ? position.lat() : position.lat;
+            const lng = typeof position.lng === 'function' ? position.lng() : position.lng;
+            latLng = new google.maps.LatLng(lat, lng);
+        }
 
         geocoder.geocode({ location: latLng }, (results, status) => {
             if (status === "OK" && results[0]) {
@@ -443,12 +497,14 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
         // Prepare the data for saving
         const updatedData = {
             ...formData,
+            // Format the address object correctly for saving
             address: {
                 formattedAddress: formData.address,
                 googleMapsLink: formData.googleMapsLink
             }
         };
 
+        // Remove the flat properties to avoid duplicates
         delete updatedData.googleMapsLink;
 
         onSave(updatedData);
