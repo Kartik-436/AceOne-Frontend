@@ -182,7 +182,7 @@ const Orders = () => {
 
                                                 <div>
                                                     <p className="text-xs text-gray-600">Total</p>
-                                                    <p className="font-medium">₹{order.totalAmount.toFixed(2) || 0}</p>
+                                                    <p className="font-medium">₹{((order?.discountedTotalAmount ? order?.discountedTotalAmount : order?.totalAmount) + order.deliveryFee).toFixed(2)}</p>
                                                 </div>
 
                                                 <ChevronRight
