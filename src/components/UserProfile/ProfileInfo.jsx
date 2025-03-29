@@ -276,30 +276,29 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
     const [mapLoaded, setMapLoaded] = useState(false);
     const [showMapSelector, setShowMapSelector] = useState(false);
     const mapRef = useRef(null);
+    const autocompleteRef = useRef(null);
     const markerRef = useRef(null);
     const googleMapRef = useRef(null);
-    const autocompleteElementRef = useRef(null);
 
+    // Load Google Maps API
     useEffect(() => {
         const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-        if (!apiKey) {
-            console.error("Google Maps API key is missing.");
-            return;
-        }
-
         const loader = new Loader({
             apiKey,
             version: "weekly",
             libraries: ["places"]
         });
 
-        loader.load().then(() => {
-            setMapLoaded(true);
-        }).catch(error => {
-            console.error("Error loading Google Maps API:", error);
-        });
+        loader.load()
+            .then(() => {
+                setMapLoaded(true);
+            })
+            .catch(error => {
+                console.error("Error loading Google Maps API:", error);
+            });
     }, []);
 
+    // Initialize map when API is loaded and map selector is shown
     useEffect(() => {
         if (mapLoaded && showMapSelector && mapRef.current) {
             initMap();
@@ -307,14 +306,10 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
     }, [mapLoaded, showMapSelector]);
 
     const initMap = () => {
-        if (!window.google) {
-            console.error("Google Maps API not loaded correctly.");
-            return;
-        }
-
         const google = window.google;
-        const defaultLocation = { lat: 40.7128, lng: -74.006 };
+        const defaultLocation = { lat: 40.7128, lng: -74.006 }; // Default to NYC
 
+        // Initialize the map
         const map = new google.maps.Map(mapRef.current, {
             center: defaultLocation,
             zoom: 13,
@@ -324,13 +319,15 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
         });
         googleMapRef.current = map;
 
+        // Create a marker
         const marker = new google.maps.Marker({
-            position: defaultLocation,
             map,
             draggable: true,
+            position: defaultLocation,
         });
         markerRef.current = marker;
 
+        // Try to center map on user's current location
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
@@ -340,53 +337,99 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
                     };
                     map.setCenter(pos);
                     marker.setPosition(pos);
-                    updateAddressFromPosition(pos);
+                    updateAddressFromMarker(marker);
                 },
-                (error) => console.warn("Geolocation failed:", error.message)
+                () => {
+                    // If geolocation fails, try to use the user's saved address
+                    if (formData.address) {
+                        geocodeAddress(formData.address, map, marker);
+                    }
+                }
             );
+        } else if (formData.address) {
+            // If geolocation is not available, try to use the user's saved address
+            geocodeAddress(formData.address, map, marker);
         }
 
-        const addressInput = document.getElementById("address-input");
-        const autocomplete = new google.maps.places.Autocomplete(addressInput);
+        // Setup the search box
+        const input = document.getElementById("address-input");
+        const autocomplete = new google.maps.places.Autocomplete(input);
         autocomplete.bindTo("bounds", map);
+        autocompleteRef.current = autocomplete;
 
+        // Listen for location selection from autocomplete
         autocomplete.addListener("place_changed", () => {
             const place = autocomplete.getPlace();
-            if (!place.geometry || !place.geometry.location) return;
+            if (!place.geometry || !place.geometry.location) {
+                return;
+            }
 
-            map.setCenter(place.geometry.location);
-            map.setZoom(17);
+            // If the place has a geometry, present it on the map
+            if (place.geometry.viewport) {
+                map.fitBounds(place.geometry.viewport);
+            } else {
+                map.setCenter(place.geometry.location);
+                map.setZoom(17);
+            }
+
             marker.setPosition(place.geometry.location);
             updateAddressFromPlace(place);
         });
 
-        google.maps.event.addListener(marker, "dragend", () => {
-            updateAddressFromPosition(marker.getPosition());
+        // Listen for marker drag end
+        marker.addListener("dragend", () => {
+            updateAddressFromMarker(marker);
         });
 
-        google.maps.event.addListener(map, "click", (e) => {
+        // Listen for map clicks
+        map.addListener("click", (e) => {
             marker.setPosition(e.latLng);
-            updateAddressFromPosition(e.latLng);
+            updateAddressFromMarker(marker);
+        });
+    };
+
+    const geocodeAddress = (address, map, marker) => {
+        const geocoder = new window.google.maps.Geocoder();
+        geocoder.geocode({ address }, (results, status) => {
+            if (status === "OK" && results[0]) {
+                map.setCenter(results[0].geometry.location);
+                marker.setPosition(results[0].geometry.location);
+                updateAddressFromPlace(results[0]);
+            }
         });
     };
 
     const updateAddressFromPlace = (place) => {
+        // Format the address
         const formattedAddress = place.formatted_address;
+
+        // Create Google Maps link
         const lat = place.geometry.location.lat();
         const lng = place.geometry.location.lng();
         const googleMapsLink = `https://www.google.com/maps?q=${lat},${lng}`;
 
-        setFormData(prev => ({ ...prev, address: formattedAddress, googleMapsLink }));
+        setFormData(prev => ({
+            ...prev,
+            address: formattedAddress,
+            googleMapsLink
+        }));
     };
 
-    const updateAddressFromPosition = (position) => {
+    const updateAddressFromMarker = (marker) => {
         const geocoder = new window.google.maps.Geocoder();
-        geocoder.geocode({ location: position }, (results, status) => {
+        const latLng = marker.getPosition();
+
+        geocoder.geocode({ location: latLng }, (results, status) => {
             if (status === "OK" && results[0]) {
+                const formattedAddress = results[0].formatted_address;
+                const lat = latLng.lat();
+                const lng = latLng.lng();
+                const googleMapsLink = `https://www.google.com/maps?q=${lat},${lng}`;
+
                 setFormData(prev => ({
                     ...prev,
-                    address: results[0].formatted_address,
-                    googleMapsLink: `https://www.google.com/maps?q=${position.lat()},${position.lng()}`
+                    address: formattedAddress,
+                    googleMapsLink
                 }));
             }
         });
@@ -397,13 +440,22 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
     };
 
     const handleSave = () => {
-        onSave({
+        // Prepare the data for saving
+        const updatedData = {
             ...formData,
             address: {
                 formattedAddress: formData.address,
-                googleMapsLink: formData.googleMapsLink,
-            },
-        });
+                googleMapsLink: formData.googleMapsLink
+            }
+        };
+
+        delete updatedData.googleMapsLink;
+
+        onSave(updatedData);
+    };
+
+    const toggleMapSelector = () => {
+        setShowMapSelector(!showMapSelector);
     };
 
     return (
@@ -461,7 +513,7 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
                             />
                             <button
                                 type="button"
-                                // onClick={toggleMapSelector}
+                                onClick={toggleMapSelector}
                                 className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[#ffbb00] p-2"
                                 title="Select location on map"
                             >
