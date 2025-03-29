@@ -254,8 +254,8 @@ const Orders = () => {
                                                                     <p className="font-medium text-sm truncate">{item.product?.name || 'Product Name'}</p>
 
                                                                     <div className="flex flex-wrap items-center text-xs text-gray-600 gap-1">
-                                                                        <span>Selected Color: {item.selectedColor}</span>
-                                                                        <span>Selected Size: {item.selectedSize}</span>
+                                                                        <span>Selected Color: {item.selectedColor}, </span>
+                                                                        <span> Selected Size: {item.selectedSize}</span>
                                                                     </div>
 
                                                                     <div className="flex flex-wrap items-center text-xs text-gray-600 gap-1">
@@ -295,7 +295,7 @@ const Orders = () => {
                                                 <div className="mt-4 border-t border-gray-100 pt-3">
                                                     <div className="flex justify-between font-medium">
                                                         <span>Subtotal:</span>
-                                                        <span>₹{order.totalAmount.toFixed(2) ? (order.totalAmount - (order.deliveryFee || 0)).toFixed(2) : 0}</span>
+                                                        <span>₹{order.discountedTotalAmount.toFixed(2)}</span>
                                                     </div>
                                                     <div className="flex justify-between text-sm text-gray-600 mt-1">
                                                         <span>Delivery Fee:</span>
@@ -303,7 +303,7 @@ const Orders = () => {
                                                     </div>
                                                     <div className="flex justify-between font-bold text-lg mt-2">
                                                         <span>Total:</span>
-                                                        <span>₹{order.totalAmount.toFixed(2) || 0}</span>
+                                                        <span>₹{order.discountedTotalAmount.toFixed(2) + order.deliveryFee}</span>
                                                     </div>
                                                 </div>
 
