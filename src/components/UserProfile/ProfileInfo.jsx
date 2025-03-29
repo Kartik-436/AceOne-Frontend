@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 // components/ProfileInfo.jsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Camera } from 'lucide-react';
 import { motion } from 'motion/react';
 import { getUserDetails, updateProfilePicture, updateUserProfile } from '../../utils/UserService';
@@ -9,6 +10,7 @@ import { toast } from "react-toastify";
 import BarLoader from '../Loaders/CustomLoader1';
 import useDelayedNavigation from '../../utils/useDelayedNavigation';
 import Transition from '../../Transition';
+import { Loader } from "@googlemaps/js-api-loader";
 
 const ProfileInfo = () => {
     const [isEditing, setIsEditing] = useState(false);
@@ -36,26 +38,49 @@ const ProfileInfo = () => {
     const handleSave = async (updatedData) => {
         setLoading(true);
 
-        const result = await updateUserProfile(updatedData);
+        try {
+            // Format the data according to your User model schema
+            const formattedData = {
+                ...updatedData,
+                // Format the address object correctly
+                address: {
+                    formattedAddress: updatedData.address?.formattedAddress || updatedData.address || "",
+                    googleMapsLink: updatedData.address?.googleMapsLink || updatedData.googleMapsLink || ""
+                }
+            };
 
-        if (result.success) {
-            toast.success(result.message, {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "dark",
-            });
-            setIsEditing(false);
-            await refreshUser();
-        } else {
-            toast.error(result.message);
+            // Remove any flattened address properties that might have come from the form
+            if (formattedData.googleMapsLink) delete formattedData.googleMapsLink;
+
+            // Convert date strings to Date objects if needed
+            if (formattedData.dateOfBirth) {
+                formattedData.dateOfBirth = new Date(formattedData.dateOfBirth);
+            }
+
+            const result = await updateUserProfile(formattedData);
+
+            if (result.success) {
+                toast.success(result.message, {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+                setIsEditing(false);
+                await refreshUser();
+            } else {
+                toast.error(result.message || "Failed to update profile");
+            }
+        } catch (error) {
+            console.error("Error updating profile:", error);
+            toast.error("An error occurred while updating your profile");
+        } finally {
+            setLoading(false);
         }
-
-        setLoading(false);
     };
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -230,14 +255,196 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
         fullName: user?.fullName || "",
         email: user?.email || "",
         contact: user?.contact || "",
-        address: user?.address || "",
+        address: user?.address?.formattedAddress || "",
+        googleMapsLink: user?.address?.googleMapsLink || "",
         dateOfBirth: user?.dateOfBirth
             ? new Date(user.dateOfBirth).toISOString().split("T")[0]
             : "",
     });
 
+    const [mapLoaded, setMapLoaded] = useState(false);
+    const [showMapSelector, setShowMapSelector] = useState(false);
+    const mapRef = useRef(null);
+    const autocompleteRef = useRef(null);
+    const markerRef = useRef(null);
+    const googleMapRef = useRef(null);
+
+    // Load Google Maps API
+    useEffect(() => {
+        const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+        const loader = new Loader({
+            apiKey,
+            version: "weekly",
+            libraries: ["places"]
+        });
+
+        loader.load()
+            .then(() => {
+                setMapLoaded(true);
+            })
+            .catch(error => {
+                console.error("Error loading Google Maps API:", error);
+            });
+    }, []);
+
+    // Initialize map when API is loaded and map selector is shown
+    useEffect(() => {
+        if (mapLoaded && showMapSelector && mapRef.current) {
+            initMap();
+        }
+    }, [mapLoaded, showMapSelector]);
+
+    const initMap = () => {
+        const google = window.google;
+        const defaultLocation = { lat: 40.7128, lng: -74.006 }; // Default to NYC
+
+        // Initialize the map
+        const map = new google.maps.Map(mapRef.current, {
+            center: defaultLocation,
+            zoom: 13,
+            mapTypeControl: false,
+            streetViewControl: false,
+            fullscreenControl: false,
+        });
+        googleMapRef.current = map;
+
+        // Create a marker
+        const marker = new google.maps.Marker({
+            map,
+            draggable: true,
+            position: defaultLocation,
+        });
+        markerRef.current = marker;
+
+        // Try to center map on user's current location
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const pos = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                    };
+                    map.setCenter(pos);
+                    marker.setPosition(pos);
+                    updateAddressFromMarker(marker);
+                },
+                () => {
+                    // If geolocation fails, try to use the user's saved address
+                    if (formData.address) {
+                        geocodeAddress(formData.address, map, marker);
+                    }
+                }
+            );
+        } else if (formData.address) {
+            // If geolocation is not available, try to use the user's saved address
+            geocodeAddress(formData.address, map, marker);
+        }
+
+        // Setup the search box
+        const input = document.getElementById("address-input");
+        const autocomplete = new google.maps.places.Autocomplete(input);
+        autocomplete.bindTo("bounds", map);
+        autocompleteRef.current = autocomplete;
+
+        // Listen for location selection from autocomplete
+        autocomplete.addListener("place_changed", () => {
+            const place = autocomplete.getPlace();
+            if (!place.geometry || !place.geometry.location) {
+                return;
+            }
+
+            // If the place has a geometry, present it on the map
+            if (place.geometry.viewport) {
+                map.fitBounds(place.geometry.viewport);
+            } else {
+                map.setCenter(place.geometry.location);
+                map.setZoom(17);
+            }
+
+            marker.setPosition(place.geometry.location);
+            updateAddressFromPlace(place);
+        });
+
+        // Listen for marker drag end
+        marker.addListener("dragend", () => {
+            updateAddressFromMarker(marker);
+        });
+
+        // Listen for map clicks
+        map.addListener("click", (e) => {
+            marker.setPosition(e.latLng);
+            updateAddressFromMarker(marker);
+        });
+    };
+
+    const geocodeAddress = (address, map, marker) => {
+        const geocoder = new window.google.maps.Geocoder();
+        geocoder.geocode({ address }, (results, status) => {
+            if (status === "OK" && results[0]) {
+                map.setCenter(results[0].geometry.location);
+                marker.setPosition(results[0].geometry.location);
+                updateAddressFromPlace(results[0]);
+            }
+        });
+    };
+
+    const updateAddressFromPlace = (place) => {
+        // Format the address
+        const formattedAddress = place.formatted_address;
+
+        // Create Google Maps link
+        const lat = place.geometry.location.lat();
+        const lng = place.geometry.location.lng();
+        const googleMapsLink = `https://www.google.com/maps?q=${lat},${lng}`;
+
+        setFormData(prev => ({
+            ...prev,
+            address: formattedAddress,
+            googleMapsLink
+        }));
+    };
+
+    const updateAddressFromMarker = (marker) => {
+        const geocoder = new window.google.maps.Geocoder();
+        const latLng = marker.getPosition();
+
+        geocoder.geocode({ location: latLng }, (results, status) => {
+            if (status === "OK" && results[0]) {
+                const formattedAddress = results[0].formatted_address;
+                const lat = latLng.lat();
+                const lng = latLng.lng();
+                const googleMapsLink = `https://www.google.com/maps?q=${lat},${lng}`;
+
+                setFormData(prev => ({
+                    ...prev,
+                    address: formattedAddress,
+                    googleMapsLink
+                }));
+            }
+        });
+    };
+
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSave = () => {
+        // Prepare the data for saving
+        const updatedData = {
+            ...formData,
+            address: {
+                formattedAddress: formData.address,
+                googleMapsLink: formData.googleMapsLink
+            }
+        };
+
+        delete updatedData.googleMapsLink;
+
+        onSave(updatedData);
+    };
+
+    const toggleMapSelector = () => {
+        setShowMapSelector(!showMapSelector);
     };
 
     return (
@@ -247,7 +454,7 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: 100, opacity: 0 }}
                 transition={{ delay: 0.3 }}
-                className="bg-[#111] text-white px-4 sm:px-8 py-6 sm:py-16 rounded-2xl shadow-xl max-w-lg w-full relative overflow-y-auto max-h-[90vh]"
+                className="bg-[#111] text-white px-4 sm:px-8 py-6 sm:py-16 rounded-2xl shadow-xl max-w-2xl w-full relative overflow-y-auto max-h-[90vh]"
             >
                 <h2 className="text-xl sm:text-2xl font-semibold text-center mb-6 font-[poppins] uppercase">
                     Edit Profile
@@ -280,14 +487,60 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
                         placeholder="Phone Number"
                         className="w-full bg-[#222] text-white px-4 sm:px-6 py-3 sm:py-4 rounded-lg focus:ring-2 focus:ring-[#ffbb00] outline-none"
                     />
-                    <input
-                        type="text"
-                        name="address"
-                        value={formData.address}
-                        onChange={handleChange}
-                        placeholder="Address"
-                        className="w-full bg-[#222] text-white px-4 sm:px-6 py-3 sm:py-4 rounded-lg focus:ring-2 focus:ring-[#ffbb00] outline-none"
-                    />
+
+                    {/* Address with Google Maps integration */}
+                    <div className="space-y-2">
+                        <div className="relative">
+                            <input
+                                id="address-input"
+                                type="text"
+                                name="address"
+                                value={formData.address}
+                                onChange={handleChange}
+                                placeholder="Address"
+                                className="w-full bg-[#222] text-white px-4 sm:px-6 py-3 sm:py-4 rounded-lg focus:ring-2 focus:ring-[#ffbb00] outline-none pr-12"
+                            />
+                            <button
+                                type="button"
+                                onClick={toggleMapSelector}
+                                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[#ffbb00] p-2"
+                                title="Select location on map"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        {/* Map Selector */}
+                        {showMapSelector && (
+                            <div className="border border-[#333] rounded-lg overflow-hidden transition-all duration-300">
+                                <div
+                                    ref={mapRef}
+                                    className="w-full h-[300px]"
+                                ></div>
+                                <div className="p-3 bg-[#222] text-sm">
+                                    <p>Click on the map or search for an address to select your location</p>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Display the Google Maps link if available */}
+                        {formData.googleMapsLink && (
+                            <div className="text-sm text-gray-400 mt-1">
+                                <a
+                                    href={formData.googleMapsLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-[#ffbb00] hover:underline"
+                                >
+                                    View on Google Maps
+                                </a>
+                            </div>
+                        )}
+                    </div>
+
                     <input
                         type="date"
                         name="dateOfBirth"
@@ -306,7 +559,7 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
                         Cancel
                     </button>
                     <button
-                        onClick={() => onSave(formData)}
+                        onClick={handleSave}
                         id='Save_Changes_Btn_Profile'
                         className="px-6 py-3 bg-[#e9e9e9] text-black rounded-lg transition order-1 sm:order-2"
                     >
