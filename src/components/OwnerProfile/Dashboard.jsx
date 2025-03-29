@@ -297,7 +297,6 @@ const Dashboard = ({ setActive, setActiveTab }) => {
 
                                             <div className='flex flex-col items-start h-full'>
                                                 <h1 className='text-black font-[poppins] font-medium max-w-[85%]'>{product.name}</h1>
-                                                <h1 className='text-black font-[poppins] font-light'>{product.category} ({product.size})</h1>
                                             </div>
                                         </div>
                                         <h1 className='text-black font-[poppins] font-medium'>{product.stock}</h1>
@@ -305,14 +304,14 @@ const Dashboard = ({ setActive, setActiveTab }) => {
                                         <h1 className='text-black font-[poppins] font-medium'>{product.discount}</h1>
                                         <h1 className='text-black font-[poppins] font-medium'>{product.category}</h1>
                                         <div className='flex flex-col gap-2 items-center justify-center'>
-                                            {product.size.map((size) => {
-                                                <h1 className='text-black font-[poppins] font-medium'>{size}</h1>
-                                            })}
+                                            {product.size.map((sz) => (
+                                                <h1 key={sz} className='text-black font-[poppins] font-medium'>{sz}</h1>
+                                            ))}
                                         </div>
                                         <div className='flex flex-col gap-2 items-center justify-center'>
-                                            {product.color.map((color) => {
-                                                <h1 className='text-black font-[poppins] font-medium'>{color}</h1>
-                                            })}
+                                            {product.color.map((clr) => (
+                                                <h1 key={clr} className='text-black font-[poppins] font-medium'>{clr}</h1>
+                                            ))}
                                         </div>
                                         <div className='text-black font-[poppins] font-medium flex flex-col items-end justify-center w-full gap-3 pr-5'>
                                             <button
