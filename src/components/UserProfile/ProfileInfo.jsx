@@ -52,9 +52,20 @@ const ProfileInfo = () => {
             // Remove any flattened address properties that might have come from the form
             if (formattedData.googleMapsLink) delete formattedData.googleMapsLink;
 
-            // Convert date strings to Date objects if needed
+            // Fix date format - either send a properly formatted string or null
             if (formattedData.dateOfBirth) {
-                formattedData.dateOfBirth = new Date(formattedData.dateOfBirth);
+                // Ensure it's a valid date string in YYYY-MM-DD format
+                const dateObj = new Date(formattedData.dateOfBirth);
+                if (!isNaN(dateObj.getTime())) {
+                    // Format as ISO string and take just the date part
+                    formattedData.dateOfBirth = dateObj.toISOString().split('T')[0];
+                } else {
+                    // If invalid date, don't send this field
+                    delete formattedData.dateOfBirth;
+                }
+            } else {
+                // If empty, don't send this field
+                delete formattedData.dateOfBirth;
             }
 
             const result = await updateUserProfile(formattedData);
