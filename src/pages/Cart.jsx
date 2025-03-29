@@ -239,7 +239,7 @@ const Cart = () => {
                                         </div>
 
                                         <div className='flex flex-col items-center md:justify-between '>
-                                            <div className='flex md:flex-row flex-col justify-around w-fit md:w-full h-full'>
+                                            <div className='flex md:flex-row flex-col justify-around md:items-start items-end w-fit md:w-full h-full'>
                                                 <div className="flex items-center border-[1px] border-black rounded-md gap-1 md:gap-3 px-2 py-0.5 h-[4vh]">
 
                                                     <button
