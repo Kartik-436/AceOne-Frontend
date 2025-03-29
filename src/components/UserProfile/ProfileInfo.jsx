@@ -107,7 +107,7 @@ const ProfileInfo = () => {
                         <h2 className="text-xl sm:text-2xl font-semibold uppercase font-[poppins] text-center sm:text-left">Profile Information</h2>
                         <button
                             id='Shp-Now-Home-Start'
-                            className="px-4 sm:px-6 py-2 bg-[#ffbb00] text-black rounded-full transition-colors w-full sm:w-auto"
+                            className="px-4 sm:px-6 py-2 bg-[#fbffef] text-black rounded-full transition-colors w-full sm:w-auto"
                             onClick={() => setIsEditing(true)}
                         >
                             Edit Profile
