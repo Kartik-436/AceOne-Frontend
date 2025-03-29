@@ -320,7 +320,7 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
         googleMapRef.current = map;
 
         // Create a marker
-        const marker = new google.maps.Marker({
+        const marker = new google.maps.marker.AdvancedMarkerElement({
             map,
             draggable: true,
             position: defaultLocation,
@@ -353,7 +353,7 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
 
         // Setup the search box
         const input = document.getElementById("address-input");
-        const autocomplete = new google.maps.places.Autocomplete(input);
+        const autocomplete = new google.maps.places.PlaceAutocompleteElement(input);
         autocomplete.bindTo("bounds", map);
         autocompleteRef.current = autocomplete;
 
