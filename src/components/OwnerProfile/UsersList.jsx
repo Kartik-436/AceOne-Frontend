@@ -150,6 +150,9 @@ const UsersList = () => {
                                                                             <div className="w-full flex justify-between">
                                                                                 <h1 className="text-black font-[poppins] font-medium">{item.product?.name} ({item.quantity})</h1>
                                                                             </div>
+                                                                            <h1 className="text-black font-[poppins] font-normal">
+                                                                                {item.selectedColor}
+                                                                            </h1>
                                                                             <h1 className="text-black font-[poppins] font-light">
                                                                                 {item.product?.category} ({item.selectedSize})
                                                                             </h1>
