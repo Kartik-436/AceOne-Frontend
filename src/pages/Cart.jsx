@@ -214,7 +214,7 @@ const Cart = () => {
                                         </button>
                                     </motion.div>
                                 ) : products.map(product => (
-                                    <div key={product.productId._id} data-key={product.productId._id} className='flex justify-between md:gap-15 min-h-[24vh] w-full px-2 py-5 border-b-[1px] border-black'>
+                                    <div key={product.productId._id} data-key={product.productId._id} className='flex justify-between md:gap-15 gap-2 min-h-[24vh] w-full md:px-2 px-1 py-3 md:py-5 border-b-[1px] border-black'>
                                         <div className='flex gap-2 items-start md:gap-4 h-full w-full'>
                                             <div onClick={() => { handleDelayNavigation(`product/${product?.productId?._id}`) }} className='border-[1px] border-black min-h-[100%] min-w-[50%] rounded-sm'>
                                                 <img src={product.productId.image || "https://icon-library.com/images/products-icon-png/products-icon-png-12.jpg"} className='h-full min-h-[24vh] w-full object-cover' alt={product.productId.name} />
