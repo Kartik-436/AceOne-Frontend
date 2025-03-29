@@ -106,8 +106,7 @@ const ProfileInfo = () => {
                     <div className="flex flex-col sm:flex-row justify-between items-center mb-8 sm:mb-16 gap-4 sm:gap-0">
                         <h2 className="text-xl sm:text-2xl font-semibold uppercase font-[poppins] text-center sm:text-left">Profile Information</h2>
                         <button
-                            id='Shp-Now-Home-Start'
-                            className="px-4 sm:px-6 py-2 bg-[#fbffef] text-black rounded-full transition-colors w-full sm:w-auto"
+                            className="px-4 sm:px-6 py-2 bg-[#111] text-white rounded-full transition-colors w-full sm:w-auto AddToCartInStore"
                             onClick={() => setIsEditing(true)}
                         >
                             Edit Profile
