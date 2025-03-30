@@ -438,7 +438,7 @@ const EditProductModal = ({ isOpen, onClose, product, onProductUpdated }) => {
                                             type="button"
                                             onClick={() => handleSizeToggle(size)}
                                             className={`
-                                                px-3 py-1 rounded-lg transition-all duration-200
+                                                px-3 py-1 rounded-lg transition-all duration-200 cursor-pointer
                                                 ${formState.sizes.includes(size)
                                                     ? 'bg-[#ffbb00] text-black'
                                                     : 'bg-[#3a3a3a] text-white hover:bg-[#4a4a4a]'
