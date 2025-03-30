@@ -372,7 +372,6 @@ const EditProductModal = ({ isOpen, onClose, product, onProductUpdated }) => {
                                                 key={index}
                                                 className="w-16 h-16 border rounded overflow-hidden"
                                             >
-                                                {console.log(preview)}
                                                 {isOpen && <img
                                                     loading="lazy"
                                                     src={typeof preview === 'string'
