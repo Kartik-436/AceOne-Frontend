@@ -120,10 +120,12 @@ const Dashboard = ({ setActive, setActiveTab }) => {
 
     useEffect(() => {
         ; (async () => {
+            setLoading(true);
             await refreshOrders();
             await refreshUsers();
             await refreshOwner();
             await refreshProducts();
+            setLoading(false);
         })()
     }, [])
 
