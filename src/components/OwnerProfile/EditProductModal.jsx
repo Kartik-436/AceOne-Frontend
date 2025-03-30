@@ -312,6 +312,7 @@ const EditProductModal = ({ isOpen, onClose, product, onProductUpdated }) => {
                                     >
                                         {mainImagePreview !== null ? (
                                             <img
+                                                loading="lazy"
                                                 src={typeof mainImagePreview === 'string'
                                                     ? (mainImagePreview.startsWith('data:')
                                                         ? mainImagePreview
@@ -373,6 +374,7 @@ const EditProductModal = ({ isOpen, onClose, product, onProductUpdated }) => {
                                             >
                                                 {console.log(preview)}
                                                 <img
+                                                    loading="lazy"
                                                     src={typeof preview === 'string'
                                                         ? (preview.startsWith('data:')
                                                             ? preview

@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import OwnerSearch from '../OwnerSearch'
 import Transition from '../../Transition'
 import useDelayedNavigation from '../../utils/useDelayedNavigation';
@@ -10,7 +10,7 @@ import BarLoader from './../Loaders/CustomLoader1';
 import { AnimatePresence, motion } from 'motion/react';
 import { LucidePackage2, Package, Package2, Pencil, ShoppingBasket, ShoppingCart, Trash2 } from 'lucide-react';
 import { toast } from 'react-toastify';
-import EditProductModal from './EditProductModal';
+const EditProductModal = React.lazy(() => import("./EditProductModal"));
 
 const Dashboard = ({ setActive, setActiveTab }) => {
     const { animate, handleDelayNavigation } = useDelayedNavigation();
@@ -304,13 +304,14 @@ const Dashboard = ({ setActive, setActiveTab }) => {
                                                 onConfirm={() => { handleDeleteProduct(selectedProduct?._id) }}
                                                 product={selectedProduct}
                                             />
-
-                                            <EditProductModal
-                                                isOpen={editModalOpen}
-                                                onClose={() => setEditModalOpen(false)}
-                                                product={selectedProduct}
-                                                onProductUpdated={refreshProducts}
-                                            />
+                                            <Suspense fallback={<div className="text-center text-white">Loading...</div>}>
+                                                {editModalOpen && <EditProductModal
+                                                    isOpen={editModalOpen}
+                                                    onClose={() => setEditModalOpen(false)}
+                                                    product={selectedProduct}
+                                                    onProductUpdated={refreshProducts}
+                                                />}
+                                            </Suspense>
                                         </div>
                                     </div>
                                 ))}
