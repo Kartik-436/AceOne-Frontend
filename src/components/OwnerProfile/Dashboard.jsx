@@ -31,56 +31,34 @@ const Dashboard = ({ setActive, setActiveTab }) => {
         setSelectedProduct(product);
     };
 
-    const refreshOwner = async () => {
-        try {
-            setLoading(true)
-            const response = await getOwnerProfile();
+    useEffect(() => {
+        (async () => {
+            setLoading(true);
+            try {
+                const [ordersRes, usersRes, ownerRes, productsRes] = await Promise.all([
+                    getAllOrders(),
+                    getAllUsers(),
+                    getOwnerProfile(),
+                    getAllProducts(),
+                ]);
 
-            if (response.success) {
-                setOwner(response.data);
-            } else {
-                setError(response.message);
-                console.error("getting Owner Error: ", response.message)
+                if (ordersRes.success) {
+                    const orders = ordersRes.data;
+                    setOrders(orders);
+                    setPendingOrders(orders.filter(order => order.orderStatus === "Pending"));
+                    setCompletedOrders(orders.filter(order => order.orderStatus === "Delivered"));
+                    setCancelledOrders(orders.filter(order => order.orderStatus === "Cancelled"));
+                }
+
+                if (usersRes.success) setUsers(usersRes.data);
+                if (ownerRes.success) setOwner(ownerRes.data);
+                if (productsRes.success) setProducts(productsRes.data);
+            } catch (error) {
+                console.error("Error fetching dashboard data:", error);
             }
-        } catch (error) {
-            console.error("getting Owner Error: ", error)
-        }
-        setLoading(false)
-    }
-
-    const refreshOrders = async () => {
-        try {
-            setLoading(true)
-            const response = await getAllOrders();
-
-            if (response.success) {
-                setOrders(response.data);
-            } else {
-                setError(response.message);
-                console.error("getting Orders Error: ", response.message)
-            }
-        } catch (error) {
-            console.error("getting Orders Error: ", error)
-        }
-        setLoading(false)
-    }
-
-    const refreshUsers = async () => {
-        try {
-            setLoading(true)
-            const response = await getAllUsers();
-
-            if (response.success) {
-                setUsers(response.data);
-            } else {
-                setError(response.message);
-                console.error("getting Users Error: ", response.message)
-            }
-        } catch (error) {
-            console.error("getting Users Error: ", error)
-        }
-        setLoading(false)
-    }
+            setLoading(false);
+        })();
+    }, []);
 
     const refreshProducts = async () => {
         try {
@@ -104,36 +82,18 @@ const Dashboard = ({ setActive, setActiveTab }) => {
             const response = await deleteProduct(Pid);
             if (response.success) {
                 await refreshProducts();
-                setConfirmModalOpen(false);
                 toast.success("Product deleted successfully");
             } else {
-                setConfirmModalOpen(false);
-                console.error("product deletion error: ", response.messages)
-                toast.error("Failed to delete product")
+                toast.error("Failed to delete product");
             }
         } catch (error) {
-            setConfirmModalOpen(false);
             console.error("Delete error:", error.message);
             toast.error("Failed to delete product");
+        } finally {
+            setConfirmModalOpen(false);
+            setSelectedProduct(null);
         }
     };
-
-    useEffect(() => {
-        ; (async () => {
-            setLoading(true);
-            await refreshOrders();
-            await refreshUsers();
-            await refreshOwner();
-            await refreshProducts();
-            setLoading(false);
-        })()
-    }, [])
-
-    useEffect(() => {
-        setPendingOrders(orders?.filter(order => order.orderStatus === "Pending"));
-        setCompletedOrders(orders?.filter(order => order.orderStatus === "Delivered"));
-        setCancelledOrders(orders?.filter(order => order.orderStatus === "Cancelled"));
-    }, [orders]);
 
     return (
         <>
@@ -365,7 +325,7 @@ const Dashboard = ({ setActive, setActiveTab }) => {
 
 export default Dashboard
 
-const ConfirmationModal = ({ isOpen, onClose, onConfirm, product }) => {
+const ConfirmationModal = React.memo(({ isOpen, onClose, onConfirm, product }) => {
     return (
         <AnimatePresence>
             {isOpen && (
@@ -400,4 +360,4 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, product }) => {
             )}
         </AnimatePresence>
     );
-};
+});
