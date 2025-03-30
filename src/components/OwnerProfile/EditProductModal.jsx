@@ -454,7 +454,6 @@ const EditProductModal = ({ isOpen, onClose, product, onProductUpdated }) => {
                                 )}
                             </div>
 
-                            {/* Colors Management */}
                             <div>
                                 <label className='block text-sm font-medium mb-2'>
                                     Colors <span className='text-red-500'>*</span>
