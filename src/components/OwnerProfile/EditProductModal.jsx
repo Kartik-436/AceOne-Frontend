@@ -371,6 +371,7 @@ const EditProductModal = ({ isOpen, onClose, product, onProductUpdated }) => {
                                                 key={index}
                                                 className="w-16 h-16 border rounded overflow-hidden"
                                             >
+                                                {console.log(preview)}
                                                 <img
                                                     src={typeof preview === 'string'
                                                         ? (preview.startsWith('data:')
