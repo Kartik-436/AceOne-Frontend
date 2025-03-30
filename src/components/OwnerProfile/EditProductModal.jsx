@@ -34,12 +34,12 @@ const EditProductModal = ({ isOpen, onClose, product, onProductUpdated }) => {
             setFormState({
                 name: product.name || '',
                 description: product.description || '',
-                price: product.price || '',
-                discount: product.discount || '',
+                price: product.price ? String(product.price) : '', // Convert to string
+                discount: product.discount ? String(product.discount) : '', // Convert to string
                 sizes: Array.isArray(product.size) ? product.size : [product.size].filter(Boolean),
                 colors: Array.isArray(product.color) ? product.color : [product.color].filter(Boolean),
                 category: product.category || '',
-                stock: product.stock || '',
+                stock: product.stock ? String(product.stock) : '', // Convert to string
                 colorInput: '',
             });
 
@@ -93,7 +93,7 @@ const EditProductModal = ({ isOpen, onClose, product, onProductUpdated }) => {
     const handleColorManagement = (action, color = '') => {
         switch (action) {
             case 'add':
-                const newColor = formState?.colorInput?.trim();
+                const newColor = formState.colorInput ? formState.colorInput.trim() : '';
                 if (newColor && !formState.colors.includes(newColor)) {
                     setFormState(prev => ({
                         ...prev,
