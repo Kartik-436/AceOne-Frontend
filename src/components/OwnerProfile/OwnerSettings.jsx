@@ -37,7 +37,7 @@ const OwnerSettings = ({ setActive, setActiveTab }) => {
                     fullName: response.data.fullName || '',
                     email: response.data.email || '',
                     contact: response.data.contact || '',
-                    dateOfBirth: response.data.dateOfBirth ? new Date(response.profile.dateOfBirth).toISOString().split('T')[0] : '',
+                    dateOfBirth: response.data?.dateOfBirth ? new Date(response.profile?.dateOfBirth).toISOString().split('T')[0] : '',
                     gstNo: response.data.gstNo || '',
                 });
                 setPicturePreview(response.data.picture || null);
