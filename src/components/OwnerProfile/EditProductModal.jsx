@@ -312,9 +312,11 @@ const EditProductModal = ({ isOpen, onClose, product, onProductUpdated }) => {
                                     >
                                         {mainImagePreview !== null ? (
                                             <img
-                                                src={typeof mainImagePreview === 'string' && mainImagePreview.startsWith('data:')
-                                                    ? mainImagePreview
-                                                    : `data:image/jpeg;base64,${mainImagePreview}`}
+                                                src={typeof mainImagePreview === 'string'
+                                                    ? (mainImagePreview.startsWith('data:')
+                                                        ? mainImagePreview
+                                                        : `data:image/jpeg;base64,${mainImagePreview}`)
+                                                    : ''}
                                                 alt="Preview"
                                                 className='w-full h-full object-cover'
                                             />
@@ -370,9 +372,11 @@ const EditProductModal = ({ isOpen, onClose, product, onProductUpdated }) => {
                                                 className="w-16 h-16 border rounded overflow-hidden"
                                             >
                                                 <img
-                                                    src={typeof preview === 'string' && preview.startsWith('data:')
-                                                        ? preview
-                                                        : `data:image/jpeg;base64,${preview}`}
+                                                    src={typeof preview === 'string'
+                                                        ? (preview.startsWith('data:')
+                                                            ? preview
+                                                            : `data:image/jpeg;base64,${preview}`)
+                                                        : ''}
                                                     alt={`Additional preview ${index + 1}`}
                                                     className="w-full h-full object-cover"
                                                 />
