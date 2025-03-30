@@ -287,7 +287,7 @@ const EditProductModal = ({ isOpen, onClose, product, onProductUpdated }) => {
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 w-full h-full flex items-center justify-center backdrop-blur-xs bg-[#11111105] transition-all duration-150 z-20">
+                <div className="fixed inset-0 w-full h-full flex items-center justify-center backdrop-blur-xs bg-[#11111105] transition-all duration-150 z-20 noScrollbar">
                     <motion.div
                         key="edit-product-modal"
                         initial={{ opacity: 0, scale: 0.3, y: 400 }}
