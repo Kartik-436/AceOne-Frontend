@@ -300,7 +300,7 @@ const ProductPage = () => {
                             className="w-full h-[220px] md:h-[500px] object-cover"
                         />
                     </div>
-                    <div className="flex space-x-2">
+                    <div className="flex space-x-2 overflow-x-scroll hideScrollBar">
                         {/* Main Image */}
                         <img
                             src={product?.image}
@@ -309,7 +309,7 @@ const ProductPage = () => {
                             onClick={() => setSelectedImage(product.image)}
                         />
                         {/* Additional Images */}
-                        <div className='w-full flex space-x-2 px-3'>
+                        <div className='w-full flex space-x-2 px-3 overflow-x-scroll hideScrollBar'>
                             {product.additionalImages?.map((img, index) => (
                                 <img
                                     key={index}
