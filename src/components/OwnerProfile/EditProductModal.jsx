@@ -472,8 +472,9 @@ const EditProductModal = ({ isOpen, onClose, product, onProductUpdated }) => {
                                     />
                                     <button
                                         type="button"
+                                        id="NavBarButtons"
                                         onClick={() => handleColorManagement('add')}
-                                        className='bg-[#ffbb00] text-black px-4 py-2 rounded-lg'
+                                        className='bg-[#ffbb00] text-black px-4 py-2 rounded-lg cursor-pointer'
                                     >
                                         Add Color
                                     </button>
@@ -589,13 +590,13 @@ const EditProductModal = ({ isOpen, onClose, product, onProductUpdated }) => {
                                 <button
                                     type="button"
                                     onClick={onClose}
-                                    className="bg-[#3a3a3a] text-white py-2 px-4 rounded-lg transition-colors duration-300 cursor-pointer hover:bg-[#5a5a5a]"
+                                    className="bg-[#3a3a3a] text-white py-2 px-4 rounded-lg transition-colors duration-300 cursor-pointer hover:bg-[#797979]"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="bg-[#fff] text-[#1f1f1f] font-bold py-2 px-6 rounded-lg flex items-center justify-center cursor-pointer AddToCartInStore"
+                                    className="bg-[#fff] text-[#1f1f1f] font-bold py-2 px-6 rounded-lg flex items-center justify-center cursor-pointer AddToCartInStore border-2"
                                     disabled={loading}
                                 >
                                     {loading ? (
