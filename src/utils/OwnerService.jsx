@@ -168,60 +168,66 @@ export const addProduct = async (productData) => {
 
 export const updateProduct = async (id, productData) => {
     try {
-        // Validate required fields
-        if (productData.name !== undefined && productData.name.trim() === '') {
-            return { success: false, message: "Product name cannot be empty" };
-        }
-
-        if (productData.discount !== undefined && productData.discount !== null) {
-            if (productData.discount < 0 || productData.discount > 100) {
-                return { success: false, message: "Discount must be between 0 and 100" };
-            }
-        }
-
         // Create FormData for file uploads
         const formData = new FormData();
 
-        // Append text fields
-        Object.keys(productData).forEach(key => {
-            if (key !== 'image' && key !== 'additionalImages') {
-                // Handle array fields like size and color
-                if (Array.isArray(productData[key])) {
-                    formData.append(key, productData[key].join(','));
-                } else if (productData[key] !== undefined) {
-                    formData.append(key, productData[key]);
-                }
-            }
-        });
+        // Append text fields - handle text fields
+        if (productData.name !== undefined) formData.append('name', productData.name);
+        if (productData.description !== undefined) formData.append('description', productData.description);
+        if (productData.price !== undefined) formData.append('price', productData.price);
+        if (productData.discount !== undefined) formData.append('discount', productData.discount);
+        if (productData.stock !== undefined) formData.append('stock', productData.stock);
+        if (productData.category !== undefined) formData.append('category', productData.category);
 
-        // Validate and append main image
+        // Handle arrays for size and color
+        if (Array.isArray(productData.size)) {
+            productData.size.forEach(size => formData.append('size', size));
+        }
+
+        if (Array.isArray(productData.color)) {
+            productData.color.forEach(color => formData.append('color', color));
+        }
+
+        // Handle main image file
         if (productData.image instanceof File) {
             const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
             const maxSize = 5 * 1024 * 1024; // 5MB
 
             if (!allowedTypes.includes(productData.image.type)) {
-                return { success: false, message: "Invalid image type" };
+                return {
+                    success: false,
+                    message: "Invalid image type. Only JPEG, PNG, and GIF are allowed."
+                };
             }
 
             if (productData.image.size > maxSize) {
-                return { success: false, message: "Image size should be less than 5MB" };
+                return {
+                    success: false,
+                    message: "Image size should be less than 5MB."
+                };
             }
 
             formData.append('image', productData.image);
         }
 
-        // Validate and append additional images
+        // Handle additional images
         if (productData.additionalImages && productData.additionalImages.length > 0) {
-            const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-            const maxSize = 5 * 1024 * 1024; // 5MB
-
             for (const image of productData.additionalImages) {
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                const maxSize = 5 * 1024 * 1024; // 5MB
+
                 if (!allowedTypes.includes(image.type)) {
-                    return { success: false, message: "Invalid additional image type" };
+                    return {
+                        success: false,
+                        message: "Invalid additional image type. Only JPEG, PNG, and GIF are allowed."
+                    };
                 }
 
                 if (image.size > maxSize) {
-                    return { success: false, message: "Additional image size should be less than 5MB" };
+                    return {
+                        success: false,
+                        message: "Additional image size should be less than 5MB."
+                    };
                 }
 
                 formData.append('additionalImages', image);
@@ -232,6 +238,7 @@ export const updateProduct = async (id, productData) => {
             withCredentials: true,
             headers: { 'Content-Type': 'multipart/form-data' }
         });
+
         return handleResponse(response);
     } catch (err) {
         return handleError(err);
