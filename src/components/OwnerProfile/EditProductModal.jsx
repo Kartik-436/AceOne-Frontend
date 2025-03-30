@@ -373,7 +373,7 @@ const EditProductModal = ({ isOpen, onClose, product, onProductUpdated }) => {
                                                 className="w-16 h-16 border rounded overflow-hidden"
                                             >
                                                 {console.log(preview)}
-                                                <img
+                                                {isOpen && <img
                                                     loading="lazy"
                                                     src={typeof preview === 'string'
                                                         ? (preview.startsWith('data:')
@@ -382,7 +382,7 @@ const EditProductModal = ({ isOpen, onClose, product, onProductUpdated }) => {
                                                         : ''}
                                                     alt={`Additional preview ${index + 1}`}
                                                     className="w-full h-full object-cover"
-                                                />
+                                                />}
                                             </div>
                                         ))}
                                     </div>
