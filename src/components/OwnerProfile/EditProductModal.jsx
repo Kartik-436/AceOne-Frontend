@@ -491,7 +491,7 @@ const EditProductModal = ({ isOpen, onClose, product, onProductUpdated }) => {
                                             <button
                                                 type="button"
                                                 onClick={() => handleColorManagement('remove', color)}
-                                                className='ml-2 text-red-400 hover:text-red-600'
+                                                className='ml-2 text-red-400 hover:text-red-600 cursor-pointer'
                                             >
                                                 ×
                                             </button>
