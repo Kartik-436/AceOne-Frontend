@@ -372,7 +372,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, product }) => {
                 <div className="fixed inset-0 w-full h-full flex items-center justify-center backdrop-blur-xs bg-[#11111105] transition-all duration-150 z-20">
                     <motion.div
                         key="delete-modal"
-                        initial={{ opacity: 0, scale: 0.3, y: 400 }}
+                        initial={{ opacity: 0, y: 400 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.2, y: 800 }}
                         transition={{ duration: 0.6, ease: "backOut" }}
