@@ -295,7 +295,7 @@ const EditProductModal = ({ isOpen, onClose, product, onProductUpdated }) => {
                         exit={{ opacity: 0, scale: 0.5, y: 400 }}
                         transition={{ duration: 0.6, ease: "backOut" }}
                         style={{ willChange: "transform", translateZ: 0 }}
-                        className="bg-[#1f1f1f] text-[#fff] p-6 rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+                        className="bg-[#1f1f1f] text-[#fff] p-6 rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto noScrollbar"
                     >
                         <h2 className="text-2xl font-bold mb-4 text-[#ffbb00]">Edit Product</h2>
 
