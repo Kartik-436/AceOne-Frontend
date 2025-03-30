@@ -325,11 +325,11 @@ const Dashboard = ({ setActive, setActiveTab }) => {
 
 export default Dashboard
 
-const ConfirmationModal = React.memo(({ isOpen, onClose, onConfirm, product }) => {
+const ConfirmationModal = ({ isOpen, onClose, onConfirm, product }) => {
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 w-full h-full flex items-center justify-center backdrop-blur-xs bg-[#11111105] transition-all duration-150 z-20">
+                <div className="fixed top-0 left-0 h-screen w-full -translate-x-1/2 -translate-y-1/2 flex items-center justify-center backdrop-blur-xs bg-[#11111105] transition-all duration-150 z-20">
                     <motion.div
                         key="delete-modal"
                         initial={{ opacity: 0, y: 400 }}
@@ -360,4 +360,4 @@ const ConfirmationModal = React.memo(({ isOpen, onClose, onConfirm, product }) =
             )}
         </AnimatePresence>
     );
-});
+};
