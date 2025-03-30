@@ -10,7 +10,8 @@ import { toast } from "react-toastify";
 import BarLoader from '../Loaders/CustomLoader1';
 import useDelayedNavigation from '../../utils/useDelayedNavigation';
 import Transition from '../../Transition';
-import mapboxgl from 'mapbox-gl';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 
 const ProfileInfo = () => {
     const [isEditing, setIsEditing] = useState(false);
@@ -276,103 +277,127 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
     const [mapLoaded, setMapLoaded] = useState(false);
     const [showMapSelector, setShowMapSelector] = useState(false);
     const mapRef = useRef(null);
-    const autocompleteRef = useRef(null);
+    const leafletMapRef = useRef(null);
     const markerRef = useRef(null);
-    const googleMapRef = useRef(null);
 
-    // Load Google Maps API
+    // Initialize map when selector is shown
     useEffect(() => {
-        mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
-        setMapLoaded(true);
-    }, []);
-    
-
-    // Initialize map when API is loaded and map selector is shown
-    useEffect(() => {
-        if (mapLoaded && showMapSelector && mapRef.current) {
+        if (showMapSelector && mapRef.current && !leafletMapRef.current) {
             initMap();
+            setMapLoaded(true);
         }
-    }, [mapLoaded, showMapSelector]);
+    }, [showMapSelector]);
+
+    // Cleanup map when component unmounts
+    useEffect(() => {
+        return () => {
+            if (leafletMapRef.current) {
+                leafletMapRef.current.remove();
+                leafletMapRef.current = null;
+            }
+        };
+    }, []);
 
     const initMap = () => {
-        const defaultLocation = [ -74.006, 40.7128 ]; // NYC
-    
-        // Initialize the Mapbox map
-        const map = new mapboxgl.Map({
-            container: mapRef.current,
-            style: 'mapbox://styles/mapbox/streets-v11',
-            center: defaultLocation,
-            zoom: 13
+        // Fix Leaflet icon issue
+        delete L.Icon.Default.prototype._getIconUrl;
+        L.Icon.Default.mergeOptions({
+            iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+            iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
         });
-        googleMapRef.current = map;
-    
+
+        const defaultLocation = [40.7128, -74.006]; // NYC [lat, lng]
+
+        // Initialize the map
+        const map = L.map(mapRef.current).setView(defaultLocation, 13);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
         // Create a marker
-        const marker = new mapboxgl.Marker({ draggable: true })
-            .setLngLat(defaultLocation)
-            .addTo(map);
+        const marker = L.marker(defaultLocation, { draggable: true }).addTo(map);
+
+        // Store references
+        leafletMapRef.current = map;
         markerRef.current = marker;
-    
+
         // Try to center map on user's location
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
-                    const pos = [ position.coords.longitude, position.coords.latitude ];
-                    map.setCenter(pos);
-                    marker.setLngLat(pos);
-                    updateAddressFromCoords({ lng: pos[0], lat: pos[1] });
+                    const pos = [position.coords.latitude, position.coords.longitude];
+                    map.setView(pos, 13);
+                    marker.setLatLng(pos);
+                    updateAddressFromCoords(pos[0], pos[1]);
                 },
                 () => {
+                    // If geolocation fails, try to use existing address
                     if (formData.address) {
-                        geocodeAddress(formData.address, map, marker);
+                        geocodeAddress(formData.address);
                     }
                 }
             );
         } else if (formData.address) {
-            geocodeAddress(formData.address, map, marker);
+            geocodeAddress(formData.address);
         }
-    
+
         // Marker drag event
         marker.on('dragend', () => {
-            updateAddressFromCoords({ lng: marker.getLngLat().lng, lat: marker.getLngLat().lat });
+            const latlng = marker.getLatLng();
+            updateAddressFromCoords(latlng.lat, latlng.lng);
         });
-    
+
         // Map click event
         map.on('click', (e) => {
-            marker.setLngLat(e.lngLat);
-            updateAddressFromCoords(e.lngLat);
+            marker.setLatLng(e.latlng);
+            updateAddressFromCoords(e.latlng.lat, e.latlng.lng);
         });
-    };
-    
 
-    const geocodeAddress = async (address, map, marker) => {
+        // Refresh map when it becomes visible
+        setTimeout(() => {
+            map.invalidateSize();
+        }, 100);
+    };
+
+    const geocodeAddress = async (address) => {
         try {
-            const res = await fetch(
-                `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${mapboxgl.accessToken}`
+            // Using Nominatim for geocoding (OpenStreetMap's geocoding service)
+            const response = await fetch(
+                `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1`,
+                { headers: { 'Accept-Language': 'en' } }
             );
-            const data = await res.json();
-            if (data.features.length > 0) {
-                const place = data.features[0];
-                const location = place.center;
-                map.setCenter(location);
-                marker.setLngLat(location);
-                updateAddressFromCoords(location);
+            const data = await response.json();
+
+            if (data.length > 0) {
+                const location = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+                if (leafletMapRef.current && markerRef.current) {
+                    leafletMapRef.current.setView(location, 13);
+                    markerRef.current.setLatLng(location);
+                }
+                updateAddressFromCoords(location[0], location[1]);
             }
         } catch (error) {
             console.error('Geocoding failed:', error);
         }
     };
-    
 
-    const updateAddressFromCoords = async ({ lng, lat }) => {
+    const updateAddressFromCoords = async (lat, lng) => {
         try {
-            const res = await fetch(
-                `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${mapboxgl.accessToken}`
+            // Using Nominatim for reverse geocoding
+            const response = await fetch(
+                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`,
+                { headers: { 'Accept-Language': 'en' } }
             );
-            const data = await res.json();
-            if (data.features.length > 0) {
-                const formattedAddress = data.features[0].place_name;
+            const data = await response.json();
+
+            if (data && data.display_name) {
+                const formattedAddress = data.display_name;
+                // Create a Google Maps link from the coordinates
                 const googleMapsLink = `https://www.google.com/maps?q=${lat},${lng}`;
-    
+
                 setFormData(prev => ({
                     ...prev,
                     address: formattedAddress,
@@ -382,24 +407,39 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
         } catch (error) {
             console.error('Reverse geocoding failed:', error);
         }
-    };    
+    };
 
     const handleAddressInputChange = async (e) => {
-        setFormData({ ...formData, address: e.target.value });
-    
-        try {
-            const res = await fetch(
-                `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(e.target.value)}.json?access_token=${mapboxgl.accessToken}`
-            );
-            const data = await res.json();
-            if (data.features.length > 0) {
-                const place = data.features[0];
-                updateAddressFromCoords({ lng: place.center[0], lat: place.center[1] });
+        const newAddress = e.target.value;
+        setFormData(prev => ({ ...prev, address: newAddress }));
+
+        // Only search if there's enough text and map is loaded
+        if (newAddress.length > 3 && mapLoaded) {
+            try {
+                // Debounce this in a real application
+                const response = await fetch(
+                    `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(newAddress)}&limit=1`,
+                    { headers: { 'Accept-Language': 'en' } }
+                );
+                const data = await response.json();
+
+                if (data.length > 0 && leafletMapRef.current && markerRef.current) {
+                    const location = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+                    leafletMapRef.current.setView(location, 13);
+                    markerRef.current.setLatLng(location);
+
+                    // Update the Google Maps link
+                    const googleMapsLink = `https://www.google.com/maps?q=${location[0]},${location[1]}`;
+                    setFormData(prev => ({
+                        ...prev,
+                        googleMapsLink
+                    }));
+                }
+            } catch (error) {
+                console.error('Search failed:', error);
             }
-        } catch (error) {
-            console.error('Autocomplete search failed:', error);
         }
-    };    
+    };
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -416,12 +456,18 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
         };
 
         delete updatedData.googleMapsLink;
-
         onSave(updatedData);
     };
 
     const toggleMapSelector = () => {
         setShowMapSelector(!showMapSelector);
+
+        // Force map refresh when toggled
+        if (!showMapSelector && leafletMapRef.current) {
+            setTimeout(() => {
+                leafletMapRef.current.invalidateSize();
+            }, 100);
+        }
     };
 
     return (
@@ -465,7 +511,7 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
                         className="w-full bg-[#222] text-white px-4 sm:px-6 py-3 sm:py-4 rounded-lg focus:ring-2 focus:ring-[#ffbb00] outline-none"
                     />
 
-                    {/* Address with Google Maps integration */}
+                    {/* Address with OpenStreetMap integration */}
                     <div className="space-y-2">
                         <div className="relative">
                             <input
@@ -498,7 +544,7 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
                                     className="w-full h-[300px]"
                                 ></div>
                                 <div className="p-3 bg-[#222] text-sm">
-                                    <p>Click on the map or search for an address to select your location</p>
+                                    <p>Click on the map or drag the marker to select your location</p>
                                 </div>
                             </div>
                         )}
