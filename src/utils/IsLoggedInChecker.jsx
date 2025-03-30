@@ -11,7 +11,7 @@ const useAuthStatus = () => {
 
         const checkAuth = async () => {
             try {
-                const response = await axios.get("https://aceone-backend-wd1f.onrender.com/user/profile", { withCredentials: true });
+                const response = await axios.get("https://aceone-backend-0ap8.onrender.com/user/profile", { withCredentials: true });
 
                 if (isMounted) {
                     if (response.data.success) {

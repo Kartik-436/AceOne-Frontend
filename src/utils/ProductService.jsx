@@ -3,7 +3,7 @@ import axios from "axios";
 export const getAllProducts = async (filters = {}) => {
     try {
         const query = new URLSearchParams(filters).toString();
-        const response = await axios.get(`https://aceone-backend-wd1f.onrender.com/product?${query}`);
+        const response = await axios.get(`https://aceone-backend-0ap8.onrender.com/product?${query}`);
 
         if (response.data.success) {
             return { success: true, products: response.data.data };
@@ -17,7 +17,7 @@ export const getAllProducts = async (filters = {}) => {
 
 export const getProductById = async (productId) => {
     try {
-        const response = await axios.get(`https://aceone-backend-wd1f.onrender.com/product/${productId}`);
+        const response = await axios.get(`https://aceone-backend-0ap8.onrender.com/product/${productId}`);
 
         if (response.data.success) {
             return { success: true, product: response.data.data };
@@ -31,7 +31,7 @@ export const getProductById = async (productId) => {
 
 export const getBestSellingProducts = async () => {
     try {
-        const response = await axios.get("https://aceone-backend-wd1f.onrender.com/product/bestSelling");
+        const response = await axios.get("https://aceone-backend-0ap8.onrender.com/product/bestSelling");
 
         if (response.data.success) {
             return { success: true, products: response.data.data };
@@ -45,7 +45,7 @@ export const getBestSellingProducts = async () => {
 
 export const getDiscountedProducts = async () => {
     try {
-        const response = await axios.get("https://aceone-backend-wd1f.onrender.com/product/discounted");
+        const response = await axios.get("https://aceone-backend-0ap8.onrender.com/product/discounted");
 
         if (response.data.success) {
             return { success: true, products: response.data.data };
@@ -63,7 +63,7 @@ export const searchProducts = async (query) => {
             return { success: false, message: "Search query is required." };
         }
 
-        const response = await axios.get(`https://aceone-backend-wd1f.onrender.com/product/search?q=${encodeURIComponent(query)}`);
+        const response = await axios.get(`https://aceone-backend-0ap8.onrender.com/product/search?q=${encodeURIComponent(query)}`);
 
         if (response.data.success) {
             return { success: true, products: response.data.data };
