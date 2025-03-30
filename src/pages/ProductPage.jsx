@@ -305,7 +305,7 @@ const ProductPage = () => {
                         <img
                             src={product?.image}
                             alt={product.name}
-                            className="md:w-20 h-10 md:h-20 w-10 object-cover cursor-pointer border rounded"
+                            className="md:w-20 h-13 md:h-20 w-13 object-cover cursor-pointer border rounded"
                             onClick={() => setSelectedImage(product.image)}
                         />
                         {/* Additional Images */}
@@ -315,7 +315,7 @@ const ProductPage = () => {
                                     key={index}
                                     src={img}
                                     alt={`${product.name} - Additional ${index + 1}`}
-                                    className="md:w-20 h-10 md:h-20 w-10 object-cover cursor-pointer border rounded"
+                                    className="md:w-20 h-13 md:h-20 w-13 object-cover cursor-pointer border rounded"
                                     onClick={() => setSelectedImage(img)}
                                 />
                             ))}
