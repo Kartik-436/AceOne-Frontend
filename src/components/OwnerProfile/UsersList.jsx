@@ -125,7 +125,7 @@ const UsersList = () => {
                                         </div>
                                         <h1 className='col-span-2 text-black font-[poppins] font-medium h-full max-w-[90%] break-words break-before-right'>{user.email}</h1>
                                         <h1 className='text-black font-[poppins] font-medium'>{user.contact}</h1>
-                                        <h1 className='col-span-2 text-black font-[poppins] font-medium w-ful'>{user.address}</h1>
+                                        <h1 className='col-span-2 text-black font-[poppins] font-medium w-ful'>{user?.address?.formattedAddress || "Address is not added"}</h1>
                                         <div className='col-span-3 text-black font-[poppins] font-medium w-full'>
                                             {
                                                 user.orders.length === 0 ?

@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 import BarLoader from '../Loaders/CustomLoader1';
 import useDelayedNavigation from '../../utils/useDelayedNavigation';
 import Transition from '../../Transition';
-import { Loader } from "@googlemaps/js-api-loader";
+import mapboxgl from 'mapbox-gl';
 
 const ProfileInfo = () => {
     const [isEditing, setIsEditing] = useState(false);
@@ -282,21 +282,10 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
 
     // Load Google Maps API
     useEffect(() => {
-        const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-        const loader = new Loader({
-            apiKey,
-            version: "weekly",
-            libraries: ["places"]
-        });
-
-        loader.load()
-            .then(() => {
-                setMapLoaded(true);
-            })
-            .catch(error => {
-                console.error("Error loading Google Maps API:", error);
-            });
+        mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
+        setMapLoaded(true);
     }, []);
+    
 
     // Initialize map when API is loaded and map selector is shown
     useEffect(() => {
@@ -306,135 +295,111 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
     }, [mapLoaded, showMapSelector]);
 
     const initMap = () => {
-        const google = window.google;
-        const defaultLocation = { lat: 40.7128, lng: -74.006 }; // Default to NYC
-
-        // Initialize the map
-        const map = new google.maps.Map(mapRef.current, {
+        const defaultLocation = [ -74.006, 40.7128 ]; // NYC
+    
+        // Initialize the Mapbox map
+        const map = new mapboxgl.Map({
+            container: mapRef.current,
+            style: 'mapbox://styles/mapbox/streets-v11',
             center: defaultLocation,
-            zoom: 13,
-            mapTypeControl: false,
-            streetViewControl: false,
-            fullscreenControl: false,
-            mapId: "94fa02651879c97d"
+            zoom: 13
         });
         googleMapRef.current = map;
-
+    
         // Create a marker
-        const marker = new google.maps.Marker({
-            map,
-            draggable: true,
-            position: defaultLocation,
-        });
+        const marker = new mapboxgl.Marker({ draggable: true })
+            .setLngLat(defaultLocation)
+            .addTo(map);
         markerRef.current = marker;
-
-        // Try to center map on user's current location
+    
+        // Try to center map on user's location
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
-                    const pos = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude,
-                    };
+                    const pos = [ position.coords.longitude, position.coords.latitude ];
                     map.setCenter(pos);
-                    marker.setPosition(pos);
-                    updateAddressFromMarker(marker);
+                    marker.setLngLat(pos);
+                    updateAddressFromCoords({ lng: pos[0], lat: pos[1] });
                 },
                 () => {
-                    // If geolocation fails, try to use the user's saved address
                     if (formData.address) {
                         geocodeAddress(formData.address, map, marker);
                     }
                 }
             );
         } else if (formData.address) {
-            // If geolocation is not available, try to use the user's saved address
             geocodeAddress(formData.address, map, marker);
         }
-
-        // Setup the search box
-        const input = document.getElementById("address-input");
-        const autocomplete = new google.maps.places.Autocomplete(input);
-        autocomplete.bindTo("bounds", map);
-        autocompleteRef.current = autocomplete;
-
-        // Listen for location selection from autocomplete
-        autocomplete.addListener("place_changed", () => {
-            const place = autocomplete.getPlace();
-            if (!place.geometry || !place.geometry.location) {
-                return;
-            }
-
-            // If the place has a geometry, present it on the map
-            if (place.geometry.viewport) {
-                map.fitBounds(place.geometry.viewport);
-            } else {
-                map.setCenter(place.geometry.location);
-                map.setZoom(17);
-            }
-
-            marker.setPosition(place.geometry.location);
-            updateAddressFromPlace(place);
+    
+        // Marker drag event
+        marker.on('dragend', () => {
+            updateAddressFromCoords({ lng: marker.getLngLat().lng, lat: marker.getLngLat().lat });
         });
-
-        // Listen for marker drag end
-        marker.addListener("dragend", () => {
-            updateAddressFromMarker(marker);
-        });
-
-        // Listen for map clicks
-        map.addListener("click", (e) => {
-            marker.setPosition(e.latLng);
-            updateAddressFromMarker(marker);
+    
+        // Map click event
+        map.on('click', (e) => {
+            marker.setLngLat(e.lngLat);
+            updateAddressFromCoords(e.lngLat);
         });
     };
+    
 
-    const geocodeAddress = (address, map, marker) => {
-        const geocoder = new window.google.maps.Geocoder();
-        geocoder.geocode({ address }, (results, status) => {
-            if (status === "OK" && results[0]) {
-                map.setCenter(results[0].geometry.location);
-                marker.setPosition(results[0].geometry.location);
-                updateAddressFromPlace(results[0]);
+    const geocodeAddress = async (address, map, marker) => {
+        try {
+            const res = await fetch(
+                `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${mapboxgl.accessToken}`
+            );
+            const data = await res.json();
+            if (data.features.length > 0) {
+                const place = data.features[0];
+                const location = place.center;
+                map.setCenter(location);
+                marker.setLngLat(location);
+                updateAddressFromCoords(location);
             }
-        });
+        } catch (error) {
+            console.error('Geocoding failed:', error);
+        }
     };
+    
 
-    const updateAddressFromPlace = (place) => {
-        // Format the address
-        const formattedAddress = place.formatted_address;
-
-        // Create Google Maps link
-        const lat = place.geometry.location.lat();
-        const lng = place.geometry.location.lng();
-        const googleMapsLink = `https://www.google.com/maps?q=${lat},${lng}`;
-
-        setFormData(prev => ({
-            ...prev,
-            address: formattedAddress,
-            googleMapsLink
-        }));
-    };
-
-    const updateAddressFromMarker = (marker) => {
-        const geocoder = new window.google.maps.Geocoder();
-        const latLng = marker.getPosition();
-
-        geocoder.geocode({ location: latLng }, (results, status) => {
-            if (status === "OK" && results[0]) {
-                const formattedAddress = results[0].formatted_address;
-                const lat = latLng.lat();
-                const lng = latLng.lng();
+    const updateAddressFromCoords = async ({ lng, lat }) => {
+        try {
+            const res = await fetch(
+                `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${mapboxgl.accessToken}`
+            );
+            const data = await res.json();
+            if (data.features.length > 0) {
+                const formattedAddress = data.features[0].place_name;
                 const googleMapsLink = `https://www.google.com/maps?q=${lat},${lng}`;
-
+    
                 setFormData(prev => ({
                     ...prev,
                     address: formattedAddress,
                     googleMapsLink
                 }));
             }
-        });
-    };
+        } catch (error) {
+            console.error('Reverse geocoding failed:', error);
+        }
+    };    
+
+    const handleAddressInputChange = async (e) => {
+        setFormData({ ...formData, address: e.target.value });
+    
+        try {
+            const res = await fetch(
+                `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(e.target.value)}.json?access_token=${mapboxgl.accessToken}`
+            );
+            const data = await res.json();
+            if (data.features.length > 0) {
+                const place = data.features[0];
+                updateAddressFromCoords({ lng: place.center[0], lat: place.center[1] });
+            }
+        } catch (error) {
+            console.error('Autocomplete search failed:', error);
+        }
+    };    
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -508,7 +473,7 @@ const EditProfileModal = ({ user, onClose, onSave }) => {
                                 type="text"
                                 name="address"
                                 value={formData.address}
-                                onChange={handleChange}
+                                onChange={handleAddressInputChange}
                                 placeholder="Address"
                                 className="w-full bg-[#222] text-white px-4 sm:px-6 py-3 sm:py-4 rounded-lg focus:ring-2 focus:ring-[#ffbb00] outline-none pr-12"
                             />

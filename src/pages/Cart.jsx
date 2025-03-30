@@ -316,7 +316,7 @@ const Cart = () => {
                                             <span className='font-normal font-[poppins]'>
                                                 Estimate Delivery -
                                             </span>
-                                            <span className='font-light text-sm text-wrap max-w-full font-[poppins]'>({user?.address})</span>
+                                            <span className='font-light text-sm text-wrap max-w-full font-[poppins]'>({user?.address?.formattedAddress || "Address is not added"})</span>
                                         </div>
                                         <div><h1>{deliveryFee}</h1></div>
                                     </div>
