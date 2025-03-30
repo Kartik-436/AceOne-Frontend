@@ -283,7 +283,7 @@ const Dashboard = ({ setActive, setActiveTab }) => {
                                                     setEditModalOpen(true)
                                                 }}
                                                 title="Edit Product"
-                                                className="px-5 py-3 w-fit h-fit text-sm text-nowrap bg-[#fff] text-black rounded-full transition-all flex items-center gap-2 justify-center active:scale-90 "
+                                                className="px-5 py-3 w-fit h-fit text-sm text-nowrap bg-[#fff] text-black rounded-full transition-all flex items-center gap-2 justify-center border-2 active:scale-90 "
                                             >
                                                 <Pencil size={16} />Edit Product
                                             </button>
@@ -293,7 +293,7 @@ const Dashboard = ({ setActive, setActiveTab }) => {
                                                     setConfirmModalOpen(true)
                                                 }}
                                                 id="Shp-Now-Home-Start"
-                                                className="p-3 flex items-center justify-center text-sm w-fit h-fit border text-nowrap rounded-full transition-all active:scale-90 "
+                                                className="p-3 flex items-center justify-center text-sm w-fit h-fit text-nowrap rounded-full transition-all active:scale-90 border-2"
                                             >
                                                 <Trash2 size={15} />
                                             </button>
