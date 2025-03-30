@@ -329,7 +329,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, product }) => {
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed top-0 left-0 h-screen w-full flex items-center justify-center backdrop-blur-xs bg-[#11111105] transition-all duration-150 z-20">
+                <div style={{ willChange: "transform", translateZ: 0 }} className="fixed top-0 left-0 h-screen w-full flex items-center justify-center backdrop-blur-xs bg-[#11111105] transition-all duration-150 z-20">
                     <motion.div
                         key="delete-modal"
                         initial={{ opacity: 0, y: 400 }}
