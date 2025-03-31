@@ -112,15 +112,10 @@ const Analytics = () => {
     const CustomTooltip = ({ active, payload, label }) => {
         if (active && payload && payload.length) {
             return (
-                <div className="custom-tooltip" style={{
-                    backgroundColor: colors.light,
-                    padding: '10px',
-                    border: `1px solid ${colors.primary}`,
-                    borderRadius: '4px'
-                }}>
-                    <p style={{ margin: 0 }}><strong>{label}</strong></p>
+                <div className="bg-white p-2 border border-solid border-yellow-400 rounded">
+                    <p className="m-0"><strong>{label}</strong></p>
                     {payload.map((entry, index) => (
-                        <p key={index} style={{ color: entry.color, margin: 0 }}>
+                        <p key={index} className="m-0" style={{ color: entry.color }}>
                             {entry.name}: {entry.name.includes('Revenue')
                                 ? formatCurrency(entry.value)
                                 : entry.value}
@@ -137,16 +132,9 @@ const Analytics = () => {
         return (
             <>
                 <Transition animate={animate} />
-                <div className="analytics-loading" style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    height: '70vh',
-                    backgroundColor: colors.light
-                }}>
+                <div className="flex flex-col items-center justify-center h-screen bg-white">
                     <Loader size={50} color={colors.primary} className="animate-spin" />
-                    <p style={{ color: colors.dark, marginTop: '20px', fontSize: '18px' }}>
+                    <p className="text-gray-900 mt-5 text-lg">
                         Loading analytics data...
                     </p>
                 </div>
@@ -159,28 +147,15 @@ const Analytics = () => {
         return (
             <>
                 <Transition animate={animate} />
-                <div className="analytics-error" style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    height: '70vh',
-                    backgroundColor: colors.light
-                }}>
+                <div className="flex flex-col items-center justify-center h-screen bg-white">
                     <AlertTriangle size={50} color={colors.danger} />
-                    <p style={{ color: colors.dark, marginTop: '20px', fontSize: '18px' }}>
+                    <p className="text-gray-900 mt-5 text-lg">
                         {error}
                     </p>
                     <button
                         id="Shp-Now-Home-Start"
                         onClick={fetchData}
-                        style={{
-                            marginTop: '20px',
-                            padding: '10px 20px',
-                            borderRadius: '4px',
-                            border: 'none',
-                            cursor: 'pointer'
-                        }}
+                        className="mt-5 py-2 px-5 rounded cursor-pointer"
                     >
                         Try Again
                     </button>
@@ -193,85 +168,38 @@ const Analytics = () => {
         <>
             <Transition animate={animate} />
 
-            <div className="analytics-container" style={{
-                padding: '20px',
-                backgroundColor: colors.light,
-                minHeight: '100vh'
-            }}>
+            <div className="p-5 bg-white min-h-screen">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <h1 style={{
-                        color: colors.dark,
-                        fontSize: '28px',
-                        fontWeight: 'bold',
-                        marginBottom: '20px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '10px'
-                    }}>
+                    <h1 className="text-gray-900 text-2xl font-bold mb-5 flex items-center gap-2">
                         <Activity size={28} color={colors.primary} />
                         Business Analytics
                     </h1>
                 </motion.div>
 
                 {/* Stats Summary Cards */}
-                <div className="stats-cards" style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                    gap: '20px',
-                    marginBottom: '30px'
-                }}>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.1 }}
-                        className="stat-card"
-                        style={{
-                            backgroundColor: colors.dark,
-                            borderRadius: '8px',
-                            padding: '20px',
-                            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            position: 'relative',
-                            overflow: 'hidden'
-                        }}
+                        className="bg-gray-900 rounded-lg p-5 shadow-md flex flex-col relative overflow-hidden"
                     >
-                        <div style={{
-                            position: 'absolute',
-                            right: '20px',
-                            top: '20px',
-                            backgroundColor: 'rgba(255,255,255,0.1)',
-                            borderRadius: '50%',
-                            width: '50px',
-                            height: '50px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                        }}>
+                        <div className="absolute right-5 top-5 bg-opacity-10 bg-white rounded-full w-12 h-12 flex items-center justify-center">
                             <DollarSign size={25} color={colors.primary} />
                         </div>
-                        <h3 style={{ color: colors.light, fontSize: '16px', marginBottom: '15px' }}>
+                        <h3 className="text-white text-base mb-4">
                             Total Revenue
                         </h3>
-                        <p style={{
-                            color: colors.primary,
-                            fontSize: '28px',
-                            fontWeight: 'bold',
-                            marginBottom: '10px'
-                        }}>
+                        <p className="text-yellow-400 text-2xl font-bold mb-2">
                             {formatCurrency(revenue)}
                         </p>
-                        <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            color: colors.light
-                        }}>
+                        <div className="flex items-center text-white">
                             <TrendingUp size={16} color={colors.success} />
-                            <span style={{ marginLeft: '5px', fontSize: '14px' }}>
+                            <span className="ml-1 text-sm">
                                 From {totalOrders} orders
                             </span>
                         </div>
@@ -281,50 +209,20 @@ const Analytics = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.2 }}
-                        className="stat-card"
-                        style={{
-                            backgroundColor: colors.primary,
-                            borderRadius: '8px',
-                            padding: '20px',
-                            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            position: 'relative',
-                            overflow: 'hidden'
-                        }}
+                        className="bg-yellow-400 rounded-lg p-5 shadow-md flex flex-col relative overflow-hidden"
                     >
-                        <div style={{
-                            position: 'absolute',
-                            right: '20px',
-                            top: '20px',
-                            backgroundColor: 'rgba(0,0,0,0.1)',
-                            borderRadius: '50%',
-                            width: '50px',
-                            height: '50px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                        }}>
+                        <div className="absolute right-5 top-5 bg-black bg-opacity-10 rounded-full w-12 h-12 flex items-center justify-center">
                             <ShoppingCart size={25} color={colors.dark} />
                         </div>
-                        <h3 style={{ color: colors.dark, fontSize: '16px', marginBottom: '15px' }}>
+                        <h3 className="text-gray-900 text-base mb-4">
                             Total Sales
                         </h3>
-                        <p style={{
-                            color: colors.dark,
-                            fontSize: '28px',
-                            fontWeight: 'bold',
-                            marginBottom: '10px'
-                        }}>
+                        <p className="text-gray-900 text-2xl font-bold mb-2">
                             {sales} items
                         </p>
-                        <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            color: colors.dark
-                        }}>
+                        <div className="flex items-center text-gray-900">
                             <TrendingUp size={16} />
-                            <span style={{ marginLeft: '5px', fontSize: '14px' }}>
+                            <span className="ml-1 text-sm">
                                 {(sales / totalOrders).toFixed(1)} items per order
                             </span>
                         </div>
@@ -334,51 +232,20 @@ const Analytics = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.3 }}
-                        className="stat-card"
-                        style={{
-                            backgroundColor: colors.light,
-                            border: `2px solid ${colors.primary}`,
-                            borderRadius: '8px',
-                            padding: '20px',
-                            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            position: 'relative',
-                            overflow: 'hidden'
-                        }}
+                        className="bg-white border-2 border-yellow-400 rounded-lg p-5 shadow-md flex flex-col relative overflow-hidden"
                     >
-                        <div style={{
-                            position: 'absolute',
-                            right: '20px',
-                            top: '20px',
-                            backgroundColor: colors.primary,
-                            borderRadius: '50%',
-                            width: '50px',
-                            height: '50px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                        }}>
+                        <div className="absolute right-5 top-5 bg-yellow-400 rounded-full w-12 h-12 flex items-center justify-center">
                             <Package size={25} color={colors.dark} />
                         </div>
-                        <h3 style={{ color: colors.dark, fontSize: '16px', marginBottom: '15px' }}>
+                        <h3 className="text-gray-900 text-base mb-4">
                             Total Orders
                         </h3>
-                        <p style={{
-                            color: colors.dark,
-                            fontSize: '28px',
-                            fontWeight: 'bold',
-                            marginBottom: '10px'
-                        }}>
+                        <p className="text-gray-900 text-2xl font-bold mb-2">
                             {totalOrders}
                         </p>
-                        <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            color: colors.dark
-                        }}>
+                        <div className="flex items-center text-gray-900">
                             <TrendingUp size={16} color={colors.success} />
-                            <span style={{ marginLeft: '5px', fontSize: '14px' }}>
+                            <span className="ml-1 text-sm">
                                 Avg value: {formatCurrency(revenue / totalOrders)}
                             </span>
                         </div>
@@ -386,34 +253,15 @@ const Analytics = () => {
                 </div>
 
                 {/* Main Charts Section */}
-                <div className="charts-section" style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))',
-                    gap: '20px',
-                    marginBottom: '30px'
-                }}>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-8">
                     {/* Revenue Chart */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.4 }}
-                        className="chart-card"
-                        style={{
-                            backgroundColor: colors.light,
-                            borderRadius: '8px',
-                            padding: '20px',
-                            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                            minHeight: '400px'
-                        }}
+                        className="bg-white rounded-lg p-5 shadow-md min-h-96"
                     >
-                        <h2 style={{
-                            color: colors.dark,
-                            fontSize: '18px',
-                            marginBottom: '20px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '10px'
-                        }}>
+                        <h2 className="text-gray-900 text-lg mb-5 flex items-center gap-2">
                             <DollarSign size={20} color={colors.primary} />
                             Daily Revenue (Last 7 Days)
                         </h2>
@@ -440,23 +288,11 @@ const Analytics = () => {
                                 />
                             </LineChart>
                         </ResponsiveContainer>
-                        <div style={{
-                            marginTop: '10px',
-                            display: 'flex',
-                            justifyContent: 'center'
-                        }}>
+                        <div className="mt-2 flex justify-center">
                             <button
                                 id="Shp-Now-Home-Start"
                                 onClick={fetchData}
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '8px',
-                                    padding: '8px 16px',
-                                    borderRadius: '8px',
-                                    border: '2px solid black',
-                                    cursor: 'pointer'
-                                }}
+                                className="flex items-center gap-2 py-2 px-4 rounded-lg border-2 border-black cursor-pointer"
                             >
                                 <RefreshCw size={16} />
                                 Refresh Data
@@ -469,23 +305,9 @@ const Analytics = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.5 }}
-                        className="chart-card"
-                        style={{
-                            backgroundColor: colors.dark,
-                            borderRadius: '8px',
-                            padding: '20px',
-                            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                            minHeight: '400px'
-                        }}
+                        className="bg-gray-900 rounded-lg p-5 shadow-md min-h-96"
                     >
-                        <h2 style={{
-                            color: colors.light,
-                            fontSize: '18px',
-                            marginBottom: '20px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '10px'
-                        }}>
+                        <h2 className="text-white text-lg mb-5 flex items-center gap-2">
                             <ShoppingCart size={20} color={colors.primary} />
                             Daily Sales (Last 7 Days)
                         </h2>
@@ -513,26 +335,10 @@ const Analytics = () => {
                                 />
                             </BarChart>
                         </ResponsiveContainer>
-                        <div style={{
-                            marginTop: '10px',
-                            display: 'flex',
-                            justifyContent: 'center'
-                        }}>
+                        <div className="mt-2 flex justify-center">
                             <button
-                                className='AddToCartInStore'
+                                className="AddToCartInStore flex items-center gap-2 py-2 px-4 bg-white text-gray-900 rounded cursor-pointer font-bold"
                                 onClick={fetchData}
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '8px',
-                                    padding: '8px 16px',
-                                    backgroundColor: colors.light,
-                                    color: colors.dark,
-                                    borderRadius: '4px',
-                                    border: 'none',
-                                    cursor: 'pointer',
-                                    fontWeight: 'bold'
-                                }}
                             >
                                 <RefreshCw size={16} />
                                 Refresh Data
@@ -542,33 +348,15 @@ const Analytics = () => {
                 </div>
 
                 {/* Order Status Section */}
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-                    gap: '20px',
-                    marginBottom: '30px'
-                }}>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-8">
                     {/* Order Status Chart */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.6 }}
-                        style={{
-                            backgroundColor: colors.light,
-                            borderRadius: '8px',
-                            padding: '20px',
-                            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                            minHeight: '400px'
-                        }}
+                        className="bg-white rounded-lg p-5 shadow-md min-h-96"
                     >
-                        <h2 style={{
-                            color: colors.dark,
-                            fontSize: '18px',
-                            marginBottom: '20px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '10px'
-                        }}>
+                        <h2 className="text-gray-900 text-lg mb-5 flex items-center gap-2">
                             <Package size={20} color={colors.primary} />
                             Order Status Distribution
                         </h2>
@@ -598,65 +386,28 @@ const Analytics = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.7 }}
-                        style={{
-                            backgroundColor: colors.dark,
-                            borderRadius: '8px',
-                            padding: '20px',
-                            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                            minHeight: '400px'
-                        }}
+                        className="bg-gray-900 rounded-lg p-5 shadow-md min-h-96"
                     >
-                        <h2 style={{
-                            color: colors.light,
-                            fontSize: '18px',
-                            marginBottom: '20px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '10px'
-                        }}>
+                        <h2 className="text-white text-lg mb-5 flex items-center gap-2">
                             <ClipboardList size={20} color={colors.primary} />
                             Order Status Summary
                         </h2>
 
-                        <div style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '15px'
-                        }}>
+                        <div className="flex flex-col gap-4">
                             {Object.entries(statusStats || {}).map(([status, count], index) => (
                                 <div
                                     key={status}
-                                    style={{
-                                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                                        borderRadius: '8px',
-                                        padding: '15px',
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center'
-                                    }}
+                                    className="bg-white bg-opacity-10 rounded-lg p-4 flex justify-between items-center"
                                 >
-                                    <div style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '10px'
-                                    }}>
-                                        <div style={{
-                                            width: '12px',
-                                            height: '12px',
-                                            borderRadius: '50%',
-                                            backgroundColor: COLORS[index % COLORS.length]
-                                        }} />
-                                        <span style={{ color: colors.light }}>{status}</span>
+                                    <div className="flex items-center gap-2">
+                                        <div 
+                                            className="w-3 h-3 rounded-full" 
+                                            style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                                        />
+                                        <span className="text-white">{status}</span>
                                     </div>
-                                    <div style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '10px'
-                                    }}>
-                                        <span style={{
-                                            color: colors.primary,
-                                            fontWeight: 'bold'
-                                        }}>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-yellow-400 font-bold">
                                             {count}
                                         </span>
                                     </div>
@@ -671,46 +422,20 @@ const Analytics = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.8 }}
-                    style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        gap: '20px',
-                        marginTop: '30px'
-                    }}
+                    className="flex justify-center gap-5 mt-8"
                 >
                     <button
                         id="Shp-Now-Home-Start"
                         onClick={() => toast.info("This feature is coming soon!")}
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            padding: '12px 24px',
-                            borderRadius: '4px',
-                            border: '2px solid black',
-                            cursor: 'pointer',
-                            fontSize: '16px'
-                        }}
+                        className="flex items-center gap-2 py-3 px-6 rounded border-2 border-black cursor-pointer text-base"
                     >
                         <FileCsv size={20} />
                         Export Report
                     </button>
 
                     <button
-                        className="AddToCartInStore"
+                        className="AddToCartInStore flex items-center gap-2 py-3 px-6 bg-gray-900 text-white rounded border-none cursor-pointer text-base"
                         onClick={() => toast.info("Print functionality coming soon!")}
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            padding: '12px 24px',
-                            backgroundColor: colors.dark,
-                            color: colors.light,
-                            borderRadius: '4px',
-                            border: 'none',
-                            cursor: 'pointer',
-                            fontSize: '16px'
-                        }}
                     >
                         <Printer size={20} />
                         Print Analytics
