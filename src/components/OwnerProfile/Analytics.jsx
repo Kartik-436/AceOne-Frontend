@@ -213,7 +213,7 @@ const Analytics = () => {
                         gap: '10px'
                     }}>
                         <Activity size={28} color={colors.primary} />
-                        Dashboard Analytics
+                        Business Analytics
                     </h1>
                 </motion.div>
 
