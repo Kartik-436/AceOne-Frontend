@@ -37,7 +37,7 @@ const OwnerSettings = ({ setActive, setActiveTab }) => {
                     fullName: response.data.fullName || '',
                     email: response.data.email || '',
                     contact: response.data.contact || '',
-                    dateOfBirth: response.data?.dateOfBirth ? new Date(response.profile?.dateOfBirth).toISOString().split('T')[0] : '',
+                    dateOfBirth: response.data.dateOfBirth ? new Date(response.data.dateOfBirth).toISOString().split('T')[0] : '',
                     gstNo: response.data.gstNo || '',
                 });
                 setPicturePreview(response.data.picture || null);
@@ -47,6 +47,7 @@ const OwnerSettings = ({ setActive, setActiveTab }) => {
             }
         } catch (error) {
             console.error("Getting Owner Error: ", error);
+            setError(error.message || "Failed to load profile");
         }
         setLoading(false);
     };
@@ -109,28 +110,21 @@ const OwnerSettings = ({ setActive, setActiveTab }) => {
         setConfirmModalOpen(false);
 
         try {
-            // Create FormData to handle file upload
-            const formData = new FormData();
+            // Create profile data object to match the service function
+            const updatedProfile = {
+                fullName: profileData.fullName,
+                email: profileData.email,
+                contact: profileData.contact,
+                dateOfBirth: profileData.dateOfBirth || undefined,
+                gstNo: profileData.gstNo || undefined
+            };
 
-            // Append profile picture if selected
+            // Add picture if selected
             if (profilePicture) {
-                formData.append('picture', profilePicture);
+                updatedProfile.picture = profilePicture;
             }
 
-            // Append other profile data
-            formData.append('fullName', profileData.fullName);
-            formData.append('email', profileData.email);
-            formData.append('contact', profileData.contact);
-
-            if (profileData.dateOfBirth) {
-                formData.append('dateOfBirth', profileData.dateOfBirth);
-            }
-
-            if (profileData.gstNo) {
-                formData.append('gstNo', profileData.gstNo);
-            }
-
-            const response = await updateOwnerProfile(formData);
+            const response = await updateOwnerProfile(updatedProfile);
 
             if (response.success) {
                 toast.success("Profile updated successfully");
@@ -185,7 +179,7 @@ const OwnerSettings = ({ setActive, setActiveTab }) => {
                                         style={{ background: picturePreview ? 'transparent' : '#2a2a2a' }}
                                     >
                                         {picturePreview ? (
-                                            <img src={picturePreview} alt="Preview" className='w-full h-full object-cover' />
+                                            <img src={picturePreview} alt="Profile" className='w-full h-full object-cover' />
                                         ) : (
                                             <User className='text-[#ffbb00]' size={32} />
                                         )}
@@ -320,7 +314,7 @@ const OwnerSettings = ({ setActive, setActiveTab }) => {
                             <div className='mt-8'>
                                 <button
                                     type="submit"
-                                    className='w-full bg-[#fff] text-[#1f1f1f] font-bold py-3 px-4 rounded-lg transition-colors duration-300 flex items-center justify-center cursor-pointer AddToCartInStore'
+                                    className='w-full bg-[#fff] text-[#1f1f1f] font-bold py-3 border-2 px-4 rounded-lg transition-colors duration-300 flex items-center justify-center cursor-pointer AddToCartInStore'
                                     disabled={loading}
                                 >
                                     {loading ? (
@@ -360,7 +354,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
                         className="bg-white p-6 rounded-lg shadow-lg border-2 border-black"
                     >
                         <h2 className="text-lg font-semibold">Confirm Edit</h2>
-                        <p className="text-gray-600 mt-2">Are you sure you want to update the details ?</p>
+                        <p className="text-gray-600 mt-2">Are you sure you want to update the details?</p>
                         <div className="mt-4 flex justify-end gap-3">
                             <button
                                 onClick={onClose}
