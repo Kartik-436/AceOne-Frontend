@@ -659,12 +659,6 @@ const Analytics = () => {
                                         }}>
                                             {count}
                                         </span>
-                                        <span style={{
-                                            color: colors.light,
-                                            fontSize: '14px'
-                                        }}>
-                                            ({totalOrders ? ((count / totalOrders) * 100).toFixed(1) : 0}%)
-                                        </span>
                                     </div>
                                 </div>
                             ))}
