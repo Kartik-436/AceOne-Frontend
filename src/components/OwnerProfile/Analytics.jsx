@@ -407,7 +407,7 @@ const Analytics = () => {
                                         <span className="text-black">{status}</span>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        <span className="text-yellow-400 font-bold px-5 py-2 rounded-full bg-[#111]">
+                                        <span className="text-yellow-400 font-bold px-4 py-2 rounded-full bg-[#111]">
                                             {count}
                                         </span>
                                     </div>
