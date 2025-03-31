@@ -174,7 +174,7 @@ const Analytics = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <h1 className="text-[#111] text-2xl font-bold mb-5 flex items-center gap-2">
+                    <h1 className="text-[#111] text-2xl font-bold mb-5 flex items-center gap-2 font-[poppins]">
                         <Activity size={28} color={colors.primary} />
                         Business Analytics
                     </h1>
@@ -261,7 +261,7 @@ const Analytics = () => {
                         transition={{ duration: 0.5, delay: 0.4 }}
                         className="bg-white rounded-lg p-5 shadow-md min-h-96"
                     >
-                        <h2 className="text-[#111] text-lg mb-5 flex items-center gap-2">
+                        <h2 className="text-[#111] text-lg mb-5 flex items-center gap-2 font-[poppins]">
                             <DollarSign size={20} color={colors.primary} />
                             Daily Revenue (Last 7 Days)
                         </h2>
@@ -307,7 +307,7 @@ const Analytics = () => {
                         transition={{ duration: 0.5, delay: 0.5 }}
                         className="bg-[#111] rounded-lg p-5 shadow-md min-h-96"
                     >
-                        <h2 className="text-white text-lg mb-5 flex items-center gap-2">
+                        <h2 className="text-white text-lg mb-5 flex items-center gap-2 font-[poppins]">
                             <ShoppingCart size={20} color={colors.primary} />
                             Daily Sales (Last 7 Days)
                         </h2>
@@ -356,7 +356,7 @@ const Analytics = () => {
                         transition={{ duration: 0.5, delay: 0.6 }}
                         className="bg-white rounded-lg p-5 shadow-md min-h-96"
                     >
-                        <h2 className="text-[#111] text-lg mb-5 flex items-center gap-2">
+                        <h2 className="text-[#111] text-lg mb-5 flex items-center gap-2 font-[poppins]">
                             <Package size={20} color={colors.primary} />
                             Order Status Distribution
                         </h2>
@@ -388,7 +388,7 @@ const Analytics = () => {
                         transition={{ duration: 0.5, delay: 0.7 }}
                         className="bg-[#111] rounded-lg p-5 shadow-md min-h-96"
                     >
-                        <h2 className="text-white text-lg mb-5 flex items-center gap-2">
+                        <h2 className="text-white text-lg mb-5 flex items-center gap-2 font-[poppins]">
                             <ClipboardList size={20} color={colors.primary} />
                             Order Status Summary
                         </h2>
@@ -407,7 +407,7 @@ const Analytics = () => {
                                         <span className="text-black">{status}</span>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        <span className="text-yellow-400 font-bold">
+                                        <span className="text-yellow-400 font-bold p-3 rounded-full bg-[#111]">
                                             {count}
                                         </span>
                                     </div>
