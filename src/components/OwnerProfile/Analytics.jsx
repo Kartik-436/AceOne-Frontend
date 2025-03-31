@@ -453,8 +453,8 @@ const Analytics = () => {
                                     alignItems: 'center',
                                     gap: '8px',
                                     padding: '8px 16px',
-                                    borderRadius: '4px',
-                                    border: 'none',
+                                    borderRadius: '8px',
+                                    border: '2px solid black',
                                     cursor: 'pointer'
                                 }}
                             >
@@ -519,7 +519,7 @@ const Analytics = () => {
                             justifyContent: 'center'
                         }}>
                             <button
-                                className="AddToCartInStore"
+                                id="Shp-Now-Home-Start"
                                 onClick={fetchData}
                                 style={{
                                     display: 'flex',
