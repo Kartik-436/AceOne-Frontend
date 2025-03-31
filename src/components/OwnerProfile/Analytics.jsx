@@ -191,7 +191,7 @@ const Analytics = () => {
                         <div className="absolute right-5 top-5 bg-opacity-10 bg-white rounded-full w-12 h-12 flex items-center justify-center">
                             <DollarSign size={25} color={colors.primary} />
                         </div>
-                        <h3 className="text-white text-base mb-4">
+                        <h3 className="text-white text-base mb-4 font-[poppins]">
                             Total Revenue
                         </h3>
                         <p className="text-yellow-400 text-2xl font-bold mb-2">
@@ -212,16 +212,16 @@ const Analytics = () => {
                         className="bg-yellow-400 rounded-lg p-5 shadow-md flex flex-col relative overflow-hidden"
                     >
                         <div className="absolute right-5 top-5 bg-black bg-opacity-10 rounded-full w-12 h-12 flex items-center justify-center">
-                            <ShoppingCart size={25} color={colors.dark} />
+                            <ShoppingCart size={25} color={colors.primary} />
                         </div>
-                        <h3 className="text-gray-900 text-base mb-4">
+                        <h3 className="text-gray-900 text-base mb-4 font-[poppins]">
                             Total Sales
                         </h3>
                         <p className="text-gray-900 text-2xl font-bold mb-2">
                             {sales} items
                         </p>
                         <div className="flex items-center text-gray-900">
-                            <TrendingUp size={16} />
+                            <TrendingUp size={16} color={colors.success} />
                             <span className="ml-1 text-sm">
                                 {(sales / totalOrders).toFixed(1)} items per order
                             </span>
@@ -237,7 +237,7 @@ const Analytics = () => {
                         <div className="absolute right-5 top-5 bg-yellow-400 rounded-full w-12 h-12 flex items-center justify-center">
                             <Package size={25} color={colors.dark} />
                         </div>
-                        <h3 className="text-gray-900 text-base mb-4">
+                        <h3 className="text-gray-900 text-base mb-4 font-[poppins]">
                             Total Orders
                         </h3>
                         <p className="text-gray-900 text-2xl font-bold mb-2">
@@ -400,11 +400,11 @@ const Analytics = () => {
                                     className="bg-white bg-opacity-10 rounded-lg p-4 flex justify-between items-center"
                                 >
                                     <div className="flex items-center gap-2">
-                                        <div 
-                                            className="w-3 h-3 rounded-full" 
+                                        <div
+                                            className="w-3 h-3 rounded-full"
                                             style={{ backgroundColor: COLORS[index % COLORS.length] }}
                                         />
-                                        <span className="text-white">{status}</span>
+                                        <span className="text-black">{status}</span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <span className="text-yellow-400 font-bold">
@@ -434,7 +434,7 @@ const Analytics = () => {
                     </button>
 
                     <button
-                        className="AddToCartInStore flex items-center gap-2 py-3 px-6 bg-gray-900 text-white rounded border-none cursor-pointer text-base"
+                        className="AddToCartInStore flex items-center gap-2 py-3 px-6 bg-gray-900 text-white rounded border-2 cursor-pointer text-base"
                         onClick={() => toast.info("Print functionality coming soon!")}
                     >
                         <Printer size={20} />
