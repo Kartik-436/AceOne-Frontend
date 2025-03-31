@@ -693,7 +693,7 @@ const Analytics = () => {
                             gap: '8px',
                             padding: '12px 24px',
                             borderRadius: '4px',
-                            border: 'none',
+                            border: '2px solid black',
                             cursor: 'pointer',
                             fontSize: '16px'
                         }}
