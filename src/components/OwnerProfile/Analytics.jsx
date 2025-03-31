@@ -519,14 +519,14 @@ const Analytics = () => {
                             justifyContent: 'center'
                         }}>
                             <button
-                                id="Shp-Now-Home-Start"
+                                className='AddToCartInStore'
                                 onClick={fetchData}
                                 style={{
                                     display: 'flex',
                                     alignItems: 'center',
                                     gap: '8px',
                                     padding: '8px 16px',
-                                    backgroundColor: colors.primary,
+                                    backgroundColor: colors.light,
                                     color: colors.dark,
                                     borderRadius: '4px',
                                     border: 'none',
