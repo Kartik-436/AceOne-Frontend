@@ -134,7 +134,7 @@ const Analytics = () => {
                 <Transition animate={animate} />
                 <div className="flex flex-col items-center justify-center h-screen bg-white">
                     <Loader size={50} color={colors.primary} className="animate-spin" />
-                    <p className="text-gray-900 mt-5 text-lg">
+                    <p className="text-[#111] mt-5 text-lg">
                         Loading analytics data...
                     </p>
                 </div>
@@ -149,7 +149,7 @@ const Analytics = () => {
                 <Transition animate={animate} />
                 <div className="flex flex-col items-center justify-center h-screen bg-white">
                     <AlertTriangle size={50} color={colors.danger} />
-                    <p className="text-gray-900 mt-5 text-lg">
+                    <p className="text-[#111] mt-5 text-lg">
                         {error}
                     </p>
                     <button
@@ -174,7 +174,7 @@ const Analytics = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <h1 className="text-gray-900 text-2xl font-bold mb-5 flex items-center gap-2">
+                    <h1 className="text-[#111] text-2xl font-bold mb-5 flex items-center gap-2">
                         <Activity size={28} color={colors.primary} />
                         Business Analytics
                     </h1>
@@ -186,7 +186,7 @@ const Analytics = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.1 }}
-                        className="bg-gray-900 rounded-lg p-5 shadow-md flex flex-col relative overflow-hidden"
+                        className="bg-[#111] rounded-lg p-5 shadow-md flex flex-col relative overflow-hidden"
                     >
                         <div className="absolute right-5 top-5 bg-opacity-10 bg-white rounded-full w-12 h-12 flex items-center justify-center">
                             <DollarSign size={25} color={colors.primary} />
@@ -214,13 +214,13 @@ const Analytics = () => {
                         <div className="absolute right-5 top-5 bg-black bg-opacity-10 rounded-full w-12 h-12 flex items-center justify-center">
                             <ShoppingCart size={25} color={colors.primary} />
                         </div>
-                        <h3 className="text-gray-900 text-base mb-4 font-[poppins]">
+                        <h3 className="text-[#111] text-base mb-4 font-[poppins]">
                             Total Sales
                         </h3>
-                        <p className="text-gray-900 text-2xl font-bold mb-2">
+                        <p className="text-[#111] text-2xl font-bold mb-2">
                             {sales} items
                         </p>
-                        <div className="flex items-center text-gray-900">
+                        <div className="flex items-center text-[#111]">
                             <TrendingUp size={16} color={colors.success} />
                             <span className="ml-1 text-sm">
                                 {(sales / totalOrders).toFixed(1)} items per order
@@ -237,13 +237,13 @@ const Analytics = () => {
                         <div className="absolute right-5 top-5 bg-yellow-400 rounded-full w-12 h-12 flex items-center justify-center">
                             <Package size={25} color={colors.dark} />
                         </div>
-                        <h3 className="text-gray-900 text-base mb-4 font-[poppins]">
+                        <h3 className="text-[#111] text-base mb-4 font-[poppins]">
                             Total Orders
                         </h3>
-                        <p className="text-gray-900 text-2xl font-bold mb-2">
+                        <p className="text-[#111] text-2xl font-bold mb-2">
                             {totalOrders}
                         </p>
-                        <div className="flex items-center text-gray-900">
+                        <div className="flex items-center text-[#111]">
                             <TrendingUp size={16} color={colors.success} />
                             <span className="ml-1 text-sm">
                                 Avg value: {formatCurrency(revenue / totalOrders)}
@@ -261,7 +261,7 @@ const Analytics = () => {
                         transition={{ duration: 0.5, delay: 0.4 }}
                         className="bg-white rounded-lg p-5 shadow-md min-h-96"
                     >
-                        <h2 className="text-gray-900 text-lg mb-5 flex items-center gap-2">
+                        <h2 className="text-[#111] text-lg mb-5 flex items-center gap-2">
                             <DollarSign size={20} color={colors.primary} />
                             Daily Revenue (Last 7 Days)
                         </h2>
@@ -305,7 +305,7 @@ const Analytics = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.5 }}
-                        className="bg-gray-900 rounded-lg p-5 shadow-md min-h-96"
+                        className="bg-[#111] rounded-lg p-5 shadow-md min-h-96"
                     >
                         <h2 className="text-white text-lg mb-5 flex items-center gap-2">
                             <ShoppingCart size={20} color={colors.primary} />
@@ -337,7 +337,7 @@ const Analytics = () => {
                         </ResponsiveContainer>
                         <div className="mt-2 flex justify-center">
                             <button
-                                className="AddToCartInStore flex items-center gap-2 py-2 px-4 bg-white text-gray-900 rounded cursor-pointer font-bold"
+                                className="AddToCartInStore flex items-center gap-2 py-2 px-4 bg-white text-[#111] rounded cursor-pointer font-bold border-2"
                                 onClick={fetchData}
                             >
                                 <RefreshCw size={16} />
@@ -356,7 +356,7 @@ const Analytics = () => {
                         transition={{ duration: 0.5, delay: 0.6 }}
                         className="bg-white rounded-lg p-5 shadow-md min-h-96"
                     >
-                        <h2 className="text-gray-900 text-lg mb-5 flex items-center gap-2">
+                        <h2 className="text-[#111] text-lg mb-5 flex items-center gap-2">
                             <Package size={20} color={colors.primary} />
                             Order Status Distribution
                         </h2>
@@ -386,7 +386,7 @@ const Analytics = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.7 }}
-                        className="bg-gray-900 rounded-lg p-5 shadow-md min-h-96"
+                        className="bg-[#111] rounded-lg p-5 shadow-md min-h-96"
                     >
                         <h2 className="text-white text-lg mb-5 flex items-center gap-2">
                             <ClipboardList size={20} color={colors.primary} />
@@ -434,7 +434,7 @@ const Analytics = () => {
                     </button>
 
                     <button
-                        className="AddToCartInStore flex items-center gap-2 py-3 px-6 bg-gray-900 text-white rounded border-2 cursor-pointer text-base"
+                        className="AddToCartInStore flex items-center gap-2 py-3 px-6 bg-[#111] text-white rounded border-2 cursor-pointer text-base"
                         onClick={() => toast.info("Print functionality coming soon!")}
                     >
                         <Printer size={20} />
