@@ -381,3 +381,14 @@ export const getRevenueStats = async () => {
         return handleError(err);
     }
 };
+
+export const getDailyRevenueStats = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}/daily-sales`, {
+            withCredentials: true
+        });
+        return handleResponse(response);
+    } catch (err) {
+        return handleError(err);
+    }
+};
