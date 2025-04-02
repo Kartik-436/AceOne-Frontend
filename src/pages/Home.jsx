@@ -75,7 +75,7 @@ const Home = () => {
             try {
                 const response = await getOwnerProfile();
 
-                if (response.success && response.profile) {
+                if (response.success && response.data) {
                     handleDelayNavigation("ownerProfile")
                 }
             } catch (error) {
