@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "../utils/Validation";
@@ -7,6 +7,7 @@ import useDelayedNavigation from '../utils/useDelayedNavigation';
 import { useAuth } from "../utils/AuthContext";
 import Transition from '../Transition';
 import { loginOwner } from '../utils/AuthService';
+import { getOwnerProfile } from "../utils/OwnerService"
 
 const OwnerLogin = () => {
     const [isTyping, setIsTyping] = useState(false);
@@ -30,6 +31,23 @@ const OwnerLogin = () => {
             setError(result.message);
         }
     };
+
+    useEffect(() => {
+        const handleOwnerLoggedIn = async () => {
+            try {
+                const response = await getOwnerProfile();
+
+                if (response.success && response.data) {
+                    handleDelayNavigation("ownerProfile")
+                }
+            } catch (error) {
+                console.error("getting Owner Error: ", error)
+            }
+        }
+
+        handleOwnerLoggedIn();
+    }, [])
+
 
     return (
         <>
