@@ -26,6 +26,7 @@ import { addToWishlist } from './../utils/UserService';
 import { Heart } from 'lucide-react';
 import SortMenuStore from '../components/SortOptionsStore';
 import AddToCartButton from '../components/AddToCartButton';
+import { getOwnerProfile } from '../utils/OwnerService';
 
 const Store = (props) => {
     const { animate, handleDelayNavigation } = useDelayedNavigation();
@@ -82,7 +83,21 @@ const Store = (props) => {
         }
     }, [searchParams]);
 
+    useEffect(() => {
+        const handleOwnerLoggedIn = async () => {
+            try {
+                const response = await getOwnerProfile();
 
+                if (response.success && response.data) {
+                    handleDelayNavigation("ownerProfile")
+                }
+            } catch (error) {
+                console.error("getting Owner Error: ", error)
+            }
+        }
+
+        handleOwnerLoggedIn();
+    }, [])
 
     // Function to fetch products based on selected filters
     const fetchSortedProducts = async () => {

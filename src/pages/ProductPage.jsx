@@ -17,6 +17,7 @@ import { useCart } from '../utils/CartContext';
 import { addReview, deleteReview, getProductReviews, updateReview } from '../utils/UserService';
 import { useAuth } from '../utils/AuthContext';
 import Footer from './../components/Footer/Footer';
+import { getOwnerProfile } from '../utils/OwnerService';
 
 const StarIcon = ({ filled, onClick, size = 20 }) => (
     <svg
@@ -113,6 +114,22 @@ const ProductPage = () => {
 
         fetchProductAndReviews();
     }, [id]);
+
+    useEffect(() => {
+        const handleOwnerLoggedIn = async () => {
+            try {
+                const response = await getOwnerProfile();
+
+                if (response.success && response.data) {
+                    handleDelayNavigation("ownerProfile")
+                }
+            } catch (error) {
+                console.error("getting Owner Error: ", error)
+            }
+        }
+
+        handleOwnerLoggedIn();
+    }, [])
 
     const { isCartMenuOpen, setIsCartMenuOpen } = useCart();
 

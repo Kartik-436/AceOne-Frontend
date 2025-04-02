@@ -13,6 +13,7 @@ import { addToCart } from "../utils/CartService";
 import { useCart } from "../utils/CartContext";
 import Transition from './../Transition';
 import AddToCartButton from "../components/AddToCartButton";
+import { getOwnerProfile } from "../utils/OwnerService";
 
 const Wishlist = () => {
     const { animate, handleDelayNavigation } = useDelayedNavigation();
@@ -74,6 +75,22 @@ const Wishlist = () => {
 
         setWishlistLoading(false);
     };
+
+    useEffect(() => {
+        const handleOwnerLoggedIn = async () => {
+            try {
+                const response = await getOwnerProfile();
+
+                if (response.success && response.data) {
+                    handleDelayNavigation("ownerProfile")
+                }
+            } catch (error) {
+                console.error("getting Owner Error: ", error)
+            }
+        }
+
+        handleOwnerLoggedIn();
+    }, [])
 
     const handleRemoveFromWishlist = async (productID) => {
         try {

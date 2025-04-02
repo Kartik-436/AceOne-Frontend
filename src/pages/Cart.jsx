@@ -17,6 +17,7 @@ import { toast } from 'react-toastify';
 import { Heart, ShoppingBasket, X } from 'lucide-react';
 import { Trash2 } from 'lucide-react';
 import { CheckoutButton } from '../components/EnhancedPaymentIntegration';
+import { getOwnerProfile } from '../utils/OwnerService';
 
 const Cart = () => {
     const [user, setUser] = useState(null);
@@ -134,11 +135,23 @@ const Cart = () => {
         }
     };
 
+    const handleOwnerLoggedIn = async () => {
+        try {
+            const response = await getOwnerProfile();
+
+            if (response.success && response.data) {
+                handleDelayNavigation("ownerProfile")
+            }
+        } catch (error) {
+            console.error("getting Owner Error: ", error)
+        }
+    }
 
     useEffect(() => {
         ; (async () => {
             await refreshCart();
             await refreshUser();
+            await handleOwnerLoggedIn();
         })()
     }, []);
 

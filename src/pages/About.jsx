@@ -10,6 +10,7 @@ import { useCart } from '../utils/CartContext';
 import Footer from './../components/Footer/Footer';
 import AboutEnlargeOnScroll from './../components/AboutEnlargeOnScroll';
 import Lenis from '@studio-freight/lenis';
+import { getOwnerProfile } from '../utils/OwnerService';
 
 const About = () => {
     const targetRef = useRef(null);
@@ -106,6 +107,22 @@ const About = () => {
             }
         };
     }, []);
+
+    useEffect(() => {
+        const handleOwnerLoggedIn = async () => {
+            try {
+                const response = await getOwnerProfile();
+
+                if (response.success && response.data) {
+                    handleDelayNavigation("ownerProfile")
+                }
+            } catch (error) {
+                console.error("getting Owner Error: ", error)
+            }
+        }
+
+        handleOwnerLoggedIn();
+    }, [])
 
     return (
         <React.Fragment>

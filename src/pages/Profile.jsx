@@ -16,6 +16,7 @@ import PasswordReset from "../components/UserProfile/PasswordReset";
 import { getUserDetails } from "../utils/UserService";
 import { AnimatePresence, motion } from 'framer-motion';
 import "../stylesheets/Profile.css"
+import { getOwnerProfile } from "../utils/OwnerService";
 
 const Profile = () => {
     const { logout } = useAuth();
@@ -103,6 +104,22 @@ const Profile = () => {
                 return <ProfileInfo />;
         }
     };
+
+    useEffect(() => {
+        const handleOwnerLoggedIn = async () => {
+            try {
+                const response = await getOwnerProfile();
+
+                if (response.success && response.data) {
+                    handleDelayNavigation("ownerProfile")
+                }
+            } catch (error) {
+                console.error("getting Owner Error: ", error)
+            }
+        }
+
+        handleOwnerLoggedIn();
+    }, [])
 
     const handleLogout = async () => {
         setError("");
