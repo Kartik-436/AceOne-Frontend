@@ -22,6 +22,7 @@ import ProductPage from "./pages/ProductPage";
 import { CartProvider } from "./utils/CartContext";
 import { AuthProvider } from "./utils/AuthContext";
 
+
 function AnimatedRoutes() {
     const location = useLocation();
 
