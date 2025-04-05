@@ -33,7 +33,7 @@ const SearchProducts = () => {
     const fetchSearchResults = async (searchTerm) => {
         try {
             setLoading(true);
-            const response = await axios.get(`https://aceone-backend-0ap8.onrender.com/product/search?q=${searchTerm}`);
+            const response = await axios.get(`https://aceone-backend-vx5o.onrender.com/product/search?q=${searchTerm}`);
             setResults(response.data.data);
         } catch (error) {
             console.error("Search error:", error.message);

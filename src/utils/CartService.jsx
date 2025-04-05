@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const getUserCart = async () => {
     try {
-        const response = await axios.get("https://aceone-backend-0ap8.onrender.com/user/cart", { withCredentials: true });
+        const response = await axios.get("https://aceone-backend-vx5o.onrender.com/user/cart", { withCredentials: true });
         // console.log("Full API response:", response); // Debugging
         // console.log("Data response:", response.data.data); // Debugging
         if (response.data.success) {
@@ -18,7 +18,7 @@ export const getUserCart = async () => {
 
 export const addToCart = async (productID, quantity = 1, selectedColor, selectedSize) => {
     try {
-        const response = await axios.post("https://aceone-backend-0ap8.onrender.com/user/cart/add", { productID, quantity, selectedSize, selectedColor }, { withCredentials: true });
+        const response = await axios.post("https://aceone-backend-vx5o.onrender.com/user/cart/add", { productID, quantity, selectedSize, selectedColor }, { withCredentials: true });
 
         if (response.data.success) {
             return { success: true, cart: response.data.data };
@@ -32,7 +32,7 @@ export const addToCart = async (productID, quantity = 1, selectedColor, selected
 
 export const updateCartQuantity = async (productID, change) => {
     try {
-        const response = await axios.put("https://aceone-backend-0ap8.onrender.com/user/cart/update", { productID, change }, { withCredentials: true });
+        const response = await axios.put("https://aceone-backend-vx5o.onrender.com/user/cart/update", { productID, change }, { withCredentials: true });
         if (response.data.success) {
             return { success: true, cart: response.data.data };
         } else {
@@ -45,7 +45,7 @@ export const updateCartQuantity = async (productID, change) => {
 
 export const removeFromCart = async (productID) => {
     try {
-        const response = await axios.delete("https://aceone-backend-0ap8.onrender.com/user/cart/remove", { data: { productID }, withCredentials: true });
+        const response = await axios.delete("https://aceone-backend-vx5o.onrender.com/user/cart/remove", { data: { productID }, withCredentials: true });
 
         if (response.data.success) {
             return { success: true, cart: response.data.data };
@@ -59,7 +59,7 @@ export const removeFromCart = async (productID) => {
 
 export const clearCart = async () => {
     try {
-        const response = await axios.delete("https://aceone-backend-0ap8.onrender.com/user/cart/clear", { withCredentials: true });
+        const response = await axios.delete("https://aceone-backend-vx5o.onrender.com/user/cart/clear", { withCredentials: true });
 
         if (response.data.success) {
             return { success: true, cart: response.data.data };

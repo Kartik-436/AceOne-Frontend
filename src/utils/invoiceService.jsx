@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 // Base URL for invoice-related endpoints
-const BASE_URL = 'https://aceone-backend-0ap8.onrender.com/inv';
+const BASE_URL = 'https://aceone-backend-vx5o.onrender.com/inv';
 
 const getHeaders = () => ({
     'Content-Type': 'application/json'
