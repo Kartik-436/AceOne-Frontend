@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import Transition from "../../Transition";
@@ -14,7 +15,7 @@ import { toast } from 'react-toastify';
 import { Heart, ShoppingBasket } from "lucide-react";
 import SearchProducts from "../Search";
 
-const BeforeSignedInNavBar = () => {
+const BeforeSignedInNavBar = ({CartChange}) => {
     const { animate, handleDelayNavigation } = useDelayedNavigation();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { isCartMenuOpen, setIsCartMenuOpen } = useCart();
@@ -101,7 +102,7 @@ const BeforeSignedInNavBar = () => {
 
     useEffect(() => {
         refreshCart();
-    }, []); // Fetch cart on mount
+    }, [CartChange]); // Fetch cart on mount
 
     const subtotal = products.reduce((acc, product) => {
         const totalPrice = (product.productId.discount ? product.productId.discountPrice : product.productId.price) * product.quantity;

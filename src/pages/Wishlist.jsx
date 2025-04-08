@@ -22,6 +22,8 @@ const Wishlist = () => {
     const [wishlist, setWishlist] = useState(null);
     const { isCartMenuOpen, setIsCartMenuOpen } = useCart();
 
+    const [CartChange, setCartChange] = useState(false);
+
     const refreshWishlist = async () => {
         try {
             const response = await getWishlist();
@@ -40,7 +42,7 @@ const Wishlist = () => {
 
     useEffect(() => {
         refreshWishlist();
-    }, []);
+    }, [CartChange]);
 
     const moveToCart = async (productId, selectedColor, selectedSize) => {
         setIsCartMenuOpen(false);
@@ -60,6 +62,7 @@ const Wishlist = () => {
                 progress: undefined,
                 theme: "dark",
             });
+            setCartChange(!CartChange);
         } else {
             toast.error("Error adding item to your Cart !", {
                 position: "top-right",
@@ -118,7 +121,7 @@ const Wishlist = () => {
         return (
             <div>
                 <Transition animate={animate} />
-                <AfterSignedInNavBar />
+                <AfterSignedInNavBar CartChange={CartChange} />
 
                 <div className="bg-[#fbffef] min-h-screen w-full pt-[10.6vh] px-4 md:px-8 lg:px-16 pb-16">
                     <motion.div

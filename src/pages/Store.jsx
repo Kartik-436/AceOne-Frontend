@@ -31,6 +31,9 @@ import { getOwnerProfile } from '../utils/OwnerService';
 const Store = (props) => {
     const { animate, handleDelayNavigation } = useDelayedNavigation();
     const { isCartMenuOpen, setIsCartMenuOpen } = useCart();
+
+    const [CartChange, setCartChange] = useState(false);
+
     const lenisRef = useRef(null);
     const productContainerRef = useRef(null);
 
@@ -146,7 +149,7 @@ const Store = (props) => {
         const response = await addToCart(productId, 1, selectedColor, selectedSize);
 
         if (response.success) {
-            window.location.reload();
+            setCartChange(!CartChange);
             toast.success("Item Added to your Cart !", {
                 position: "top-right",
                 autoClose: 3000,
@@ -460,7 +463,7 @@ const Store = (props) => {
                         <motion.div>
                             <Transition animate={animate} disableEntry={true} />
 
-                            {isLoggedIn ? <AfterSignedInNavBar /> : <BeforeSignedInNavBar />}
+                            {isLoggedIn ? <AfterSignedInNavBar CartChange={CartChange} /> : <BeforeSignedInNavBar CartChange={CartChange} />}
 
                             <div className='min-h-screen w-full text-white mt-[10.6svh] bg-[#fbffef] flex relative'>
                                 <div className='md:w-[25vw] bg-[#fbffef] relative'>
