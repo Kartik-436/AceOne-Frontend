@@ -12,7 +12,7 @@ import { Heart } from 'lucide-react';
 import { addToWishlist } from '../../utils/UserService';
 import AddToCartButton from '../AddToCartButton';
 
-const Page3 = ({ Kids }) => {
+const Page3 = ({ Kids, CartChange, setCartChange }) => {
     const targetRef = useRef(null);
     const { isCartMenuOpen, setIsCartMenuOpen } = useCart();
     const { animate, handleDelayNavigation } = useDelayedNavigation();
@@ -24,7 +24,7 @@ const Page3 = ({ Kids }) => {
         const response = await addToCart(productId, 1, selectedColor, selectedSize);
 
         if (response.success) {
-            window.location.reload();
+            setCartChange(!CartChange);
             toast.success("Item Added to your Cart !", {
                 position: "top-right",
                 autoClose: 3000,

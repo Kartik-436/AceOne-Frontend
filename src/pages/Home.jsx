@@ -21,6 +21,7 @@ const Home = () => {
     const { animate, handleDelayNavigation } = useDelayedNavigation();
     const { isLoggedIn, loading: authLoading } = useAuthStatus();
 
+    const [CartChange, setCartChange] = useState(false);
     // Product states
     const [productData, setProductData] = useState({
         bestSelling: [],
@@ -70,7 +71,9 @@ const Home = () => {
         };
 
         fetchAllProductData();
+    }, []);
 
+    useEffect(() => {
         const handleOwnerLoggedIn = async () => {
             try {
                 const response = await getOwnerProfile();
@@ -84,7 +87,7 @@ const Home = () => {
         }
 
         handleOwnerLoggedIn();
-    }, []);
+    })
 
     // Setup smooth scrolling with Lenis
     useEffect(() => {
@@ -148,12 +151,12 @@ const Home = () => {
         return (
             <React.Fragment>
                 <Transition animate={animate} />
-                {isLoggedIn ? <AfterSignedInNavBar /> : <BeforeSignedInNavBar />}
+                {isLoggedIn ? <AfterSignedInNavBar CartChange={CartChange} /> : <BeforeSignedInNavBar CartChange={CartChange} />}
                 {/* Add a wrapper div with a data-scroll-container attribute */}
                 <div data-scroll-container className='relative'>
-                    <HalfHome bestSelling={productData.bestSelling} Discounted={productData.discounted} />
+                    <HalfHome bestSelling={productData.bestSelling} Discounted={productData.discounted} CartChange={CartChange} setCartChange={setCartChange} />
                     <div className='z-[10]'>
-                        <Page3 Kids={productData.kidsProducts} />
+                        <Page3 Kids={productData.kidsProducts} CartChange={CartChange} setCartChange={setCartChange} />
                     </div>
                     <HalfHome2 Kids={productData.kidsProducts} Men={productData.mensProducts} Women={productData.womensProducts} />
                     <Footer />

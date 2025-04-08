@@ -73,6 +73,7 @@ const ProductPage = () => {
     const [selectedSize, setSelectedSize] = useState(null);
     const [selectedColor, setSelectedColor] = useState(null);
     const [quantity, setQuantity] = useState(1);
+    const [CartChange, setCartChange] = useState(false);
 
     // Review-related states
     const [reviewModalOpen, setReviewModalOpen] = useState(false);
@@ -140,7 +141,7 @@ const ProductPage = () => {
         const response = await addToCart(productId, quantity, selectedColor, selectedSize);
 
         if (response.success) {
-            window.location.reload();
+            setCartChange(!CartChange);
             toast.success("Item Added to your Cart !", {
                 position: "top-right",
                 autoClose: 3000,
@@ -305,7 +306,7 @@ const ProductPage = () => {
     return (
         <>
             <Transition animate={animate} />
-            {isLoggedIn ? <AfterSignedInNavBar /> : <BeforeSignedInNavBar />}
+            {isLoggedIn ? <AfterSignedInNavBar CartChange={CartChange} /> : <BeforeSignedInNavBar CartChange={CartChange} />}
 
             <div className=" mt-[10.6vh] mx-auto px-4 bg-[#fbffef] py-8 grid md:grid-cols-2 gap-8">
                 {/* Image Gallery */}
