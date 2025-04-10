@@ -119,7 +119,7 @@ const UsersList = () => {
                                 Refresh
                             </motion.button>
 
-                            <div className='w-64 sm:w-80'>
+                            <div className='w-72 sm:w-80'>
                                 <OwnerUserSearch />
                             </div>
                         </div>
