@@ -82,24 +82,21 @@
 
 body::-webkit-scrollbar {
     width: 7px;
-    /* Slightly slimmer than original 6px */
 }
 
 body::-webkit-scrollbar-track {
     border-radius: 10px;
-    background: rgba(0, 0, 0, 0.03);
-    /* Very subtle gray background */
-    margin: 4px 0;
-    /* Creates space at top and bottom */
+    background: transparent;
+    margin: 10px 0;
+    margin-right: 2px;
 }
 
 body::-webkit-scrollbar-thumb {
     border-radius: 10px;
     background: #ffbb00;
-    /* Your primary theme color */
+    cursor: pointer;
 }
 
 body::-webkit-scrollbar-thumb:hover {
     background: #ffa500;
-    /* Slightly darker on hover for feedback */
 }
