@@ -15,6 +15,7 @@ import {
     LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid,
     Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell
 } from 'recharts';
+import { saveAs } from 'file-saver';
 
 const Analytics = () => {
     const { animate, handleDelayNavigation } = useDelayedNavigation();
@@ -125,6 +126,167 @@ const Analytics = () => {
             );
         }
         return null;
+    };
+
+    // Function to handle printing analytics
+    const handlePrintAnalytics = () => {
+        const printContent = document.createElement('div');
+        printContent.innerHTML = `
+        <div style="padding: 20px; font-family: Arial, sans-serif;">
+            <h1 style="color: #111; text-align: center; margin-bottom: 20px;">Business Analytics Report</h1>
+            <p style="text-align: center; margin-bottom: 30px;">Generated on ${new Date().toLocaleDateString()}</p>
+            
+            <div style="margin-bottom: 30px;">
+                <h2 style="color: #ffbb00; border-bottom: 2px solid #ffbb00; padding-bottom: 5px;">Summary</h2>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Total Revenue</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">${formatCurrency(revenue)}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Total Sales</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">${sales} items</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Total Orders</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">${totalOrders}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Average Order Value</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">${formatCurrency(revenue / totalOrders)}</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div style="margin-bottom: 30px;">
+                <h2 style="color: #ffbb00; border-bottom: 2px solid #ffbb00; padding-bottom: 5px;">Daily Revenue (Last 7 Days)</h2>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                    <thead>
+                        <tr>
+                            <th style="padding: 10px; border: 1px solid #ddd; background-color: #f5f5f5;">Date</th>
+                            <th style="padding: 10px; border: 1px solid #ddd; background-color: #f5f5f5;">Revenue</th>
+                            <th style="padding: 10px; border: 1px solid #ddd; background-color: #f5f5f5;">Orders</th>
+                            <th style="padding: 10px; border: 1px solid #ddd; background-color: #f5f5f5;">Items Sold</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${getLast7DaysData().map(day => `
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #ddd;">${day.date}</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">${formatCurrency(day.revenue)}</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">${day.orderCount}</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">${day.sales}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div>
+                <h2 style="color: #ffbb00; border-bottom: 2px solid #ffbb00; padding-bottom: 5px;">Order Status Distribution</h2>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                    <thead>
+                        <tr>
+                            <th style="padding: 10px; border: 1px solid #ddd; background-color: #f5f5f5;">Status</th>
+                            <th style="padding: 10px; border: 1px solid #ddd; background-color: #f5f5f5;">Count</th>
+                            <th style="padding: 10px; border: 1px solid #ddd; background-color: #f5f5f5;">Percentage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${Object.entries(statusStats || {}).map(([status, count]) => `
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #ddd;">${status}</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">${count}</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">${((count / totalOrders) * 100).toFixed(1)}%</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div style="margin-top: 40px; text-align: center; font-size: 12px; color: #777;">
+                <p>This report is confidential and generated for business analysis purposes only.</p>
+            </div>
+        </div>
+    `;
+
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write('<html><head><title>Business Analytics Report</title></head><body>');
+        printWindow.document.write(printContent.innerHTML);
+        printWindow.document.write('</body></html>');
+        printWindow.document.close();
+
+        // Wait for content to load then print
+        printWindow.onload = function () {
+            printWindow.focus();
+            printWindow.print();
+            // Close the window after print or if print is cancelled
+            printWindow.onafterprint = function () {
+                printWindow.close();
+            };
+        };
+
+        toast.success("Preparing print view...");
+    };
+
+    // Function to export analytics data to CSV
+    const handleExportReport = () => {
+        // Prepare the data rows
+        const csvRows = [];
+
+        // Add header
+        csvRows.push(['Business Analytics Report', '']);
+        csvRows.push(['Generated on', new Date().toLocaleDateString()]);
+        csvRows.push([]);
+
+        // Add summary
+        csvRows.push(['Summary', '']);
+        csvRows.push(['Total Revenue', formatCurrency(revenue)]);
+        csvRows.push(['Total Sales', `${sales} items`]);
+        csvRows.push(['Total Orders', totalOrders]);
+        csvRows.push(['Average Order Value', formatCurrency(revenue / totalOrders)]);
+        csvRows.push([]);
+
+        // Add daily stats
+        csvRows.push(['Daily Analytics (Last 7 Days)', '', '', '']);
+        csvRows.push(['Date', 'Revenue', 'Orders', 'Items Sold']);
+
+        getLast7DaysData().forEach(day => {
+            csvRows.push([
+                day.date,
+                revenue,
+                day.orderCount,
+                day.sales
+            ]);
+        });
+
+        csvRows.push([]);
+
+        // Add order status
+        csvRows.push(['Order Status Distribution', '', '']);
+        csvRows.push(['Status', 'Count', 'Percentage']);
+
+        Object.entries(statusStats || {}).forEach(([status, count]) => {
+            csvRows.push([
+                status,
+                count,
+                `${((count / totalOrders) * 100).toFixed(1)}%`
+            ]);
+        });
+
+        // Convert to CSV string
+        const csvContent = csvRows.map(row =>
+            row.map(cell =>
+                typeof cell === 'string' && cell.includes(',') ?
+                    `"${cell}"` : cell
+            ).join(',')
+        ).join('\n');
+
+        // Create blob and save
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
+        saveAs(blob, `business_analytics_${new Date().toISOString().split('T')[0]}.csv`);
+
+        toast.success("Report exported successfully!");
     };
 
     // Loading state
@@ -426,7 +588,7 @@ const Analytics = () => {
                 >
                     <button
                         id="Shp-Now-Home-Start"
-                        onClick={() => toast.info("This feature is coming soon!")}
+                        onClick={handleExportReport}
                         className="flex items-center gap-2 py-3 px-6 rounded border-2 border-black cursor-pointer text-base"
                     >
                         <FileCsv size={20} />
@@ -435,7 +597,7 @@ const Analytics = () => {
 
                     <button
                         className="AddToCartInStore flex items-center gap-2 py-3 px-6 bg-[#111] text-white rounded border-2 cursor-pointer text-base"
-                        onClick={() => toast.info("Print functionality coming soon!")}
+                        onClick={handlePrintAnalytics}
                     >
                         <Printer size={20} />
                         Print Analytics
