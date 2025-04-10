@@ -234,7 +234,7 @@ const UsersList = () => {
                                                 </div>
                                             </td>
                                             <td className='py-4 px-4'>
-                                                <div className="flex flex-col items-center gap-3">
+                                                <div className="flex items-center gap-3">
                                                     <span className="px-3 py-1 bg-[#ffbb00]/10 text-[#ffbb00] rounded-full text-xs font-medium">
                                                         {user.orders.length} orders
                                                     </span>
