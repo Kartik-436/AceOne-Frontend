@@ -81,15 +81,17 @@
 }
 
 body::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
 }
 
 body::-webkit-scrollbar-track {
-    border-radius: 10px;
+    border-radius: 20px;
     background: transparent;
+    padding-top: 4px;
+    padding-bottom: 4px;
 }
 
 body::-webkit-scrollbar-thumb {
-    border-radius: 10px;
+    border-radius: 16px;
     background: #ffbb00;
 }
