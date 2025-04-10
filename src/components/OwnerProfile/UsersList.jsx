@@ -209,17 +209,29 @@ const UsersList = () => {
                                                 </div>
                                             </td>
                                             <td className='py-4 px-4'>
-                                                <p className='text-gray-700 truncate max-w-[180px] hover:text-clip hover:overflow-visible hover:whitespace-normal hover:bg-white hover:shadow-md hover:p-1 hover:rounded hover:z-10 hover:absolute hover:max-w-[300px]' title={user.email}>
-                                                    {user.email}
-                                                </p>
+                                                <div className='max-w-[180px] overflow-hidden'>
+                                                    <p
+                                                        className='text-gray-700 truncate hover:overflow-visible hover:whitespace-normal hover:bg-white hover:shadow-md hover:p-1 hover:rounded hover:z-10 hover:absolute hover:max-w-[300px]'
+                                                        title={user.email}
+                                                        style={{ position: 'relative' }} // Ensure relative positioning for absolute hover
+                                                    >
+                                                        {user.email}
+                                                    </p>
+                                                </div>
                                             </td>
                                             <td className='py-4 px-4'>
                                                 <p className='text-gray-700'>{user.contact || 'N/A'}</p>
                                             </td>
                                             <td className='py-4 px-4'>
-                                                <p className='text-gray-700 truncate max-w-[200px] hover:text-clip hover:overflow-visible hover:whitespace-normal hover:bg-white hover:shadow-md hover:p-1 hover:rounded hover:z-10 hover:absolute hover:max-w-[300px]' title={user?.address?.formattedAddress || "Address not provided"}>
-                                                    {user?.address?.formattedAddress || "Address not provided"}
-                                                </p>
+                                                <div className='max-w-[200px] overflow-hidden'>
+                                                    <p
+                                                        className='text-gray-700 truncate hover:overflow-visible hover:whitespace-normal hover:bg-white hover:shadow-md hover:p-1 hover:rounded hover:z-10 hover:absolute hover:max-w-[300px]'
+                                                        title={user?.address?.formattedAddress || 'Address not provided'}
+                                                        style={{ position: 'relative' }} // Ensure relative positioning for absolute hover
+                                                    >
+                                                        {user?.address?.formattedAddress || 'Address not provided'}
+                                                    </p>
+                                                </div>
                                             </td>
                                             <td className='py-4 px-4'>
                                                 <div className="flex items-center gap-2">
