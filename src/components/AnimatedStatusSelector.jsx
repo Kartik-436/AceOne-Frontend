@@ -53,8 +53,6 @@ const AnimatedStatusSelector = ({ orderStatuses, selectedStatus, setSelectedStat
 
     return (
         <div className="flex items-center justify-center gap-4" ref={dropdownRef}>
-            <label htmlFor="orderStatusFilter" className="block mb-2 text-xl font-[poppins] font-medium text-gray-700">Status:</label>
-
             <motion.button
                 whileTap={{ scale: 0.98 }}
                 onClick={toggleDropdown}
@@ -94,7 +92,7 @@ const AnimatedStatusSelector = ({ orderStatuses, selectedStatus, setSelectedStat
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute z-50 w-56 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden"
+                        className="absolute z-50 w-56 mt-16 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden"
                         id="status-options"
                         role="listbox"
                     >
