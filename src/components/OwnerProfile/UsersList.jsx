@@ -396,14 +396,27 @@ const OrdersModal = ({ isOpen, onClose, user }) => {
                     </button>
                 </div>
 
-                <div className="overflow-y-auto p-4 flex-1">
+                <div className="overflow-y-auto noScollbar p-4 flex-1">
                     {user.orders.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center h-full">
-                            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                                <ShoppingBasket size={32} className="text-gray-400" />
-                            </div>
-                            <p className="text-gray-500">No orders found for this user</p>
-                        </div>
+                        <motion.div
+                            initial={{ opacity: 0, y: 50 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2, type: "spring", stiffness: 100, damping: 12 }}
+                            className="flex flex-col items-center justify-center h-80 rounded-xl p-8 border-2 border-dashed border-gray-200"
+                        >
+                            <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                transition={{ delay: 0.4, type: "spring", stiffness: 200 }}
+                                className="w-24 h-24 bg-[#ffbb00]/10 rounded-full flex items-center justify-center mb-6"
+                            >
+                                <ShoppingBasket size={48} className="text-[#ffbb00]" />
+                            </motion.div>
+                            <h2 className="text-2xl font-bold text-[#111] mb-2">No orders found</h2>
+                            <p className="text-gray-500 max-w-md text-center">
+                                No orders found for this user.
+                            </p>
+                        </motion.div>
                     ) : (
                         <div className="space-y-6">
                             {user.orders.map((order, index) => (
