@@ -58,7 +58,7 @@ const AnimatedStatusSelector = ({ orderStatuses, selectedStatus, setSelectedStat
             <motion.button
                 whileTap={{ scale: 0.98 }}
                 onClick={toggleDropdown}
-                className="flex items-center overflow-x-hidden noScrollbar justify-between w-56 px-4 py-2.5 bg-white border border-gray-200 rounded-lg shadow-sm hover:border-[#ffbb00]/50 transition-all duration-200"
+                className="flex items-center overflow-x-hidden cursor-pointer noScrollbar justify-between w-56 px-4 py-2.5 bg-white border border-gray-200 rounded-lg shadow-sm hover:border-[#ffbb00]/50 transition-all duration-200"
                 aria-expanded={isOpen}
                 aria-haspopup="listbox"
                 aria-controls="status-options"
@@ -98,7 +98,7 @@ const AnimatedStatusSelector = ({ orderStatuses, selectedStatus, setSelectedStat
                         id="status-options"
                         role="listbox"
                     >
-                        <motion.ul className="py-1 max-h-60 overflow-auto">
+                        <motion.ul className="py-1 max-h-60 overflow-x-hidden noScrollbar overflow-auto">
                             {orderStatuses.map((status, index) => (
                                 <motion.li
                                     key={status}
