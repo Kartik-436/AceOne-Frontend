@@ -245,7 +245,8 @@ const UsersList = () => {
                                                         setSelectedUser(user);
                                                         setConfirmModalOpen(true);
                                                     }}
-                                                    className="inline-flex items-center justify-center p-2 bg-red-50 hover:bg-red-100 text-red-500 rounded-full transition-all duration-200"
+                                                    id="Shp-Now-Home-Start"
+                                                    className="inline-flex items-center justify-center p-2 rounded-full transition-all duration-200 border-2"
                                                 >
                                                     <Trash2 size={18} />
                                                 </motion.button>
