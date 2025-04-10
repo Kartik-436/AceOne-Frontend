@@ -95,7 +95,7 @@ const OrdersList = () => {
                     <div className='flex flex-col sm:flex-row sm:items-center justify-between w-full gap-4 bg-white p-5 rounded-xl shadow-sm'>
                         <div className="flex items-center gap-3">
                             <div className="bg-[#ffbb00]/10 p-2 rounded-lg">
-                                <ShoppingBasket size={28} className="text-[#ffbb00]" />
+                                <ShoppingBasket size={32} className="text-[#ffbb00]" />
                             </div>
                             <h1 className='text-2xl sm:text-3xl font-[nunito] text-[#111] font-bold'>Orders List</h1>
                         </div>
@@ -105,7 +105,7 @@ const OrdersList = () => {
                                 whileHover={{ scale: 1.03 }}
                                 whileTap={{ scale: 0.97 }}
                                 onClick={refreshOrders}
-                                className="flex items-center justify-center gap-2 px-4 py-2 bg-[#ffbb00]/10 hover:bg-[#ffbb00]/20 rounded-lg text-[#111] font-medium transition-all duration-200"
+                                className="flex items-center justify-center gap-2 px-4 py-2 bg-[#ffbb00]/10 hover:bg-[#ffbb00]/20 rounded-lg text-[#111] font-bold font-[poppins] transition-all duration-200"
                                 disabled={loading}
                             >
                                 <motion.div
@@ -135,7 +135,7 @@ const OrdersList = () => {
                         </div>
                     </div>
 
-                    <div className='w-full overflow-x-auto rounded-xl shadow-sm'>
+                    <div className='w-full overflow-x-auto overflow-y-hidden h-full rounded-xl shadow-sm'>
                         <table className='min-w-full bg-white rounded-xl'>
                             <thead className='bg-[#111] rounded-t-xl text-white'>
                                 <tr>
@@ -148,11 +148,11 @@ const OrdersList = () => {
                                     <th className='py-3 px-4 text-left font-semibold font-[poppins] rounded-tr-xl'>Items</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody className='overflow-y-hidden'>
                                 {loading ? (
                                     <tr>
-                                        <td colSpan="7" className="py-12 text-center">
-                                            <BarLoader color="#ffbb00" />
+                                        <td colSpan="7" className="py-12 text-center flex items-center justify-center">
+                                            <BarLoader />
                                         </td>
                                     </tr>
                                 ) : filteredOrders.length === 0 ? (
@@ -186,7 +186,7 @@ const OrdersList = () => {
                                             initial={{ opacity: 0, y: 10 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ duration: 0.2, delay: 0.05 * (index % 10) }}
-                                            className='hover:bg-gray-50 border-b border-gray-100 last:border-b-0'
+                                            className='hover:bg-gray-200 border-b border-gray-100 last:border-b-0'
                                         >
                                             <td className='py-4 px-4 font-medium text-gray-800'>
                                                 <motion.button
@@ -196,7 +196,7 @@ const OrdersList = () => {
                                                         navigator.clipboard.writeText(order._id);
                                                         toast.success("Order ID copied to clipboard!");
                                                     }}
-                                                    className="flex items-center gap-2 text-sm hover:text-[#ffbb00] transition-colors duration-200 focus:outline-none group"
+                                                    className="flex items-center gap-2 text-sm hover:text-[#ffbb00] transition-colors duration-200 focus:outline-none group cursor-pointer"
                                                 >
                                                     <span className="truncate max-w-[100px] sm:max-w-[150px] md:max-w-[200px]">
                                                         {order._id}
