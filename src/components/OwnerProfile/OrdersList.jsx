@@ -129,7 +129,7 @@ const OrdersList = () => {
                                                 >
                                                     <ShoppingBasket size={48} className="text-[#ffbb00]" />
                                                 </motion.div>
-                                                <h2 className="text-2xl font-bold text-[#1f1f1f] mb-2">No Orders Yet</h2>
+                                                <h2 className="text-2xl font-bold text-[#1f1f1f] mb-2">No orders found with the selected criteria.</h2>
                                             </motion.div>
                                         </td>
                                     </tr>
