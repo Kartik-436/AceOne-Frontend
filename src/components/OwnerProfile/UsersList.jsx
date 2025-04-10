@@ -234,21 +234,19 @@ const UsersList = () => {
                                                 </div>
                                             </td>
                                             <td className='py-4 px-4'>
-                                                <div className="flex items-center gap-2">
+                                                <div className="flex flex-col items-center gap-3">
                                                     <span className="px-3 py-1 bg-[#ffbb00]/10 text-[#ffbb00] rounded-full text-xs font-medium">
                                                         {user.orders.length} orders
                                                     </span>
-                                                    {user.orders.length > 0 && (
-                                                        <span
-                                                            className="text-gray-500 text-sm cursor-pointer hover:text-[#ffbb00] transition-colors flex items-center gap-1"
-                                                            onClick={() => {
-                                                                setSelectedUserOrders(user);
-                                                                setShowOrdersModal(true);
-                                                            }}
-                                                        >
-                                                            View <Eye size={14} />
-                                                        </span>
-                                                    )}
+                                                    <span
+                                                        className="text-gray-500 text-lg cursor-pointer hover:text-[#ffbb00] transition-colors flex items-center gap-1 font-[poppins] font-semibold uppercase"
+                                                        onClick={() => {
+                                                            setSelectedUserOrders(user);
+                                                            setShowOrdersModal(true);
+                                                        }}
+                                                    >
+                                                        View <Eye size={17} />
+                                                    </span>
                                                 </div>
                                             </td>
                                             <td className='py-4 px-4'>
