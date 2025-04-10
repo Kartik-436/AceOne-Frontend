@@ -155,7 +155,11 @@ const OrdersList = () => {
                                             </td>
                                             <td className='py-3 px-4 text-gray-700'>{order.customer ? order.customer.firstName + ' ' + order.customer.lastName : 'N/A'}</td>
                                             <td className='py-3 px-4 text-gray-700'>{formatDate(order.orderDate)}</td>
-                                            <td className='py-3 px-4 text-gray-700'>₹ {(order.discountedTotalAmount.toFixed(2) ? order.discountedTotalAmount.toFixed(2) : order.totalAmount.toFixed(2)) + order.deliveryFee}</td>
+                                            <td className='py-3 px-4 text-gray-700'>
+                                                ₹ {order.discountedTotalAmount !== undefined && order.discountedTotalAmount !== null
+                                                    ? (order.discountedTotalAmount + order.deliveryFee)?.toFixed(2)
+                                                    : (order.totalAmount + order.deliveryFee)?.toFixed(2)}
+                                            </td>
                                             <td className='py-3 px-4 text-gray-700'>{order.modeOfPayment}</td>
                                             <td className={`py-3 px-4 font-medium ${order.orderStatus === "Cancelled" ? "text-red-500" :
                                                 order.orderStatus === "Shipped" ? "text-blue-400" :
