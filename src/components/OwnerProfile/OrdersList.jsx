@@ -76,20 +76,20 @@ const OrdersList = () => {
                 <div className='flex flex-col gap-5'>
                     <div className='flex items-center justify-between w-full'>
                         <h1 className='text-3xl font-[nunito] text-black font-bold'>Orders List</h1>
-                    </div>
 
-                    <div className='flex items-center gap-3'>
-                        <label htmlFor="orderStatusFilter" className="font-semibold text-gray-700">Filter By Status:</label>
-                        <select
-                            id="orderStatusFilter"
-                            className="w-auto p-2 border rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-gray-700"
-                            value={selectedStatus}
-                            onChange={(e) => setSelectedStatus(e.target.value)}
-                        >
-                            {orderStatuses.map((status) => (
-                                <option key={status} value={status}>{status.charAt(0).toUpperCase() + status.slice(1)}</option>
-                            ))}
-                        </select>
+                        <div className='flex items-center gap-3'>
+                            <label htmlFor="orderStatusFilter" className="font-semibold text-gray-700">Filter By Status:</label>
+                            <select
+                                id="orderStatusFilter"
+                                className="w-auto p-2 border rounded-md shadow-sm focus:border-[#ffbb00] focus:ring-[#ffbb00] text-gray-700"
+                                value={selectedStatus}
+                                onChange={(e) => setSelectedStatus(e.target.value)}
+                            >
+                                {orderStatuses.map((status) => (
+                                    <option key={status} value={status}>{status.charAt(0).toUpperCase() + status.slice(1)}</option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
 
                     <div className='w-full overflow-x-auto'>
@@ -115,12 +115,22 @@ const OrdersList = () => {
                                 ) : filteredOrders.length === 0 ? (
                                     <tr>
                                         <td colSpan="7" className="py-10 text-center text-gray-500">
-                                            <div className="flex flex-col items-center justify-center">
-                                                <div className="w-20 h-20 bg-[#ffbb00]/10 rounded-full flex items-center justify-center mb-4">
-                                                    <ShoppingBasket size={40} className="text-[#ffbb00]" />
-                                                </div>
-                                                <h2 className="text-xl font-semibold text-gray-700">No orders found with the selected criteria.</h2>
-                                            </div>
+                                            <motion.div
+                                                initial={{ opacity: 0, y: 50 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                transition={{ delay: 0.2, delayChildren: 0.5, type: "spring", stiffness: 200 }}
+                                                className="flex flex-col items-center justify-center h-96 rounded-3xl p-8 border-2 border-dashed mt-5"
+                                            >
+                                                <motion.div
+                                                    initial={{ scale: 0 }}
+                                                    animate={{ scale: 1 }}
+                                                    transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
+                                                    className="w-24 h-24 bg-[#ffbb00]/10 rounded-full flex items-center justify-center mb-6"
+                                                >
+                                                    <ShoppingBasket size={48} className="text-[#ffbb00]" />
+                                                </motion.div>
+                                                <h2 className="text-2xl font-bold text-[#1f1f1f] mb-2">No Orders Yet</h2>
+                                            </motion.div>
                                         </td>
                                     </tr>
                                 ) : (
