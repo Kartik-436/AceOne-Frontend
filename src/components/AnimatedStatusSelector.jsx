@@ -143,13 +143,3 @@ const AnimatedStatusSelector = ({ orderStatuses, selectedStatus, setSelectedStat
 };
 
 export default AnimatedStatusSelector;
-
-// How to use this component in your OrdersList component:
-// Replace your current select element with this:
-/*
-<AnimatedStatusSelector 
-  orderStatuses={orderStatuses}
-  selectedStatus={selectedStatus}
-  setSelectedStatus={setSelectedStatus}
-/>
-*/
