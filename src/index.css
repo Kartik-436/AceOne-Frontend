@@ -80,18 +80,54 @@
     background: linear-gradient(to right, #5038ED, #9181F4);
 }
 
+/* Modern scrollbar styling */
 body::-webkit-scrollbar {
-    width: 6px;
+    width: 4px;
+    /* Slimmer width for a more modern look */
 }
 
 body::-webkit-scrollbar-track {
-    border-radius: 20px;
-    background: transparent;
-    padding-top: 4px;
-    padding-bottom: 4px;
+    background: rgba(17, 17, 17, 0.03);
+    /* Very subtle track background */
+    border-radius: 10px;
+    margin: 4px 0;
+    /* Creates space at top and bottom of track */
 }
 
 body::-webkit-scrollbar-thumb {
-    border-radius: 16px;
-    background: #ffbb00;
+    background: linear-gradient(to bottom, #ffbb00, #ffaa00);
+    /* Subtle gradient effect */
+    border-radius: 10px;
+    box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.15);
+    /* Inner glow effect */
+}
+
+/* Hover effect for the scrollbar thumb */
+body::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(to bottom, #ffcc00, #ffbb00);
+    /* Lighter gradient on hover */
+}
+
+/* When actively scrolling */
+body::-webkit-scrollbar-thumb:active {
+    background: #ff9900;
+    /* Slightly darker when active */
+}
+
+/* Hide scrollbar when not scrolling, but maintain functionality */
+@media (pointer: fine) {
+    body {
+        scrollbar-width: thin;
+        /* For Firefox */
+    }
+
+    body:not(:hover)::-webkit-scrollbar-thumb {
+        opacity: 0.5;
+        transition: opacity 0.3s ease;
+    }
+
+    body:hover::-webkit-scrollbar-thumb {
+        opacity: 1;
+        transition: opacity 0.3s ease;
+    }
 }
