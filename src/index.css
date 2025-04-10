@@ -80,44 +80,26 @@
     background: linear-gradient(to right, #5038ED, #9181F4);
 }
 
-/* Modern scrollbar styling */
 body::-webkit-scrollbar {
     width: 7px;
+    /* Slightly slimmer than original 6px */
 }
 
 body::-webkit-scrollbar-track {
-    background: rgba(17, 17, 17, 0.03);
     border-radius: 10px;
+    background: rgba(0, 0, 0, 0.03);
+    /* Very subtle gray background */
     margin: 4px 0;
+    /* Creates space at top and bottom */
 }
 
 body::-webkit-scrollbar-thumb {
-    background: linear-gradient(to bottom, #ffbb00, #ffaa00);
     border-radius: 10px;
-    box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.15);
+    background: #ffbb00;
+    /* Your primary theme color */
 }
 
-/* Hover effect for the scrollbar thumb */
 body::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(to bottom, #ffcc00, #ffbb00);
-}
-
-body::-webkit-scrollbar-thumb:active {
-    background: #ff9900;
-}
-
-@media (pointer: fine) {
-    body {
-        scrollbar-width: thin;
-    }
-
-    body:not(:hover)::-webkit-scrollbar-thumb {
-        opacity: 0.5;
-        transition: opacity 0.3s ease;
-    }
-
-    body:hover::-webkit-scrollbar-thumb {
-        opacity: 1;
-        transition: opacity 0.3s ease;
-    }
+    background: #ffa500;
+    /* Slightly darker on hover for feedback */
 }
