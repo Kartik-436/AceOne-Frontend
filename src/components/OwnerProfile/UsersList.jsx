@@ -239,7 +239,7 @@ const UsersList = () => {
                                                         {user.orders.length} orders
                                                     </span>
                                                     <span
-                                                        className="text-gray-500 text-lg cursor-pointer hover:text-[#ffbb00] transition-colors flex items-center gap-1 font-[poppins] font-semibold uppercase"
+                                                        className="text-gray-500 cursor-pointer hover:text-[#ffbb00] transition-colors flex items-center gap-1 font-[poppins] font-semibold uppercase"
                                                         onClick={() => {
                                                             setSelectedUserOrders(user);
                                                             setShowOrdersModal(true);
