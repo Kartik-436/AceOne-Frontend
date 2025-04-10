@@ -79,3 +79,17 @@
 .bgGradient-Change_:hover {
     background: linear-gradient(to right, #5038ED, #9181F4);
 }
+
+body::-webkit-scrollbar {
+    width: 8px;
+}
+
+body::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background: transparent;
+}
+
+body::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #ffbb00;
+}

@@ -106,7 +106,7 @@ const OrdersList = () => {
                                 whileHover={{ scale: 1.03 }}
                                 whileTap={{ scale: 0.97 }}
                                 onClick={refreshOrders}
-                                className="flex items-center justify-center gap-2 px-4 py-2 bg-[#ffbb00]/10 hover:bg-[#ffbb00]/20 rounded-lg text-[#111] font-semibold font-[poppins] transition-all duration-200"
+                                className="flex items-center cursor-pointer justify-center gap-2 px-4 py-2 bg-[#ffbb00]/10 hover:bg-[#ffbb00]/20 rounded-lg text-[#111] font-semibold font-[poppins] transition-all duration-200"
                                 disabled={loading}
                             >
                                 <motion.div
