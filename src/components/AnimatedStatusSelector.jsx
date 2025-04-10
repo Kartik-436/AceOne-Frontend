@@ -52,13 +52,13 @@ const AnimatedStatusSelector = ({ orderStatuses, selectedStatus, setSelectedStat
     };
 
     return (
-        <div className="relative" ref={dropdownRef}>
+        <div className="relative flex gap-4" ref={dropdownRef}>
             <label htmlFor="orderStatusFilter" className="block mb-2 font-medium text-gray-700">Status:</label>
 
             <motion.button
                 whileTap={{ scale: 0.98 }}
                 onClick={toggleDropdown}
-                className="flex items-center justify-between w-56 px-4 py-2.5 bg-white border border-gray-200 rounded-lg shadow-sm hover:border-[#ffbb00]/50 transition-all duration-200"
+                className="flex items-center overflow-x-hidden noScrollbar justify-between w-56 px-4 py-2.5 bg-white border border-gray-200 rounded-lg shadow-sm hover:border-[#ffbb00]/50 transition-all duration-200"
                 aria-expanded={isOpen}
                 aria-haspopup="listbox"
                 aria-controls="status-options"
