@@ -89,7 +89,7 @@ body::-webkit-scrollbar-track {
     border-radius: 10px;
     background: transparent;
     margin: 7px 0;
-    margin-right: 2px;
+    margin-right: 4px;
 }
 
 body::-webkit-scrollbar-thumb {
