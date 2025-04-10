@@ -94,7 +94,7 @@ const OrdersList = () => {
 
                     <div className='w-full overflow-x-auto'>
                         <table className='min-w-full bg-white rounded-md shadow-md'>
-                            <thead className='bg-[#323441] text-white'>
+                            <thead className='bg-[#323441] rounded-md text-white'>
                                 <tr>
                                     <th className='py-3 px-4 text-left font-semibold font-[poppins]'>Order ID</th>
                                     <th className='py-3 px-4 text-left font-semibold font-[poppins]'>Customer</th>
@@ -140,7 +140,7 @@ const OrdersList = () => {
                                             initial={{ opacity: 0 }}
                                             animate={{ opacity: 1 }}
                                             transition={{ duration: 0.1, delay: 0.05 * filteredOrders.indexOf(order) }}
-                                            className='hover:bg-gray-50 transition-colors duration-200'
+                                            className='hover:bg-gray-200 transition-colors duration-200'
                                         >
                                             <td className='py-3 px-4 font-medium text-gray-800'>
                                                 <button
@@ -148,14 +148,14 @@ const OrdersList = () => {
                                                         navigator.clipboard.writeText(order._id);
                                                         toast.success("Order ID copied!");
                                                     }}
-                                                    className="hover:underline focus:outline-none"
+                                                    className="hover:underline cursor-pointer focus:outline-none"
                                                 >
                                                     {order._id}
                                                 </button>
                                             </td>
                                             <td className='py-3 px-4 text-gray-700'>{order.customer ? order.customer.firstName + ' ' + order.customer.lastName : 'N/A'}</td>
                                             <td className='py-3 px-4 text-gray-700'>{formatDate(order.orderDate)}</td>
-                                            <td className='py-3 px-4 text-gray-700'>₹ {(order.discountedTotalAmount ? order.discountedTotalAmount : order.totalAmount) + order.deliveryFee}</td>
+                                            <td className='py-3 px-4 text-gray-700'>₹ {(order.discountedTotalAmount.toFixed(2) ? order.discountedTotalAmount.toFixed(2) : order.totalAmount.toFixed(2)) + order.deliveryFee}</td>
                                             <td className='py-3 px-4 text-gray-700'>{order.modeOfPayment}</td>
                                             <td className={`py-3 px-4 font-medium ${order.orderStatus === "Cancelled" ? "text-red-500" :
                                                 order.orderStatus === "Shipped" ? "text-blue-400" :
