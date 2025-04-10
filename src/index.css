@@ -82,43 +82,33 @@
 
 /* Modern scrollbar styling */
 body::-webkit-scrollbar {
-    width: 4px;
-    /* Slimmer width for a more modern look */
+    width: 7px;
 }
 
 body::-webkit-scrollbar-track {
     background: rgba(17, 17, 17, 0.03);
-    /* Very subtle track background */
     border-radius: 10px;
     margin: 4px 0;
-    /* Creates space at top and bottom of track */
 }
 
 body::-webkit-scrollbar-thumb {
     background: linear-gradient(to bottom, #ffbb00, #ffaa00);
-    /* Subtle gradient effect */
     border-radius: 10px;
     box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.15);
-    /* Inner glow effect */
 }
 
 /* Hover effect for the scrollbar thumb */
 body::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(to bottom, #ffcc00, #ffbb00);
-    /* Lighter gradient on hover */
 }
 
-/* When actively scrolling */
 body::-webkit-scrollbar-thumb:active {
     background: #ff9900;
-    /* Slightly darker when active */
 }
 
-/* Hide scrollbar when not scrolling, but maintain functionality */
 @media (pointer: fine) {
     body {
         scrollbar-width: thin;
-        /* For Firefox */
     }
 
     body:not(:hover)::-webkit-scrollbar-thumb {
