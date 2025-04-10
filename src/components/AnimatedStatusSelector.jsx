@@ -92,7 +92,7 @@ const AnimatedStatusSelector = ({ orderStatuses, selectedStatus, setSelectedStat
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute z-50 w-56 mt-16 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden"
+                        className="absolute z-50 w-56 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden"
                         id="status-options"
                         role="listbox"
                     >
