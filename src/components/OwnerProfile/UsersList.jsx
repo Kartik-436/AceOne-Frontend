@@ -406,7 +406,7 @@ const OrdersModal = ({ isOpen, onClose, user }) => {
                     </button>
                 </div>
 
-                <div className="overflow-y-auto noScollbar p-4 flex-1">
+                <div className="overflow-y-auto noScrollbar p-4 flex-1">
                     {user.orders.length === 0 ? (
                         <motion.div
                             initial={{ opacity: 0, y: 50 }}
