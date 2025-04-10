@@ -10,6 +10,7 @@ import { motion } from 'framer-motion';
 import { ShoppingBasket, Copy, RefreshCw } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { format } from 'date-fns';
+import AnimatedStatusSelector from '../AnimatedStatusSelector';
 
 const OrdersList = () => {
     const { animate, handleDelayNavigation } = useDelayedNavigation();
@@ -105,7 +106,7 @@ const OrdersList = () => {
                                 whileHover={{ scale: 1.03 }}
                                 whileTap={{ scale: 0.97 }}
                                 onClick={refreshOrders}
-                                className="flex items-center justify-center gap-2 px-4 py-2 bg-[#ffbb00]/10 hover:bg-[#ffbb00]/20 rounded-lg text-[#111] font-bold font-[poppins] transition-all duration-200"
+                                className="flex items-center justify-center gap-2 px-4 py-2 bg-[#ffbb00]/10 hover:bg-[#ffbb00]/20 rounded-lg text-[#111] font-semibold font-[poppins] transition-all duration-200"
                                 disabled={loading}
                             >
                                 <motion.div
@@ -118,19 +119,11 @@ const OrdersList = () => {
                             </motion.button>
 
                             <div className='flex items-center gap-3'>
-                                <label htmlFor="orderStatusFilter" className="font-medium text-gray-700 whitespace-nowrap">Status:</label>
-                                <select
-                                    id="orderStatusFilter"
-                                    className="w-auto p-2 border border-gray-200 rounded-lg shadow-sm focus:border-[#ffbb00] focus:ring-1 focus:ring-[#ffbb00] text-gray-700 bg-white outline-none"
-                                    value={selectedStatus}
-                                    onChange={(e) => setSelectedStatus(e.target.value)}
-                                >
-                                    {orderStatuses.map((status) => (
-                                        <option key={status} value={status}>
-                                            {status.charAt(0).toUpperCase() + status.slice(1)}
-                                        </option>
-                                    ))}
-                                </select>
+                                <AnimatedStatusSelector
+                                    orderStatuses={orderStatuses}
+                                    selectedStatus={selectedStatus}
+                                    setSelectedStatus={setSelectedStatus}
+                                />
                             </div>
                         </div>
                     </div>
