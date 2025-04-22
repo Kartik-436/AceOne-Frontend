@@ -87,7 +87,7 @@ body::-webkit-scrollbar-button {
 
 /* Basic scrollbar styling */
 body::-webkit-scrollbar {
-    width: 12px;
+    width: 14px;
 }
 
 body::-webkit-scrollbar-track {
