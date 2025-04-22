@@ -82,27 +82,26 @@
 
 /* Chrome default-like triangular arrows with #ffbb00 color */
 body::-webkit-scrollbar-button:vertical:start {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="20" viewBox="0 0 16 16" fill="%23ffbb00"><polygon points="8,4 13,10 3,10"/></svg>');
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="%23ffbb00"><polygon points="8,5 12,10 4,10"/></svg>');
     background-repeat: no-repeat;
     background-position: center;
     background-color: #111;
     display: block;
-    height: 20px;
+    height: 16px;
 }
 
 body::-webkit-scrollbar-button:vertical:end {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="20" viewBox="0 0 16 16" fill="%23ffbb00"><polygon points="8,12 13,6 3,6"/></svg>');
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="%23ffbb00"><polygon points="8,11 12,6 4,6"/></svg>');
     background-repeat: no-repeat;
     background-position: center;
     background-color: #111;
     display: block;
-    height: 20px;
+    height: 16px;
 }
 
 /* Basic scrollbar styling */
 body::-webkit-scrollbar {
-    width: 12px;
-    padding: 0 3px;
+    width: 16px;
 }
 
 body::-webkit-scrollbar-track {
@@ -111,7 +110,8 @@ body::-webkit-scrollbar-track {
 
 body::-webkit-scrollbar-thumb {
     background-color: #ffbb00;
-    border-radius: 10px;
+    border-radius: 8px;
+    border: 4px solid #111;
 }
 
 body::-webkit-scrollbar-thumb:hover {
