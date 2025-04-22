@@ -80,7 +80,12 @@
     background: linear-gradient(to right, #5038ED, #9181F4);
 }
 
-/* Chrome default-like triangular arrows with #ffbb00 color */
+/* Hide default scrollbar buttons */
+body::-webkit-scrollbar-button {
+    display: none;
+}
+
+/* Now apply custom buttons */
 body::-webkit-scrollbar-button:vertical:start {
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="%23ffbb00"><polygon points="8,5 12,10 4,10"/></svg>');
     background-repeat: no-repeat;
@@ -101,7 +106,7 @@ body::-webkit-scrollbar-button:vertical:end {
 
 /* Basic scrollbar styling */
 body::-webkit-scrollbar {
-    width: 16px;
+    width: 12px;
 }
 
 body::-webkit-scrollbar-track {
@@ -111,7 +116,7 @@ body::-webkit-scrollbar-track {
 body::-webkit-scrollbar-thumb {
     background-color: #ffbb00;
     border-radius: 8px;
-    border: 4px solid #f1f1f1;
+    border: 2px solid #f1f1f1;
 }
 
 body::-webkit-scrollbar-thumb:hover {
