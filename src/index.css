@@ -80,36 +80,59 @@
     background: linear-gradient(to right, #5038ED, #9181F4);
 }
 
-body::-webkit-scrollbar {
-    width: 10px;
-    background: transparent;
-}
-
-body::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 10px;
-}
-
-body::-webkit-scrollbar-thumb {
-    background: #ffbb00;
-    border-radius: 10px;
-}
-
-body::-webkit-scrollbar-thumb:hover {
-    background: #ffa500;
-}
-
-/* Default-like arrows */
+/* Chrome default-like triangular arrows with #ffbb00 color */
 body::-webkit-scrollbar-button:vertical:start {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24" fill="#ffbb00"><path d="M7 14l5-5 5 5z"/></svg>');
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="%23ffbb00"><polygon points="8,4 13,10 3,10"/></svg>');
     background-repeat: no-repeat;
     background-position: center;
     background-color: #f1f1f1;
+    display: block;
+    height: 16px;
 }
 
 body::-webkit-scrollbar-button:vertical:end {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24" fill="#ffbb00"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="%23ffbb00"><polygon points="8,12 13,6 3,6"/></svg>');
     background-repeat: no-repeat;
     background-position: center;
     background-color: #f1f1f1;
+    display: block;
+    height: 16px;
+}
+
+/* Make sure horizontal scrollbar buttons also have the same styling */
+body::-webkit-scrollbar-button:horizontal:start {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="%23ffbb00"><polygon points="4,8 10,3 10,13"/></svg>');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #f1f1f1;
+    display: block;
+    width: 16px;
+}
+
+body::-webkit-scrollbar-button:horizontal:end {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="%23ffbb00"><polygon points="12,8 6,3 6,13"/></svg>');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #f1f1f1;
+    display: block;
+    width: 16px;
+}
+
+/* Basic scrollbar styling */
+body::-webkit-scrollbar {
+    width: 10px;
+}
+
+body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: #ffbb00;
+    border-radius: 10px;
+    border: 1px solid #111;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+    background-color: #ffae00;
 }
