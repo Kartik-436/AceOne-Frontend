@@ -82,55 +82,36 @@
 
 /* Chrome default-like triangular arrows with #ffbb00 color */
 body::-webkit-scrollbar-button:vertical:start {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="%23ffbb00"><polygon points="8,4 13,10 3,10"/></svg>');
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="20" viewBox="0 0 16 16" fill="%23ffbb00"><polygon points="8,4 13,10 3,10"/></svg>');
     background-repeat: no-repeat;
     background-position: center;
-    background-color: #f1f1f1;
+    background-color: #111;
     display: block;
-    height: 16px;
+    height: 20px;
 }
 
 body::-webkit-scrollbar-button:vertical:end {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="%23ffbb00"><polygon points="8,12 13,6 3,6"/></svg>');
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="20" viewBox="0 0 16 16" fill="%23ffbb00"><polygon points="8,12 13,6 3,6"/></svg>');
     background-repeat: no-repeat;
     background-position: center;
-    background-color: #f1f1f1;
+    background-color: #111;
     display: block;
-    height: 16px;
-}
-
-/* Make sure horizontal scrollbar buttons also have the same styling */
-body::-webkit-scrollbar-button:horizontal:start {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="%23ffbb00"><polygon points="4,8 10,3 10,13"/></svg>');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-color: #f1f1f1;
-    display: block;
-    width: 16px;
-}
-
-body::-webkit-scrollbar-button:horizontal:end {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="%23ffbb00"><polygon points="12,8 6,3 6,13"/></svg>');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-color: #f1f1f1;
-    display: block;
-    width: 16px;
+    height: 20px;
 }
 
 /* Basic scrollbar styling */
 body::-webkit-scrollbar {
-    width: 10px;
+    width: 12px;
+    padding: 0 3px;
 }
 
 body::-webkit-scrollbar-track {
-    background: transparent;
+    background: #111;
 }
 
 body::-webkit-scrollbar-thumb {
     background-color: #ffbb00;
     border-radius: 10px;
-    border: 1px solid #111;
 }
 
 body::-webkit-scrollbar-thumb:hover {
