@@ -101,14 +101,14 @@ body::-webkit-scrollbar-thumb:hover {
 
 /* Default-like arrows */
 body::-webkit-scrollbar-button:vertical:start {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24" fill="%23808080"><path d="M7 14l5-5 5 5z"/></svg>');
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24" fill="#ffbb00"><path d="M7 14l5-5 5 5z"/></svg>');
     background-repeat: no-repeat;
     background-position: center;
     background-color: #f1f1f1;
 }
 
 body::-webkit-scrollbar-button:vertical:end {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24" fill="%23808080"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24" fill="#ffbb00"><path d="M7 10l5 5 5-5z"/></svg>');
     background-repeat: no-repeat;
     background-position: center;
     background-color: #f1f1f1;
