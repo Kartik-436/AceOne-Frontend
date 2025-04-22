@@ -81,42 +81,35 @@
 }
 
 body::-webkit-scrollbar {
-    width: 8px;
+    width: 10px;
     background: transparent;
 }
 
 body::-webkit-scrollbar-track {
+    background: #f1f1f1;
     border-radius: 10px;
-    background: transparent;
 }
 
 body::-webkit-scrollbar-thumb {
-    border-radius: 10px;
     background: #ffbb00;
-    cursor: pointer;
+    border-radius: 10px;
 }
 
 body::-webkit-scrollbar-thumb:hover {
     background: #ffa500;
 }
 
-/* Add these rules for the scrollbar buttons (arrows) */
-body::-webkit-scrollbar-button {
-    height: 16px;
-    /* Height of the arrow buttons */
-    background-color: #ffbb00;
-    /* Background color of the arrow area */
-    border-radius: 10px;
-}
-/* 
+/* Default-like arrows */
 body::-webkit-scrollbar-button:vertical:start {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>');
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24" fill="%23808080"><path d="M7 14l5-5 5 5z"/></svg>');
     background-repeat: no-repeat;
     background-position: center;
+    background-color: #f1f1f1;
 }
 
 body::-webkit-scrollbar-button:vertical:end {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24" fill="%23808080"><path d="M7 10l5 5 5-5z"/></svg>');
     background-repeat: no-repeat;
     background-position: center;
-} */
+    background-color: #f1f1f1;
+}
