@@ -82,7 +82,7 @@ const NavBarProfile = () => {
             <div className="w-full h-[10.6vh] bg-[#fbffef] fixed top-0 left-0 z-[10]">
                 <div className="flex items-center justify-between w-full h-full px-10">
                     <div>
-                        <h1 onClick={() => { handleDelayNavigation("") }} className="text-3xl text-black font-black font-[Marcellus] select-none cursor-pointer">AceOne.</h1>
+                        <h1 onClick={() => { handleDelayNavigation("") }} className="text-3xl text-black font-black font-[Marcellus] select-none cursor-pointer">Acewalk.</h1>
                     </div>
 
                     <div className="flex items-center gap-5 h-full">

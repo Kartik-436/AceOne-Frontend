@@ -48,7 +48,7 @@ const Footer = () => {
                 >
                     <div className='w-full min-h-screen bg-[#131313] flex flex-col gap-4 p-10'>
                         <motion.div initial="hidden" animate={isInView ? "visible" : "hidden"} variants={itemVariants} className='w-full'>
-                            <h1 onClick={() => { handleDelayNavigation("") }} className="text-3xl font-black font-[Marcellus] select-none cursor-pointer text-white w-fit">AceOne.</h1>
+                            <h1 onClick={() => { handleDelayNavigation("") }} className="text-3xl font-black font-[Marcellus] select-none cursor-pointer text-white w-fit">Acewalk.</h1>
                         </motion.div>
 
                         <motion.div

@@ -362,7 +362,7 @@ const BeforeSignedInNavBar = ({CartChange}) => {
             <div className="w-full h-[10.6vh] bg-[#fbffef] fixed top-0 left-0 z-[10]">
                 <div className="flex items-center justify-between w-full h-full px-4 md:px-10">
                     <div>
-                        <h1 onClick={() => { handleDelayNavigation("") }} className="text-2xl md:text-3xl font-black font-[Marcellus] select-none cursor-pointer text-transparent bg-clip-text bg-gradient-to-r from-[#ffbb00] from-45% to-45% to-[#1f1f1f]">AceOne.</h1>
+                        <h1 onClick={() => { handleDelayNavigation("") }} className="text-2xl md:text-3xl font-black font-[Marcellus] select-none cursor-pointer text-transparent bg-clip-text bg-gradient-to-r from-[#ffbb00] from-45% to-45% to-[#1f1f1f]">Acewalk.</h1>
                     </div>
 
                     <div className="flex items-center gap-1 md:gap-5 h-full">

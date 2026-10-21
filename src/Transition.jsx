@@ -21,7 +21,7 @@ const Transition = ({ animate, disableEntry, anim }) => {
                         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                         className="text-7xl text-white font-black font-[Marcellus]"
                     >
-                        AceOne
+                        Acewalk
                     </motion.h1>
                 </motion.div>
             )}
@@ -41,7 +41,7 @@ const Transition = ({ animate, disableEntry, anim }) => {
                         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                         className="text-7xl text-white font-black font-[Marcellus]"
                     >
-                        AceOne
+                        Acewalk
                     </motion.h1>
                 </motion.div>
             )}

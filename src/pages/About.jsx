@@ -177,8 +177,8 @@ const About = () => {
                                     <h1 className='text-lg font-mono font-bold'>EMPOWER YOUR ELEGANCE</h1>
                                     <div className='flex flex-col gap-4'>
                                         <div className='flex flex-col gap-2'>
-                                            <p className='text-sm tracking-tight font-[poppins]'>At AceOne Footwear, we create stylish, comfortable shoes that exude confidence. Blending timeless elegance with modern innovation, our designs ensure you never compromise on fashion or function.</p>
-                                            <p className='text-sm tracking-tight font-[poppins]'>More than just a brand, AceOne is a statement. Whether you&apos;re stepping into success or embracing everyday moments, our footwear supports your journey in style.</p>
+                                            <p className='text-sm tracking-tight font-[poppins]'>At Acewalk Footwear, we create stylish, comfortable shoes that exude confidence. Blending timeless elegance with modern innovation, our designs ensure you never compromise on fashion or function.</p>
+                                            <p className='text-sm tracking-tight font-[poppins]'>More than just a brand, Acewalk is a statement. Whether you&apos;re stepping into success or embracing everyday moments, our footwear supports your journey in style.</p>
                                         </div>
                                         <h1 className='text-xl font-mono text-[#ffbb00] font-bold'>Walk Bold. Walk Ace.</h1>
                                     </div>

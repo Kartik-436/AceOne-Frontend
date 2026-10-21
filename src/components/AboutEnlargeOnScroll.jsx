@@ -25,11 +25,11 @@ const AboutEnlargeOnScroll = () => {
     };
 
     const collections = [
-        { title: "Male Collection", src: "https://static.wixstatic.com/media/c837a6_6338c1580bc8405f8ddf87c1238f41fb~mv2.jpg/v1/fill/w_603,h_700,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/c837a6_6338c1580bc8405f8ddf87c1238f41fb~mv2.jpg", head: "SUSTAINABILITY", para: "At AceOne Footwear, we prioritize eco-friendly materials and responsible production, ensuring our footwear supports a greener future.. Walk with confidence, knowing your style supports a greener future." },
+        { title: "Male Collection", src: "https://static.wixstatic.com/media/c837a6_6338c1580bc8405f8ddf87c1238f41fb~mv2.jpg/v1/fill/w_603,h_700,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/c837a6_6338c1580bc8405f8ddf87c1238f41fb~mv2.jpg", head: "SUSTAINABILITY", para: "At Acewalk Footwear, we prioritize eco-friendly materials and responsible production, ensuring our footwear supports a greener future.. Walk with confidence, knowing your style supports a greener future." },
 
         { title: "Female Collection", src: "https://static.wixstatic.com/media/c837a6_a45b871f1d734afc93f0a4f31ecc3a2f~mv2.jpg/v1/fill/w_604,h_700,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/c837a6_a45b871f1d734afc93f0a4f31ecc3a2f~mv2.jpg", head: "QUALITY", para: "Crafted with precision and premium materials, our footwear ensures lasting comfort and durability. Every pair is designed to provide the perfect balance of elegance and reliability, making each step effortless." },
 
-        { title: "Kids Collection", src: "https://static.wixstatic.com/media/c837a6_5d5cdc139d32469b98e76598e97f79f1~mv2.jpg/v1/fill/w_604,h_700,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/c837a6_5d5cdc139d32469b98e76598e97f79f1~mv2.jpg", head: "INNOVATION", para: "We merge cutting-edge design with advanced technology to create footwear that enhances both performance and style. Experience the future of comfort with AceOne’s innovative approach to shoemaking." }
+        { title: "Kids Collection", src: "https://static.wixstatic.com/media/c837a6_5d5cdc139d32469b98e76598e97f79f1~mv2.jpg/v1/fill/w_604,h_700,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/c837a6_5d5cdc139d32469b98e76598e97f79f1~mv2.jpg", head: "INNOVATION", para: "We merge cutting-edge design with advanced technology to create footwear that enhances both performance and style. Experience the future of comfort with Acewalk’s innovative approach to shoemaking." }
     ];
 
     const imgContainerRef = useRef(null);

@@ -122,7 +122,7 @@ const Page5 = () => {
                                             variants={fadeSideCome}
                                             className='text-wrap text-sm text-white font-normal font-[roboto]'
                                         >
-                                            At AceOne Footwear, we prioritize sustainability by using eco-friendly materials and ethical practices. Every step you take with us contributes to a greener, more responsible future.
+                                            At Acewalk Footwear, we prioritize sustainability by using eco-friendly materials and ethical practices. Every step you take with us contributes to a greener, more responsible future.
                                         </motion.p>
                                         <motion.button
                                             onClick={() => { handleDelayNavigation("About") }}

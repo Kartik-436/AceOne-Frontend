@@ -10,13 +10,13 @@ export const AuthProvider = ({ children }) => {
     const [owner, setOwner] = useState(null);
 
     useEffect(() => {
-        axios.get("http://localhost:3000/user/profile", { withCredentials: true })
+        axios.get("https://aceone-backend-vx5o.onrender.com/user/profile", { withCredentials: true })
             .then(response => {
                 if (response.data.success) setUser(response.data.data);
             })
             .catch(() => setUser(null));
 
-        axios.get("http://localhost:3000/owner/profile", { withCredentials: true })
+        axios.get("https://aceone-backend-vx5o.onrender.com/owner/profile", { withCredentials: true })
             .then(response => {
                 if (response.data.success) setOwner(response.data.data);
             })

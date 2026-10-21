@@ -60,7 +60,7 @@ const CheckoutButton = ({ isLoggedIn, user, deliveryFee, refreshCart, refreshUse
                 key: import.meta.env.VITE_RAZORPAY_KEY_ID,
                 amount: orderData.payment.amount,
                 currency: orderData.payment.currency || "INR",
-                name: "AceOne",
+                name: "Acewalk",
                 description: `Payment for order #${orderData.order._id}`,
                 order_id: orderData.payment.razorpayOrderId,
                 handler: async function (response) {
